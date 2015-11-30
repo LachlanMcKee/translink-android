@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.lach.common.async.AsyncResult;
 import com.lach.common.async.AsyncTaskFragment;
+import com.lach.common.log.Log;
 import com.lach.common.util.DialogUtil;
 import com.lach.common.util.NetworkUtil;
 import com.lach.translink.TranslinkApplication;
@@ -45,6 +46,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class GoCardInfoFragment extends AsyncTaskFragment {
+    private static final String TAG = GoCardInfoFragment.class.getSimpleName();
 
     @InjectView(R.id.gocard_balance_text)
     TextView goCardBalanceText;
@@ -295,12 +297,12 @@ public class GoCardInfoFragment extends AsyncTaskFragment {
                         "Verify you can access the following:\nhttps://gocard.translink.com.au";
                 break;
 
-            case TaskGoCardDetails.ERROR_INVALID_CREDENTIALS:
+            case TaskGoCardDetails.ERROR_BAD_PARSING:
                 title = "Go-card error";
-                message = "Please ensure that your device has the correct time and try again.";
+                message = "There was an error trying to read the website data.\nThis issue will be investigated.";
                 break;
 
-            case TaskGoCardDetails.ERROR_BAD_PARSING:
+            case TaskGoCardDetails.ERROR_INVALID_CREDENTIALS:
                 title = "Go-card error";
                 message = "Unable to log in. Please check the following:\n\n"
                         + "- Is your username and password is correct?\n"
@@ -311,6 +313,12 @@ public class GoCardInfoFragment extends AsyncTaskFragment {
 
         if (title != null) {
             AlertDialog.Builder alertDialog = DialogUtil.createAlertDialog(activity, message, title, true);
+            alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    onTaskGenericErrorDismissed(-1);
+                }
+            });
             alertDialog.show();
             return true;
         }
@@ -321,6 +329,15 @@ public class GoCardInfoFragment extends AsyncTaskFragment {
     @Override
     public void onTaskCancelled(int taskId) {
 
+    }
+
+    @Override
+    public void onTaskGenericErrorDismissed(int taskId) {
+        Log.debug(TAG, "onTaskGenericErrorDismissed");
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            activity.finish();
+        }
     }
 
     public static class GoCardGraphFragment extends Fragment {

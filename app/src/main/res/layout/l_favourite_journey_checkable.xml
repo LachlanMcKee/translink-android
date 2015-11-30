@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.lach.common.ui.view.CheckableRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:focusable="false"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/padding_medium">
+
+    <CheckBox
+        android:id="@+id/journey_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/padding_small"
+        android:layout_toRightOf="@+id/journey_check_box">
+
+        <include
+            layout="@layout/l_favourite_journey_shared"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+</com.lach.common.ui.view.CheckableRelativeLayout>

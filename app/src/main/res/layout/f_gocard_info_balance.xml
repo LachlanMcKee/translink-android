@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:tools="http://schemas.android.com/tools"
+       tools:showIn="@layout/f_gocard_info">
+
+    <TableRow>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:paddingRight="25dip"
+            android:text="@string/gocard_info_balance"
+            android:textSize="16sp"
+            android:textStyle="bold">
+        </TextView>
+
+        <TextView
+            android:id="@+id/gocard_balance_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            tools:text="$0.00">
+        </TextView>
+    </TableRow>
+
+    <TableRow android:layout_width="fill_parent">
+
+        <TextView
+            android:id="@+id/gocard_balance_as_of_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_span="2"
+            android:paddingLeft="30dip"
+            android:text="@string/gocard_info_date_title"
+            android:textSize="16sp">
+        </TextView>
+    </TableRow>
+</merge>

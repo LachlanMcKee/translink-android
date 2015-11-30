@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.lach.translink.activities"
+          android:installLocation="auto">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+
+    <!-- External storage for caching. -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    <!-- Maps API needs OpenGL ES 2.0. -->
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true"/>
+
+    <application
+        android:name="com.lach.translink.TranslinkApplication"
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/icon"
+        android:label="@string/activity_title_main"
+        android:theme="@style/AppThemeLight"
+        tools:ignore="UnusedAttribute">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCziPpGyoue_xTU_fEt3pVIHmLo8DoNzaM"/>
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
+
+        <activity
+            android:name=".TranslinkApp"
+            android:label="@string/activity_title_main">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.lach.translink.ui.result.JourneyResultActivity"
+            android:label="@string/activity_title_search"
+            android:theme="@style/AppThemeLight.Transparent"
+            android:configChanges="keyboard|keyboardHidden|screenSize|orientation"/>
+        <activity
+            android:name="com.lach.translink.ui.result.JourneyResultActivityDark"
+            android:label="@string/activity_title_search"
+            android:theme="@style/AppThemeDark.Transparent"
+            android:configChanges="keyboard|keyboardHidden|screenSize|orientation"/>
+        <activity
+            android:name="com.lach.translink.ui.settings.SettingsActivity"
+            android:label="@string/activity_title_settings"/>
+        <activity
+            android:name="com.lach.translink.ui.settings.FavouriteLocationsActivity"
+            android:label="@string/activity_title_favourite_locations"/>
+        <activity
+            android:name="com.lach.translink.ui.settings.FavouriteJourneysActivity"
+            android:label="@string/activity_title_favourite_journeys"/>
+        <activity
+            android:name="com.lach.translink.ui.resolve.ResolveLocationActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:label="@string/activity_title_resolve_location"
+            android:exported="true"/>
+        <activity
+            android:name="com.lach.translink.ui.gocard.GoCardInfoActivity"
+            android:label="@string/activity_title_go_card"/>
+    </application>
+
+</manifest>

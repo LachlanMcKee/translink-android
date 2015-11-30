@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Base.AppThemeDark" parent="Theme.AppCompat">
+        <item name="drop_shadow">@color/divider</item>
+        <item name="alert_dialog_icon">@drawable/ic_dialog_alert_dark</item>
+
+        <item name="progress_drawable">@drawable/progress_drawable_dark</item>
+        <item name="progress_drawable_small">@drawable/progress_drawable_small_dark</item>
+
+        <item name="menu_search_icon">@drawable/ic_button_search_dark</item>
+
+        <!-- Settings menu icons -->
+        <item name="ic_place">@drawable/ic_place_dark</item>
+        <item name="ic_directions_transit">@drawable/ic_directions_transit_dark</item>
+        <item name="ic_card">@drawable/ic_card_dark</item>
+        <item name="ic_delete">@drawable/ic_delete_dark</item>
+        <item name="ic_directions_walk">@drawable/ic_directions_walk_dark</item>
+        <item name="ic_directions_run">@drawable/ic_speed_dark</item>
+        <item name="ic_service_type">@drawable/ic_service_type_dark</item>
+        <item name="ic_fare_type">@drawable/ic_fare_type_dark</item>
+        <item name="ic_keyboard">@drawable/ic_keyboard_dark</item>
+        <item name="ic_time">@drawable/ic_time_dark</item>
+        <item name="ic_theme">@drawable/ic_theme_dark</item>
+
+        <!-- FAB icons -->
+        <item name="fab_add">@drawable/fab_add_dark</item>
+        <item name="fab_delete">@drawable/fab_delete</item>
+        <item name="fab_done">@drawable/fab_done_dark</item>
+
+        <!-- Misc icons -->
+        <item name="ic_back">@drawable/ic_back_dark</item>
+        <item name="ic_history">@drawable/ic_history_dark</item>
+        <item name="ic_contacts">@drawable/ic_contacts_dark</item>
+        <item name="ic_microphone">@drawable/ic_microphone_dark</item>
+        <item name="ic_clear_content">@drawable/ic_clear_content_dark</item>
+        <item name="ic_downloading">@drawable/ic_cloud_dark</item>
+
+        <item name="colorPrimary">@color/dark_theme_primary</item>
+        <item name="colorPrimaryDark">@color/dark_theme_primary_dark</item>
+        <item name="colorAccent">@color/dark_theme_accent</item>
+
+        <item name="headingColour">#99000000</item>
+        <item name="subheadingColour">#77000000</item>
+
+        <!-- CardView properties -->
+        <item name="card_view_background">@android:color/black</item>
+
+        <item name="dialogTheme">@style/AppThemeDark.DialogTheme</item>
+        <item name="alertDialogTheme">@style/AppThemeDark.AlertDialogTheme</item>
+    </style>
+
+    <style name="AppThemeDark" parent="Base.AppThemeDark">
+    </style>
+
+    <style name="AppThemeDark.NoActionBar" parent="AppThemeDark">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppThemeDark.Transparent" parent="AppThemeDark.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
+    <!-- Styles for pop-up dialogs -->
+    <style name="AppThemeDark.DialogTheme" parent="Theme.AppCompat.Dialog">
+        <item name="colorPrimary">@color/dark_theme_primary</item>
+        <item name="colorPrimaryDark">@color/dark_theme_primary_dark</item>
+        <item name="colorAccent">@color/dark_theme_accent</item>
+    </style>
+
+    <style name="AppThemeDark.AlertDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="colorPrimary">@color/dark_theme_primary</item>
+        <item name="colorPrimaryDark">@color/dark_theme_primary_dark</item>
+        <item name="colorAccent">@color/dark_theme_accent</item>
+    </style>
+
+</resources>

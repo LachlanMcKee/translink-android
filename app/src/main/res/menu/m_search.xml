@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:ignore="AlwaysShowAction">
+
+    <item
+        android:id="@+id/menu_history"
+        android:icon="@drawable/ic_history_dark"
+        android:title="@string/menu_history"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_load_fav"
+        android:icon="@drawable/ic_open"
+        android:title="@string/load_journey"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_save_fav"
+        android:icon="@drawable/ic_add"
+        android:title="@string/menu_add_to_journeys"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_links"
+        android:icon="@android:drawable/ic_menu_upload"
+        android:title="@string/menu_links"/>
+    <item
+        android:id="@+id/menu_time_now"
+        android:icon="@android:drawable/ic_menu_today"
+        android:title="@string/menu_set_time"/>
+    <item
+        android:id="@+id/menu_go_card"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:title="@string/menu_go_card"/>
+    <item
+        android:id="@+id/menu_settings"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="@string/menu_settings"/>
+
+</menu>

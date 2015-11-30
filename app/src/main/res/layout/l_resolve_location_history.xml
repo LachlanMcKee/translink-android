@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    android:id="@+id/resolve_location_history_text"
+    style="@style/resolve_list_card_text"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="?selectableItemBackground"
+    android:clickable="true"
+    android:drawableLeft="?ic_history"
+    tools:text="South Bank Station"/>

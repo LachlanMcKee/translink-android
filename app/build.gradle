@@ -1,0 +1,167 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+
+repositories {
+    maven { url "https://mint.splunk.com/gradle/" }
+    maven { url "https://jitpack.io" }
+
+    // Required for the cross-walk libraries
+    maven { url 'https://download.01.org/crosswalk/releases/crosswalk/android/maven2' }
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion as Integer
+    buildToolsVersion rootProject.ext.buildToolsVersion as String
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion rootProject.ext.targetSdkVersion as Integer
+        versionName "4.0.5"
+        versionCode 1007
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    signingConfigs {
+        release
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    productFlavors {
+        /*gingerbread {
+            versionCode 1006
+        }*/
+        /*arm {
+            minSdkVersion 14
+            versionCode 2000
+            ndk {
+                abiFilters "armeabi-v7a", ""
+            }
+        }
+        x86 {
+            minSdkVersion 14
+            versionCode 3000
+            ndk {
+                abiFilters "x86", ""
+            }
+        }*/
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+        }
+        release {
+            //noinspection GroovyAssignabilityCheck
+            signingConfig signingConfigs.release
+        }
+    }
+
+    def Properties props = new Properties()
+    def propFile = file('signing.properties')
+    if (propFile.canRead()) {
+        props.load(new FileInputStream(propFile))
+
+        if (props != null && props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
+                props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
+
+            println 'RELEASE BUILD SIGNING'
+
+            android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
+            android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
+            android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
+            android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
+        } else {
+            println 'RELEASE BUILD NOT FOUND SIGNING PROPERTIES'
+
+            android.buildTypes.release.signingConfig = null
+        }
+    } else {
+        println 'RELEASE BUILD NOT FOUND SIGNING FILE'
+        android.buildTypes.release.signingConfig = null
+    }
+
+}
+
+// Required due to timing issue: https://code.google.com/p/android/issues/detail?id=162285
+configurations {
+    /*gingerbreadDebugCompile
+    gingerbreadReleaseCompile
+    armDebugCompile
+    armReleaseCompile*/
+}
+
+configurations.all {
+    resolutionStrategy {
+        force 'org.hamcrest:hamcrest-core:1.3'
+    }}
+
+final ESPRESSO_VERSION = '2.2.1'
+final DAGGER_VERSION = '2.0.1'
+final DEXMAKER_VERSION = '1.4'
+final MOCKITO_VERSION = '1.10.19'
+
+dependencies {
+    compile project(':android-common')
+
+    // Webview library, allows cross-walk implementation.
+    debugCompile "com.github.lachlanm:xwalk-fallback:0.1.0:standardDebug@aar"
+    releaseCompile "com.github.lachlanm:xwalk-fallback:0.1.0:standardRelease@aar"
+    //compile "org.xwalk:xwalk_core_library:15.44.384.13:arm@aar"
+
+    compile 'com.google.code.gson:gson:2.3'
+
+    debugCompile('com.facebook.stetho:stetho:1.2.0') {
+        exclude(group: 'com.google.code.findbugs', module: 'jsr305')
+    }
+    debugCompile('com.facebook.stetho:stetho-okhttp:1.2.0') {
+        exclude(group: 'com.google.code.findbugs', module: 'jsr305')
+    }
+
+    // DI
+    compile 'org.glassfish:javax.annotation:10.0-b28'
+    compile "com.google.dagger:dagger:$DAGGER_VERSION"
+    apt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
+
+    // ORM.
+    apt 'com.raizlabs.android:DBFlow-Compiler:2.2.1'
+    compile "com.raizlabs.android:DBFlow-Core:2.2.1"
+    compile "com.raizlabs.android:DBFlow:2.2.1"
+
+    // Testing libs.
+    androidTestCompile("com.android.support.test.espresso:espresso-core:$ESPRESSO_VERSION") {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+    androidTestCompile("com.android.support.test.espresso:espresso-intents:$ESPRESSO_VERSION") {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+    androidTestCompile("com.android.support.test.espresso:espresso-contrib:$ESPRESSO_VERSION") {
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude module: 'recyclerview-v7'
+    }
+
+    androidTestCompile "com.crittercism.dexmaker:dexmaker:${DEXMAKER_VERSION}"
+    androidTestCompile "com.crittercism.dexmaker:dexmaker-mockito:${DEXMAKER_VERSION}"
+    androidTestCompile "com.crittercism.dexmaker:dexmaker-dx:${DEXMAKER_VERSION}"
+    androidTestCompile "org.mockito:mockito-core:${MOCKITO_VERSION}"
+    androidTestApt "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
+}

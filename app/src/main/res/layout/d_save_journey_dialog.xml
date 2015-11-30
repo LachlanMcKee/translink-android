@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dialog_padding_min"
+        android:paddingRight="@dimen/dialog_padding_min">
+
+        <EditText
+            android:id="@+id/journey_name_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/save_journey_name"/>
+
+        <CheckBox
+            android:id="@+id/save_journey_from_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/from_location"
+            android:checked="true"/>
+
+        <CheckBox
+            android:id="@+id/save_journey_to_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/to_location"
+            android:checked="true"/>
+
+        <CheckBox
+            android:id="@+id/save_journey_leave_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/leave_type"
+            android:checked="true"/>
+
+        <CheckBox
+            android:id="@+id/save_journey_transport_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/transport_type"
+            android:checked="true"/>
+
+        <CheckBox
+            android:id="@+id/save_journey_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time"/>
+
+    </LinearLayout>
+</ScrollView>

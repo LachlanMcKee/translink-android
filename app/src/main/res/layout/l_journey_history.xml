@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/padding_small">
+
+    <View
+        android:id="@+id/history_divider"
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_marginBottom="@dimen/padding_small"
+        android:background="?drop_shadow"/>
+
+    <TextView
+        android:id="@+id/history_time"
+        style="@style/list_item_text"
+        android:paddingBottom="@dimen/padding_smallest"
+        android:paddingLeft="@dimen/dialog_padding_min"
+        android:paddingRight="@dimen/dialog_padding_min"/>
+
+    <TextView
+        android:id="@+id/history_from_loc_label"
+        style="@style/list_item_label_text"
+        android:paddingLeft="@dimen/dialog_padding_min"
+        android:paddingRight="@dimen/dialog_padding_min"
+        android:text="@string/from_label"/>
+
+    <TextView
+        android:id="@+id/history_from_loc"
+        style="@style/list_item_text"
+        android:maxLines="2"
+        android:paddingBottom="@dimen/padding_smallest"
+        android:paddingLeft="@dimen/dialog_padding_min"
+        android:paddingRight="@dimen/dialog_padding_min"
+        android:singleLine="false"/>
+
+    <TextView
+        android:id="@+id/history_to_loc_label"
+        style="@style/list_item_label_text"
+        android:paddingLeft="@dimen/dialog_padding_min"
+        android:paddingRight="@dimen/dialog_padding_min"
+        android:text="@string/to_label"/>
+
+    <TextView
+        android:id="@+id/history_to_loc"
+        style="@style/list_item_text"
+        android:maxLines="2"
+        android:paddingLeft="@dimen/dialog_padding_min"
+        android:paddingRight="@dimen/dialog_padding_min"
+        android:singleLine="false"/>
+
+</LinearLayout>

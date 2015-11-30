@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Base.AppThemeLight" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="drop_shadow">@color/divider</item>
+        <item name="alert_dialog_icon">@drawable/ic_dialog_alert_light</item>
+
+        <item name="progress_drawable">@drawable/progress_drawable_light</item>
+        <item name="progress_drawable_small">@drawable/progress_drawable_small_light</item>
+
+        <item name="menu_search_icon">@drawable/ic_button_search_light</item>
+
+        <!-- Settings menu icons -->
+        <item name="ic_place">@drawable/ic_place_light</item>
+        <item name="ic_directions_transit">@drawable/ic_directions_transit_light</item>
+        <item name="ic_card">@drawable/ic_card_light</item>
+        <item name="ic_delete">@drawable/ic_delete_light</item>
+        <item name="ic_directions_walk">@drawable/ic_directions_walk_light</item>
+        <item name="ic_directions_run">@drawable/ic_speed_light</item>
+        <item name="ic_service_type">@drawable/ic_service_type_light</item>
+        <item name="ic_fare_type">@drawable/ic_fare_type_light</item>
+        <item name="ic_keyboard">@drawable/ic_keyboard_light</item>
+        <item name="ic_time">@drawable/ic_time_light</item>
+        <item name="ic_theme">@drawable/ic_theme_light</item>
+
+        <!-- FAB icons -->
+        <item name="fab_add">@drawable/fab_add_light</item>
+        <item name="fab_delete">@drawable/fab_delete</item>
+        <item name="fab_done">@drawable/fab_done_light</item>
+
+        <!-- Misc icons -->
+        <item name="ic_back">@drawable/ic_back_light</item>
+        <item name="ic_history">@drawable/ic_history_light</item>
+        <item name="ic_contacts">@drawable/ic_contacts_light</item>
+        <item name="ic_microphone">@drawable/ic_microphone_light</item>
+        <item name="ic_clear_content">@drawable/ic_clear_content_light</item>
+        <item name="ic_downloading">@drawable/ic_cloud_light</item>
+
+        <item name="colorPrimary">@color/light_theme_primary</item>
+        <item name="colorPrimaryDark">@color/light_theme_primary_dark</item>
+        <item name="colorAccent">@color/light_theme_accent</item>
+
+        <item name="headingColour">#99388E3C</item>
+        <item name="subheadingColour">#994CAF50</item>
+
+        <!-- CardView properties -->
+        <item name="card_view_background">@android:color/white</item>
+
+        <item name="dialogTheme">@style/AppThemeLight.DialogTheme</item>
+        <item name="alertDialogTheme">@style/AppThemeLight.AlertDialogTheme</item>
+    </style>
+
+    <style name="AppThemeLight" parent="Base.AppThemeLight">
+    </style>
+
+    <style name="AppThemeLight.NoActionBar" parent="AppThemeLight">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppThemeLight.Transparent" parent="AppThemeLight.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
+    <!-- Styles for pop-up dialogs -->
+    <style name="AppThemeLight.DialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/light_theme_primary</item>
+        <item name="colorPrimaryDark">@color/light_theme_primary_dark</item>
+        <item name="colorAccent">@color/light_theme_accent</item>
+    </style>
+
+    <style name="AppThemeLight.AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorPrimary">@color/light_theme_primary</item>
+        <item name="colorPrimaryDark">@color/light_theme_primary_dark</item>
+        <item name="colorAccent">@color/light_theme_accent</item>
+    </style>
+
+</resources>

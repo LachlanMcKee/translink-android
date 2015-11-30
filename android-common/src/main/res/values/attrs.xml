@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BubbleContainer">
+        <attr name="bubbleBackground" format="color"/>
+        <attr name="border" format="color"/>
+    </declare-styleable>
+
+    <!-- A style which enables multiple choice on a preference screen. -->
+    <declare-styleable name="EnhancedPreference">
+        <attr name="pref_icon" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="MultiSelectPreference" parent="EnhancedPreference">
+        <attr name="separator" format="string"/>
+        <attr name="value_mandatory" format="boolean"/>
+    </declare-styleable>
+
+    <attr name="drop_shadow" format="reference"/>
+    <attr name="progress_drawable" format="reference"/>
+    <attr name="progress_drawable_small" format="reference"/>
+    <attr name="alert_dialog_icon" format="reference"/>
+
+    <attr name="menu_search_icon" format="reference"/>
+
+    <attr name="headingColour" format="color"/>
+    <attr name="subheadingColour" format="color"/>
+
+    <!-- Settings menu icons -->
+    <attr name="ic_place" format="reference"/>
+    <attr name="ic_directions_transit" format="reference"/>
+    <attr name="ic_card" format="reference"/>
+    <attr name="ic_delete" format="reference"/>
+    <attr name="ic_directions_walk" format="reference"/>
+    <attr name="ic_directions_run" format="reference"/>
+    <attr name="ic_service_type" format="reference"/>
+    <attr name="ic_fare_type" format="reference"/>
+    <attr name="ic_keyboard" format="reference"/>
+    <attr name="ic_time" format="reference"/>
+    <attr name="ic_theme" format="reference"/>
+
+    <!-- FAB icons -->
+    <attr name="fab_add" format="reference"/>
+    <attr name="fab_delete" format="reference"/>
+    <attr name="fab_done" format="reference"/>
+
+    <!-- Misc icons -->
+    <attr name="ic_back" format="reference"/>
+    <attr name="ic_history" format="reference"/>
+    <attr name="ic_contacts" format="reference"/>
+    <attr name="ic_microphone" format="reference"/>
+    <attr name="ic_clear_content" format="reference"/>
+    <attr name="ic_downloading" format="reference"/>
+
+    <!-- CardView properties -->
+    <attr name="card_view_background" format="color"/>
+
+</resources>

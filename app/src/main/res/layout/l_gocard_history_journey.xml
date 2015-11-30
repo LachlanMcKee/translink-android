@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:paddingTop="@dimen/padding_medium">
+
+    <TextView
+        android:id="@+id/gocard_history_date"
+        android:layout_marginLeft="@dimen/padding_medium"
+        android:layout_marginRight="@dimen/padding_medium"
+        style="@style/list_item_label_text"
+        tools:text="10/10/2010"/>
+
+    <TextView
+        android:id="@+id/place_text"
+        android:text="@string/from_label"
+        style="@style/history_list_item_label_text"
+        android:gravity="right"
+        android:layout_below="@id/gocard_history_date"/>
+
+    <TextView
+        android:id="@+id/gocard_history_from"
+        android:text="@string/from_location"
+        style="@style/list_item_text_two_lines"
+        android:layout_toRightOf="@id/place_text"
+        android:layout_below="@id/gocard_history_date"/>
+
+    <TextView
+        android:id="@+id/to_label"
+        android:text="@string/to_label"
+        style="@style/history_list_item_label_text"
+        android:gravity="right"
+        android:layout_below="@id/gocard_history_from"/>
+
+    <TextView
+        android:id="@+id/gocard_history_to"
+        android:text="@string/to_location"
+        style="@style/list_item_text_two_lines"
+        android:layout_toRightOf="@id/to_label"
+        android:layout_below="@id/gocard_history_from"/>
+
+    <TextView
+        android:id="@+id/cost_label"
+        android:text="@string/cost_label"
+        style="@style/history_list_item_label_text"
+        android:gravity="right"
+        android:layout_below="@id/gocard_history_to"/>
+
+    <TextView
+        android:id="@+id/gocard_history_cost"
+        style="@style/list_item_text"
+        android:layout_toRightOf="@id/cost_label"
+        android:layout_below="@id/gocard_history_to"
+        tools:text="$0.00"/>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="?drop_shadow"
+        android:layout_marginTop="@dimen/padding_medium"
+        android:layout_below="@id/gocard_history_cost"/>
+
+</RelativeLayout>

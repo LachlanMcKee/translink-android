@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2008 The Android Open Source Project Licensed under the 
+	Apache License, Version 2.0 (the "License"); you may not use this file except 
+	in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License.
+-->
+
+<!--
+     This is an advanced example showing the custom preference types and 
+	manually handling preference clicks.
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.lach.common.ui.preference.EnhancedPreferenceCategory android:title="Saved data">
+        <com.lach.common.ui.preference.EnhancedPreference
+            android:key="@string/Locations_Preference_Menu"
+            android:summary="Your saved locations"
+            android:title="Favourite Locations"
+            app:pref_icon="?ic_place">
+        </com.lach.common.ui.preference.EnhancedPreference>
+        <com.lach.common.ui.preference.EnhancedPreference
+            android:key="@string/Journeys_Preference_Menu"
+            android:summary="Journeys used multiple times"
+            android:title="Saved Journeys"
+            app:pref_icon="?ic_directions_transit">
+        </com.lach.common.ui.preference.EnhancedPreference>
+        <com.lach.common.ui.preference.EnhancedPreference
+            android:key="@string/Go_Card_Preference_Menu"
+            android:summary="Card number and password"
+            android:title="Go-card details"
+            app:pref_icon="?ic_card">
+        </com.lach.common.ui.preference.EnhancedPreference>
+        <com.lach.common.ui.preference.EnhancedPreference
+            android:key="@string/Clear_History_Menu"
+            android:summary="Clear your journey history"
+            android:title="Clear history"
+            app:pref_icon="?ic_delete">
+        </com.lach.common.ui.preference.EnhancedPreference>
+    </com.lach.common.ui.preference.EnhancedPreferenceCategory>
+    <com.lach.common.ui.preference.EnhancedPreferenceCategory android:title="Advanced search">
+        <com.lach.common.ui.preference.EnhancedListPreference
+            android:defaultValue="1000"
+            android:dialogTitle="@string/dialog_walk_maximum_preference"
+            android:entries="@array/maximum_walking_array"
+            android:entryValues="@array/maximum_walking_values_array"
+            android:key="maxwalk"
+            android:title="@string/walk_maximum_preference"
+            android:widgetLayout="@null"
+            app:pref_icon="?ic_directions_walk">
+        </com.lach.common.ui.preference.EnhancedListPreference>
+        <com.lach.common.ui.preference.EnhancedListPreference
+            android:defaultValue="Normal"
+            android:dialogTitle="@string/dialog_walk_speed_preference"
+            android:entries="@array/walking_speed_array"
+            android:entryValues="@array/walking_speed_values_array"
+            android:key="walkspeed"
+            android:title="@string/walk_speed_preference"
+            android:widgetLayout="@null"
+            app:pref_icon="?ic_directions_run">
+        </com.lach.common.ui.preference.EnhancedListPreference>
+
+        <com.lach.common.ui.preference.MultiSelectPreference
+            android:defaultValue="Regular~Express~NightLink"
+            android:dialogTitle="Transport Service Types"
+            android:entries="@array/services_array"
+            android:entryValues="@array/services_values_array"
+            android:key="serviceTypes"
+            android:title="Service Types"
+            android:widgetLayout="@null"
+            app:pref_icon="?ic_service_type"
+            app:value_mandatory="true"/>
+
+        <com.lach.common.ui.preference.MultiSelectPreference
+            android:defaultValue="Free~Standard~Prepaid"
+            android:dialogTitle="Fare Types"
+            android:entries="@array/fare_array"
+            android:entryValues="@array/fare_values_array"
+            android:key="fareTypes"
+            android:title="Fare Types"
+            android:widgetLayout="@null"
+            app:pref_icon="?ic_fare_type"
+            app:value_mandatory="true"/>
+    </com.lach.common.ui.preference.EnhancedPreferenceCategory>
+
+    <com.lach.common.ui.preference.EnhancedPreferenceCategory android:title="Misc">
+        <com.lach.common.ui.preference.EnhancedCheckboxPreference
+            android:defaultValue="false"
+            android:key="AutomaticKeyboard"
+            android:summaryOff="Keyboard won't be shown automatically"
+            android:summaryOn="Keyboard will be shown automatically"
+            android:title="Automatic Keyboard"
+            app:pref_icon="?ic_keyboard">
+        </com.lach.common.ui.preference.EnhancedCheckboxPreference>
+        <com.lach.common.ui.preference.EnhancedCheckboxPreference
+            android:defaultValue="true"
+            android:key="IgnoreHistoryTime"
+            android:summaryOff="Time will be used for history"
+            android:summaryOn="Time won't be used for history"
+            android:title="Ignore time for history"
+            app:pref_icon="?ic_time">
+        </com.lach.common.ui.preference.EnhancedCheckboxPreference>
+        <com.lach.common.ui.preference.EnhancedListPreference
+            android:defaultValue="@string/theme_light"
+            android:dialogTitle="@string/dialog_theme_preference"
+            android:entries="@array/theme_array"
+            android:entryValues="@array/theme_values_array"
+            android:key="@string/theme_pref_key"
+            android:summary="Pick a colour scheme."
+            android:title="@string/theme_preference"
+            android:widgetLayout="@null"
+            app:pref_icon="?ic_theme">
+        </com.lach.common.ui.preference.EnhancedListPreference>
+    </com.lach.common.ui.preference.EnhancedPreferenceCategory>
+
+</PreferenceScreen>

@@ -1,0 +1,63 @@
+<resources>
+
+    <style name="list_item_text" parent="android:Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
+        <item name="android:focusable">false</item>
+        <item name="android:text">(No Value)</item>
+        <item name="android:layout_marginRight">@dimen/padding_small</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="list_item_text_two_lines" parent="@style/list_item_text">
+        <item name="android:singleLine">false</item>
+        <item name="android:maxLines">2</item>
+    </style>
+
+    <style name="list_item_label_text" parent="list_item_text">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body2</item>
+        <item name="android:layout_marginRight">@dimen/padding_small</item>
+    </style>
+
+    <style name="history_list_item_label_text" parent="list_item_label_text">
+        <item name="android:width">90sp</item>
+        <item name="android:layout_marginLeft">@dimen/padding_medium</item>
+    </style>
+
+    <style name="resolve_list_card_view">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:foreground">?selectableItemBackground</item>
+        <item name="cardCornerRadius">3dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="cardBackgroundColor">?card_view_background</item>
+        <item name="android:layout_marginBottom">@dimen/padding_smallest</item>
+    </style>
+
+    <style name="resolve_list_card_child">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:padding">@dimen/padding_small</item>
+    </style>
+
+    <style name="resolve_list_card_image">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+
+    <style name="resolve_list_card_text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:drawablePadding">@dimen/padding_medium</item>
+        <item name="android:paddingLeft">@dimen/padding_small</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+</resources>

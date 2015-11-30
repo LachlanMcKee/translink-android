@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+        android:duration="1000"
+        android:fromDegrees="0"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toDegrees="360">
+
+    <shape
+        android:innerRadius="10dp"
+        android:shape="ring"
+        android:thickness="2dp"
+        android:useLevel="false">
+        <size
+            android:width="32dp"
+            android:height="32dp"/>
+
+        <gradient
+            android:centerColor="@color/light_theme_progress_drawable_centre_colour"
+            android:centerY="0.5"
+            android:endColor="@color/light_theme_progress_drawable_end_colour"
+            android:startColor="@color/light_theme_progress_drawable_start_colour"
+            android:type="sweep"
+            android:useLevel="false"/>
+    </shape>
+
+</rotate>

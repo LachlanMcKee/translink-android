@@ -1,0 +1,3 @@
+<resources>
+    <integer name="go_card_number_length">16</integer>
+</resources>

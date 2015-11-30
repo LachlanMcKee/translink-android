@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:paddingTop="@dimen/padding_medium">
+
+    <TextView
+        android:id="@+id/gocard_history_date"
+        style="@style/list_item_label_text"
+        android:layout_marginLeft="@dimen/padding_medium"
+        android:layout_marginRight="@dimen/padding_medium"
+        tools:text="10/10/2010"/>
+
+    <TextView
+        android:id="@+id/event_label"
+        style="@style/history_list_item_label_text"
+        android:layout_width="50sp"
+        android:layout_below="@id/gocard_history_date"
+        android:gravity="right"
+        android:text="@string/event_label"/>
+
+    <TextView
+        android:id="@+id/gocard_history_event"
+        style="@style/list_item_text_two_lines"
+        android:layout_below="@id/gocard_history_date"
+        android:layout_toRightOf="@id/event_label"
+        android:text="@string/event"/>
+
+    <TextView
+        android:id="@+id/result_label"
+        style="@style/history_list_item_label_text"
+        android:layout_width="50sp"
+        android:layout_below="@id/gocard_history_event"
+        android:gravity="right"
+        android:text="@string/result_label"/>
+
+    <TextView
+        android:id="@+id/gocard_history_result"
+        style="@style/list_item_text_two_lines"
+        android:layout_below="@id/gocard_history_event"
+        android:layout_toRightOf="@id/result_label"
+        android:text="@string/result"/>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_below="@id/gocard_history_result"
+        android:layout_marginTop="@dimen/padding_medium"
+        android:background="?drop_shadow"/>
+
+</RelativeLayout>

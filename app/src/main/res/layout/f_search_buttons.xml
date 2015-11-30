@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:bind="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:showIn="@layout/f_search">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.lach.translink.ui.search.SearchViewModel"/>
+    </data>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/reset_button"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="5sp"
+            android:layout_weight="0.5"
+            android:gravity="center_vertical|center_horizontal"
+            android:paddingRight="6sp"
+            android:text="@string/reset"
+            bind:onClickListener="@{viewModel.resetClickListener}"
+            bind:debouncer="@{viewModel.debouncer}"/>
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="5sp"
+            android:layout_weight="0.5"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/find"
+            bind:onClickListener="@{viewModel.searchClickListener}"
+            bind:debouncer="@{viewModel.debouncer}"/>
+    </LinearLayout>
+</layout>

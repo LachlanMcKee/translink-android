@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">app</string>
+
+    <!-- Activity names -->
+    <string name="activity_title_main">QLD Journey</string>
+    <string name="activity_title_search">Journey</string>
+    <string name="activity_title_settings">Settings</string>
+    <string name="activity_title_favourite_locations">Locations</string>
+    <string name="activity_title_favourite_journeys">Journeys</string>
+    <string name="activity_title_resolve_location">Resolve Location</string>
+    <string name="activity_title_go_card">Go-Card</string>
+
+    <!-- Preference Screen -->
+    <string name="Locations_Preference_Menu">LocationsPreferenceMenu</string>
+    <string name="Journeys_Preference_Menu">JourneysPreferenceMenu</string>
+    <string name="Clear_History_Menu">ClearHistoryMenu</string>
+    <string name="Go_Card_Preference_Menu">GoCardPreferenceMenu</string>
+
+    <string name="walk_maximum_preference">Maximum walk</string>
+    <string name="dialog_walk_maximum_preference">Select a distance</string>
+
+    <string name="walk_speed_preference">Walk Speed</string>
+    <string name="dialog_walk_speed_preference">Select a walking speed</string>
+
+    <string name="theme_preference">Theme</string>
+    <string name="dialog_theme_preference">Select a theme</string>
+
+    <string name="gocard_details_enter_number">Card number</string>
+    <string name="gocard_details_enter_password">Password</string>
+    <string name="gocard_details_password_unchanged">Modify existing password</string>
+
+    <!-- Translink Search Activity -->
+    <string name="load_journey">Load Journey</string>
+    <string name="menu_add_to_journeys">Add to Journeys</string>
+    <string name="menu_history">History</string>
+    <string name="menu_set_time">Set current time</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_go_card">Go-Card Info</string>
+    <string name="menu_links">Links</string>
+
+    <string name="save_journey_name">Enter favourite name</string>
+    <string name="place_text_hint">Tap to select a favourite</string>
+    <string name="swap_locations">Swap Locations</string>
+
+    <string name="time_type_spinner_title">Select an arrival type</string>
+    <string name="transport_type_spinner_title">Select a mode of transport</string>
+
+    <string name="find">Find</string>
+    <string name="reset">Reset</string>
+
+    <!-- Resolve Location Activity -->
+    <string name="resolve_map_subtitle_intro">Tap anywhere to place a pin</string>
+    <string name="resolve_map_subtitle_continue">Tap button to confirm</string>
+    <string name="resolve_choose_on_map">Choose on map</string>
+    <string name="resolve_search_contacts">Search contacts</string>
+
+    <string name="resolve_back_button_description">Back</string>
+    <string name="voice_search_button_description">Voice search</string>
+    <string name="clear_button_description">Clear</string>
+    <string name="resolve_confirm_button_description">Confirm Location</string>
+
+    <string name="resolve_searching_for_location">Searching for location…</string>
+    <string name="resolve_searching_for_address">Searching for address…</string>
+    <string name="resolve_generic_error">Search failed</string>
+    <string name="resolve_no_internet">Unable to connect to the Internet</string>
+
+    <!-- Go-Card Details Activity -->
+    <string name="gocard_info_balance">Card Balance</string>
+    <string name="gocard_info_date_title">As of</string>
+    <string name="gocard_info_card_type">Card Type</string>
+    <string name="gocard_info_issued">Issued</string>
+    <string name="gocard_info_expires">Expires</string>
+    <string name="gocard_info_load_history">Load History</string>
+    <string name="gocard_info_history_label">History</string>
+
+    <string name="event_label">Event</string>
+    <string name="result_label">Result</string>
+    <string name="event">Event Detail</string>
+    <string name="result">Result Detail</string>
+
+    <!-- Common -->
+    <string name="from_label">Starting Point</string>
+    <string name="from_location">Starting Point</string>
+    <string name="to_label">Destination</string>
+    <string name="to_location">Destination</string>
+
+    <string name="leave_type">Leave Type</string>
+    <string name="transport_type">Mode of Transport</string>
+    <string name="time">Time</string>
+    <string name="cost_label">Cost</string>
+
+</resources>

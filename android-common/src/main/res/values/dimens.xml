@@ -1,0 +1,10 @@
+<resources>
+    <dimen name="dialog_padding_min">24dp</dimen>
+    <dimen name="fab_margin">0dp</dimen>
+    <dimen name="fab_margin_small">0dp</dimen>
+
+    <dimen name="padding_smallest">4dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_medium">12dp</dimen>
+    <dimen name="activity_padding">12dp</dimen>
+</resources>

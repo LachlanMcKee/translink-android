@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:padding="@dimen/padding_medium"
+                android:background="?subheadingColour"
+                tools:ignore="Overdraw">
+
+    <TextView
+        android:id="@+id/gocard_history_title"
+        android:textColor="@color/White"
+        style="@style/list_item_label_text"
+        tools:text="10/10/2010"/>
+
+</RelativeLayout>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:bind="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.lach.translink.ui.search.SearchPlaceViewModel"/>
+    </data>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/place_label_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription='@{viewModel.label + " label"}'
+            android:text="@{viewModel.label}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            tools:text="Starting Point"/>
+
+        <ImageView
+            android:id="@+id/place_resolve_button"
+            style="?borderlessButtonStyle"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="@dimen/padding_small"
+            android:layout_marginTop="@dimen/padding_medium"
+            android:contentDescription='@{viewModel.label + " location search"}'
+            android:padding="@dimen/padding_medium"
+            android:src="?menu_search_icon"
+            bind:debouncer="@{viewModel.debouncer}"
+            bind:onClickListener="@{viewModel.resolveClickListener}"/>
+
+        <TextView
+            android:id="@+id/place_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/place_label_header"
+            android:layout_toLeftOf="@+id/place_resolve_button"
+            android:clickable="true"
+            android:focusable="true"
+            android:hint="@string/place_text_hint"
+            android:minLines="3"
+            android:singleLine="false"
+            android:text="@{viewModel.locationDescription}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            bind:debouncer="@{viewModel.debouncer}"
+            bind:onClickListener="@{viewModel.labelClickListener}"
+            bind:onLongClickListener="@{viewModel.labelLongClickListener}"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_below="@id/place_text"
+            android:layout_marginBottom="@dimen/padding_small"
+            android:layout_marginTop="@dimen/padding_small"
+            android:background="?drop_shadow"
+            tools:background="@android:color/black"/>
+
+    </RelativeLayout>
+</layout>

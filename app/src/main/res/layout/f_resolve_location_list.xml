@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/resolve_list_root"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView
+            style="@style/resolve_list_card_view"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="@dimen/activity_padding"
+            android:layout_marginRight="@dimen/activity_padding"
+            android:layout_marginTop="@dimen/activity_padding">
+
+            <RelativeLayout style="@style/resolve_list_card_child">
+
+                <!-- This is not a compound drawable deliberately -->
+                <ImageView
+                    android:id="@+id/resolve_list_back_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/resolve_back_button_description"
+                    android:src="?ic_back"/>
+
+                <RelativeLayout
+                    android:id="@+id/resolve_list_action_container"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/resolve_list_microphone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/voice_search_button_description"
+                        android:src="?ic_microphone"/>
+
+                    <ImageView
+                        android:id="@+id/resolve_list_clear"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:src="?ic_clear_content"
+                        android:contentDescription="@string/clear_button_description"
+                        android:visibility="gone"/>
+                </RelativeLayout>
+
+                <EditText
+                    android:id="@+id/resolve_location_list_text"
+                    style="@style/resolve_list_card_text"
+                    android:layout_width="match_parent"
+                    android:layout_marginRight="@dimen/padding_small"
+                    android:layout_toLeftOf="@id/resolve_list_action_container"
+                    android:layout_toRightOf="@id/resolve_list_back_button"
+                    android:background="@null"
+                    android:paddingBottom="@dimen/padding_small"
+                    android:paddingTop="@dimen/padding_small"
+                    android:singleLine="true"
+                    android:inputType="text"
+                    tools:hint="Choose destination"/>
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <View
+            android:id="@+id/resolve_list_separator"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginBottom="2dp"
+            android:background="@color/divider"
+            android:elevation="1dp"
+            android:visibility="invisible"
+            tools:visibility="visible"/>
+
+        <ScrollView
+            android:id="@+id/resolve_list_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/activity_padding"
+                android:paddingLeft="@dimen/activity_padding"
+                android:paddingRight="@dimen/activity_padding">
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/resolve_choose_on_map"
+                    style="@style/resolve_list_card_view">
+
+                    <TextView
+                        style="@style/resolve_list_card_text"
+                        android:drawableLeft="?ic_place"
+                        android:text="@string/resolve_choose_on_map"/>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/resolve_open_contacts"
+                    style="@style/resolve_list_card_view">
+
+                    <TextView
+                        style="@style/resolve_list_card_text"
+                        android:drawableLeft="?ic_contacts"
+                        android:text="@string/resolve_search_contacts"/>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/resolve_history_container"
+                    style="@style/resolve_list_card_view"
+                    android:visibility="gone">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/resolve_history_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:overScrollMode="never"/>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/resolve_searching_container"
+                    style="@style/resolve_list_card_view"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ProgressBar
+                            android:id="@+id/resolve_results_spinner"
+                            style="@style/Widget.AppCompat.ProgressBar"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginLeft="@dimen/padding_small"
+                            android:layout_marginTop="10dp"
+                            android:indeterminate="true"
+                            android:indeterminateDrawable="?progress_drawable_small"
+                            android:padding="@dimen/padding_small"/>
+
+                        <TextView
+                            android:id="@+id/resolve_searching_label"
+                            style="@style/resolve_list_card_text"
+                            android:drawablePadding="0dp"
+                            android:paddingLeft="@dimen/padding_medium"
+                            tools:text="Searching for address..."/>
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/resolve_error_container"
+                    style="@style/resolve_list_card_view"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/resolve_error_label"
+                            style="@style/resolve_list_card_text"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:drawableLeft="?alert_dialog_icon"
+                            android:text="@string/resolve_generic_error"/>
+
+                        <Button
+                            android:id="@+id/resolve_error_retry_button"
+                            style="?attr/buttonBarPositiveButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Retry"/>
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/resolve_results_container"
+                    style="@style/resolve_list_card_view"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/resolve_results_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:overScrollMode="never"/>
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

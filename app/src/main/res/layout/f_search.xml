@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.lach.translink.ui.search.SearchViewModel"/>
+    </data>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <include
+            android:id="@+id/search_buttons_container"
+            layout="@layout/f_search_buttons"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            bind:viewModel="@{viewModel}"/>
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@id/search_buttons_container"
+            android:fillViewport="true"
+            bind:visibility="@{viewModel.visibility}">
+
+            <include
+                layout="@layout/f_search_content"
+                bind:viewModel="@{viewModel}"/>
+
+        </ScrollView>
+
+    </RelativeLayout>
+</layout>

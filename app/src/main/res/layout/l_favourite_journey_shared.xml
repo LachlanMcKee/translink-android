@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:focusable="false">
+
+    <TextView
+        android:id="@+id/journey_title_label"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        style="@style/list_item_label_text"
+        android:layout_marginBottom="@dimen/padding_smallest"
+        tools:text="Journey Name"/>
+
+    <TextView
+        android:id="@+id/journey_description"
+        style="@style/list_item_text"
+        android:layout_below="@id/journey_title_label"
+        android:layout_marginBottom="@dimen/padding_smallest"/>
+
+    <TextView
+        android:id="@+id/journey_from_location_label"
+        style="@style/list_item_label_text"
+        android:layout_below="@id/journey_description"
+        android:text="@string/from_label"/>
+
+    <TextView
+        android:id="@+id/journey_from_location"
+        style="@style/list_item_text_two_lines"
+        android:layout_below="@id/journey_from_location_label"/>
+
+    <TextView
+        android:id="@+id/journey_to_location_label"
+        style="@style/list_item_label_text"
+        android:layout_below="@id/journey_from_location"
+        android:text="@string/to_label"/>
+
+    <TextView
+        android:id="@+id/journey_to_location"
+        style="@style/list_item_text_two_lines"
+        android:layout_below="@id/journey_to_location_label"/>
+
+</RelativeLayout>

@@ -31,9 +31,7 @@ public class JourneyResultActivity extends BaseActivity implements JourneyResult
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        //ThemeHelper.applyThemeTransparent(this);
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.a_journey_result);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -93,6 +91,11 @@ public class JourneyResultActivity extends BaseActivity implements JourneyResult
     public void onContentLoaded() {
         contentLoaded = true;
         updateToolbarVisibility();
+    }
+
+    @Override
+    public boolean shouldApplyTheme() {
+        return false;
     }
 
     private void updateToolbarVisibility() {

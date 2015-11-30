@@ -1,11 +1,12 @@
 package com.lach.common;
 
+import android.app.Activity;
 import android.app.Application;
 
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
-public class BaseApplication extends Application {
+public abstract class BaseApplication extends Application {
 
     private static Bus mEventBus;
 
@@ -19,5 +20,9 @@ public class BaseApplication extends Application {
 
         mEventBus = new Bus(ThreadEnforcer.MAIN);
     }
+
+    public abstract void applyTheme(Activity activity, boolean useActionBar);
+
+    public abstract boolean isLightTheme(Activity activity);
 
 }

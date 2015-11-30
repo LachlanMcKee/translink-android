@@ -3,13 +3,11 @@ package com.lach.translink.ui.search;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.databinding.Bindable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,12 +15,14 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.lach.common.BaseApplication;
+import com.lach.common.data.preference.Preferences;
+import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.ui.dialog.MinMaxDatePickerDialog;
 import com.lach.common.ui.view.Debouncer;
 import com.lach.common.util.DateUtil;
 import com.lach.common.util.DialogUtil;
 import com.lach.common.util.NetworkUtil;
-import com.lach.common.util.ThemeHelper;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.BR;
 import com.lach.translink.data.journey.JourneyCriteria;
@@ -54,6 +54,9 @@ public class SearchViewModel extends PrimaryViewModel {
     private static final String ARRIVE_TYPE_SAVE = "arriveType";
     private static final String TRANSPORT_TYPE_SAVE = "transportType";
     private static final String DATE_SAVE = "date";
+
+    @Inject
+    PreferencesProvider preferencesProvider;
 
     @Inject
     JourneyCriteriaFavouriteDao journeyCriteriaFavouriteDao;
@@ -125,10 +128,10 @@ public class SearchViewModel extends PrimaryViewModel {
                     return true;
 
                 case REQUEST_HISTORY:
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-
                     JourneyCriteria selectedSearch = data.getParcelableExtra(HistoryDialog.INTENT_JOURNEY_CRITERIA_KEY);
-                    updateJourneyCriteria(selectedSearch, prefs.getBoolean("IgnoreHistoryTime", true));
+
+                    Preferences preferences = preferencesProvider.getPreferences();
+                    updateJourneyCriteria(selectedSearch, preferences.getBoolean("IgnoreHistoryTime", true));
 
                     return true;
             }
@@ -243,8 +246,8 @@ public class SearchViewModel extends PrimaryViewModel {
                     return;
                 }
 
-                Context context = getContext();
-                if (!NetworkUtil.isOnline(context)) {
+                FragmentActivity activity = getActivity();
+                if (!NetworkUtil.isOnline(activity)) {
                     return;
                 }
 
@@ -252,16 +255,16 @@ public class SearchViewModel extends PrimaryViewModel {
 
                 // Pick the correct Results Activity based on the current theme.
                 Class resultActivityClass;
-                if (ThemeHelper.isLightTheme(context)) {
+                if ((((BaseApplication)activity.getApplication()).isLightTheme(activity))) {
                     resultActivityClass = JourneyResultActivity.class;
                 } else {
                     resultActivityClass = JourneyResultActivityDark.class;
                 }
 
-                Intent resultsIntent = new Intent(context, resultActivityClass);
+                Intent resultsIntent = new Intent(activity, resultActivityClass);
                 resultsIntent.putExtra(JourneyResultActivity.JOURNEY_CRITERIA, createJourneyCriteria());
                 resultsIntent.putExtra(JourneyResultActivity.JOURNEY_DATE, date);
-                context.startActivity(resultsIntent);
+                activity.startActivity(resultsIntent);
             }
         };
     }
@@ -305,7 +308,7 @@ public class SearchViewModel extends PrimaryViewModel {
         return new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                java.util.Date currentDate = new java.util.Date();
+                Date currentDate = new Date();
 
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(date);
@@ -475,9 +478,8 @@ public class SearchViewModel extends PrimaryViewModel {
 
         //loadSettings();
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-        HistoryDialog dialog = HistoryDialog.newInstance(prefs.getBoolean("IgnoreHistoryTime", true));
+        Preferences preferences = preferencesProvider.getPreferences();
+        HistoryDialog dialog = HistoryDialog.newInstance(preferences.getBoolean("IgnoreHistoryTime", true));
         dialog.setTargetFragment(getFragment(), REQUEST_HISTORY);
         dialog.show(getActivity().getSupportFragmentManager(), "dialog");
     }

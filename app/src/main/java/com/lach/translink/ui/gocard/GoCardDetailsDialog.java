@@ -3,9 +3,7 @@ package com.lach.translink.ui.gocard;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
@@ -16,12 +14,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.lach.common.data.preference.Preferences;
+import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.ui.dialog.ButterCustomDialogFragment;
+import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 
 public class GoCardDetailsDialog extends ButterCustomDialogFragment {
+
+    @Inject
+    PreferencesProvider preferencesProvider;
 
     @InjectView(R.id.gocard_number)
     EditText cardNumber;
@@ -55,9 +61,9 @@ public class GoCardDetailsDialog extends ButterCustomDialogFragment {
         });
 
         // If any details are saved, show a clear button.
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String cardNumValue = prefs.getString("cardNum", null);
-        String cardNumPass = prefs.getString("cardPass", null);
+        Preferences preferences = preferencesProvider.getPreferences();
+        String cardNumValue = preferences.getString("cardNum", null);
+        String cardNumPass = preferences.getString("cardPass", null);
         if (cardNumValue != null || cardNumPass != null) {
             dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "Clear",
                     new DialogInterface.OnClickListener() {
@@ -77,10 +83,12 @@ public class GoCardDetailsDialog extends ButterCustomDialogFragment {
 
     @Override
     public void onDialogInjected(Bundle savedInstanceState) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        TranslinkApplication application = (TranslinkApplication) getActivity().getApplication();
+        application.getCoreComponent().inject(this);
 
-        String cardNumValue = prefs.getString("cardNum", null);
-        String cardNumPass = prefs.getString("cardPass", null);
+        Preferences preferences = preferencesProvider.getPreferences();
+        String cardNumValue = preferences.getString("cardNum", null);
+        String cardNumPass = preferences.getString("cardPass", null);
         if (cardNumValue != null) {
             cardNumber.setText(cardNumValue);
         }
@@ -111,8 +119,6 @@ public class GoCardDetailsDialog extends ButterCustomDialogFragment {
 
     private boolean save() {
         FragmentActivity activity = getActivity();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-
         String cardNumber = this.cardNumber.getText().toString();
         String password = cardPassword.getText().toString();
 
@@ -127,7 +133,8 @@ public class GoCardDetailsDialog extends ButterCustomDialogFragment {
             return false;
         }
 
-        SharedPreferences.Editor editor = prefs.edit();
+        Preferences preferences = preferencesProvider.getPreferences();
+        Preferences.Editor editor = preferences.edit();
         editor.putString("cardNum", cardNumber);
 
         if (password.length() > 0) {
@@ -140,9 +147,8 @@ public class GoCardDetailsDialog extends ButterCustomDialogFragment {
     }
 
     private void clear() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-        SharedPreferences.Editor editor = prefs.edit();
+        Preferences preferences = preferencesProvider.getPreferences();
+        Preferences.Editor editor = preferences.edit();
         editor.remove("cardNum");
         editor.remove("cardPass");
         editor.apply();

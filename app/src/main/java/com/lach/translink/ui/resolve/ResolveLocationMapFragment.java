@@ -1,9 +1,6 @@
 package com.lach.translink.ui.resolve;
 
-import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -23,11 +20,16 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.lach.common.BaseApplication;
+import com.lach.common.data.preference.Preferences;
+import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.log.Log;
 import com.lach.common.ui.view.ScaleAnimator;
+import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
 import com.lach.translink.data.location.PlaceType;
 import com.squareup.otto.Bus;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -53,6 +55,9 @@ public class ResolveLocationMapFragment extends Fragment implements GoogleMap.On
 
     private GoogleMap mMap;
     private LatLng mCurrentMarkerPosition;
+
+    @Inject
+    PreferencesProvider preferencesProvider;
 
     @InjectView(R.id.resolve_map_coordinator)
     ViewGroup coordinatorLayout;
@@ -86,6 +91,9 @@ public class ResolveLocationMapFragment extends Fragment implements GoogleMap.On
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        TranslinkApplication application = (TranslinkApplication) getActivity().getApplication();
+        application.getCoreComponent().inject(this);
+
         ButterKnife.inject(this, view);
 
         mapView = (MapView) view.findViewById(R.id.resolve_map);
@@ -109,7 +117,7 @@ public class ResolveLocationMapFragment extends Fragment implements GoogleMap.On
             Log.warn(TAG, "Unable to move the myLocation button.");
         }
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        Preferences preferences = preferencesProvider.getPreferences();
         if (preferences.getBoolean("AutomaticKeyboard", false)) {
             getActivity().getWindow().setSoftInputMode(
                     WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
@@ -212,14 +220,14 @@ public class ResolveLocationMapFragment extends Fragment implements GoogleMap.On
 
         CameraPosition cameraPosition;
 
-        SharedPreferences prefs = getActivity().getPreferences(Activity.MODE_PRIVATE);
-        boolean lastPositionSet = prefs.getBoolean(POSITION_SET_KEY, false);
+        Preferences preferences = preferencesProvider.getPreferences();
+        boolean lastPositionSet = preferences.getBoolean(POSITION_SET_KEY, false);
 
         if (lastPositionSet) {
-            double latitude = Double.longBitsToDouble(prefs.getLong(LAT_KEY, 0));
-            double longitude = Double.longBitsToDouble(prefs.getLong(LONG_KEY, 0));
-            float zoom = prefs.getFloat(ZOOM_KEY, 0);
-            float bearing = prefs.getFloat(BEARING_KEY, 0);
+            double latitude = Double.longBitsToDouble(preferences.getLong(LAT_KEY, 0));
+            double longitude = Double.longBitsToDouble(preferences.getLong(LONG_KEY, 0));
+            float zoom = preferences.getFloat(ZOOM_KEY, 0);
+            float bearing = preferences.getFloat(BEARING_KEY, 0);
 
             cameraPosition = new CameraPosition.Builder().target(new LatLng(latitude, longitude))
                     .zoom(zoom)
@@ -291,15 +299,16 @@ public class ResolveLocationMapFragment extends Fragment implements GoogleMap.On
         CameraPosition position = mMap.getCameraPosition();
 
         // Save the current camera position for next time.
-        SharedPreferences.Editor preferenceEditor = getActivity().getPreferences(Activity.MODE_PRIVATE).edit();
-        preferenceEditor.putBoolean(POSITION_SET_KEY, true);
+        Preferences preferences = preferencesProvider.getPreferences();
+        Preferences.Editor editor = preferences.edit();
+        editor.putBoolean(POSITION_SET_KEY, true);
 
-        preferenceEditor.putLong(LAT_KEY, Double.doubleToLongBits(position.target.latitude));
-        preferenceEditor.putLong(LONG_KEY, Double.doubleToLongBits(position.target.longitude));
-        preferenceEditor.putFloat(ZOOM_KEY, position.zoom);
-        preferenceEditor.putFloat(BEARING_KEY, position.bearing);
+        editor.putLong(LAT_KEY, Double.doubleToLongBits(position.target.latitude));
+        editor.putLong(LONG_KEY, Double.doubleToLongBits(position.target.longitude));
+        editor.putFloat(ZOOM_KEY, position.zoom);
+        editor.putFloat(BEARING_KEY, position.bearing);
 
-        preferenceEditor.apply();
+        editor.apply();
     }
 
     @OnClick(R.id.resolve_map_continue)

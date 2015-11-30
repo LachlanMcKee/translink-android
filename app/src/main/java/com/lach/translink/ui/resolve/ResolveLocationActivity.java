@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.lach.common.ui.BaseActivity;
-import com.lach.common.util.ThemeHelper;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
 import com.lach.translink.data.location.history.LocationHistoryDao;
@@ -47,7 +46,6 @@ public class ResolveLocationActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        ThemeHelper.applyTheme(this, false);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_single_fragment);
 
@@ -127,6 +125,11 @@ public class ResolveLocationActivity extends BaseActivity {
             }
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean isActionBarUsed() {
+        return false;
     }
 
     private void hideKeyboard() {

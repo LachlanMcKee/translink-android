@@ -19,12 +19,26 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Apply the a dynamic theme to the activity if required.
+        if (shouldApplyTheme()) {
+            BaseApplication application = (BaseApplication) getApplication();
+            application.applyTheme(this, isActionBarUsed());
+        }
+
         super.onCreate(savedInstanceState);
         Log.debug(TAG, "onCreate");
 
         mAllowCommit = true;
 
         ButterKnife.inject(this);
+    }
+
+    public boolean isActionBarUsed() {
+        return true;
+    }
+
+    public boolean shouldApplyTheme() {
+        return true;
     }
 
     private Bus getBus() {

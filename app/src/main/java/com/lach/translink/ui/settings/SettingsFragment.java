@@ -2,12 +2,10 @@ package com.lach.translink.ui.settings;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.lach.common.data.preference.Preferences;
+import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.ui.view.PreferenceListFragment;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
@@ -34,6 +34,9 @@ public class SettingsFragment extends PreferenceListFragment {
 
         return fragment;
     }
+
+    @Inject
+    PreferencesProvider preferencesProvider;
 
     @Inject
     JourneyCriteriaHistoryDao journeyCriteriaHistoryDao;
@@ -94,8 +97,8 @@ public class SettingsFragment extends PreferenceListFragment {
             }
         });
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        currentThemeName = prefs.getString(getString(R.string.theme_pref_key), "");
+        Preferences preferences = preferencesProvider.getPreferences();
+        currentThemeName = preferences.getString(getString(R.string.theme_pref_key), "");
 
         Preference themePreference = getPreference(R.string.theme_pref_key);
         themePreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -118,7 +121,7 @@ public class SettingsFragment extends PreferenceListFragment {
         }
         isRecreating = true;
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             getActivity().recreate();
         } else {
             getActivity().finish();

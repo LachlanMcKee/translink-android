@@ -1,22 +1,26 @@
 package com.lach.translink.ui.search;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+import com.lach.common.data.preference.Preferences;
+import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.ui.BaseActivity;
-import com.lach.common.util.ThemeHelper;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
 import com.lach.translink.util.DataResource;
+
+import javax.inject.Inject;
 
 /**
  * This class must remain here to ensure that users don't lose their icons.
  */
 public class SearchActivity extends BaseActivity {
+
+    @Inject
+    PreferencesProvider preferencesProvider;
 
     private String currentThemeName;
     private static final String SEARCH_FRAGMENT_TAG = "search";
@@ -24,15 +28,17 @@ public class SearchActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        ThemeHelper.applyTheme(this);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.a_single_fragment);
 
+        TranslinkApplication application = (TranslinkApplication) getApplication();
+        application.getCoreComponent().inject(this);
+
         new DataResource().migrate((TranslinkApplication) getApplication());
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        currentThemeName = prefs.getString(getString(R.string.theme_pref_key), getString(R.string.theme_light));
+        Preferences preferences = preferencesProvider.getPreferences();
+        currentThemeName = preferences.getString(getString(R.string.theme_pref_key), getString(R.string.theme_light));
 
         if (savedInstanceState == null) {
             FragmentManager fm = getSupportFragmentManager();
@@ -51,8 +57,8 @@ public class SearchActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String themeName = prefs.getString(getString(R.string.theme_pref_key), getString(R.string.theme_light));
+        Preferences preferences = preferencesProvider.getPreferences();
+        String themeName = preferences.getString(getString(R.string.theme_pref_key), getString(R.string.theme_light));
 
         if (!themeName.equals(currentThemeName)) {
 

@@ -2,13 +2,11 @@ package com.lach.translink.ui.resolve;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
@@ -29,6 +27,8 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 import com.lach.common.async.AsyncResult;
 import com.lach.common.async.AsyncTaskFragment;
+import com.lach.common.data.preference.Preferences;
+import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.data.provider.ContactAddressExtractor;
 import com.lach.common.tasks.TaskGetAddress;
 import com.lach.common.log.Log;
@@ -138,6 +138,9 @@ public class ResolveLocationListFragment extends AsyncTaskFragment {
     private TextWatcher mSearchTextWatcher;
 
     @Inject
+    PreferencesProvider preferencesProvider;
+
+    @Inject
     ContactAddressExtractor contactAddressExtractor;
 
     @Inject
@@ -182,7 +185,7 @@ public class ResolveLocationListFragment extends AsyncTaskFragment {
         TranslinkApplication application = (TranslinkApplication) activity.getApplication();
         application.getDataComponent().inject(this);
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        Preferences preferences = preferencesProvider.getPreferences();
         if (preferences.getBoolean("AutomaticKeyboard", false)) {
             activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 

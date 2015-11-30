@@ -1,13 +1,13 @@
 package com.lach.translink.tasks.result;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import com.lach.common.async.AsyncResult;
 import com.lach.common.async.Task;
 import com.lach.common.data.ApplicationContext;
 import com.lach.common.data.TaskGenericErrorType;
+import com.lach.common.data.preference.Preferences;
+import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.log.Log;
 import com.lach.translink.data.journey.JourneyCriteria;
 import com.lach.translink.data.journey.JourneyTimeCriteria;
@@ -42,11 +42,13 @@ public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse
     public static final int ERROR_INVALID_RESULTS = 2003;
 
     private final Context context;
+    private final PreferencesProvider preferencesProvider;
     private final CookieManagerFacade cookieManager;
 
     @Inject
-    public TaskJourneySearch(@ApplicationContext Context context, CookieManagerFacade cookieManager) {
+    public TaskJourneySearch(@ApplicationContext Context context, PreferencesProvider preferencesProvider, CookieManagerFacade cookieManager) {
         this.context = context;
+        this.preferencesProvider = preferencesProvider;
         this.cookieManager = cookieManager;
     }
 
@@ -68,7 +70,7 @@ public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse
 
         FormEncodingBuilder formData = new FormEncodingBuilder();
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        Preferences preferences = preferencesProvider.getPreferences();
         String walkMax = preferences.getString("maxwalk", "1000");
         String walkSpeed = preferences.getString("walkspeed", "Normal");
 
@@ -183,7 +185,7 @@ public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse
         return new AsyncResult<>(ERROR_INVALID_CONTENT);
     }
 
-    private AsyncResult<TaskJourneySearch.JourneyResponse> handleTravelOptions(OkHttpClient client, String location, Response response, JourneyCriteria journeyCriteria) throws IOException {
+    private AsyncResult<JourneyResponse> handleTravelOptions(OkHttpClient client, String location, Response response, JourneyCriteria journeyCriteria) throws IOException {
         // Redirect until we have finished, or cannot find a location to navigate to.
         Request request;
         while (response.isRedirect()) {

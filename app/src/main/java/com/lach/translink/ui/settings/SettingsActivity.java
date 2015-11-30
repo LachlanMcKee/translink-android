@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.lach.common.ui.BaseActivity;
-import com.lach.common.util.ThemeHelper;
 import com.lach.translink.activities.R;
 
 public class SettingsActivity extends BaseActivity {
@@ -14,9 +13,7 @@ public class SettingsActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        ThemeHelper.applyTheme(this);
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.a_single_fragment);
 
         FragmentManager fm = getSupportFragmentManager();

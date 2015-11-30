@@ -5,14 +5,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.lach.common.ui.BaseActivity;
-import com.lach.common.util.ThemeHelper;
 import com.lach.translink.activities.R;
 
 public class GoCardInfoActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        ThemeHelper.applyTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_single_fragment);
 

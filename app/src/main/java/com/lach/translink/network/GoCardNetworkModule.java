@@ -1,9 +1,8 @@
 package com.lach.translink.network;
 
-import android.app.Application;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
+import com.lach.common.data.CoreModule;
+import com.lach.common.data.preference.Preferences;
+import com.lach.common.data.preference.PreferencesProvider;
 import com.squareup.okhttp.Interceptor;
 
 import java.net.CookieManager;
@@ -16,45 +15,34 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(includes = NetworkModule.class)
+@Module(includes = {NetworkModule.class, CoreModule.class})
 public class GoCardNetworkModule {
-    private final Application app;
-
-    public GoCardNetworkModule(Application app) {
-        this.app = app;
-    }
-
-    @Provides
-    public Application providesApplication() {
-        return app;
-    }
-
-    @Provides
-    public SharedPreferences providesSharedPreferences(Application app) {
-        return PreferenceManager.getDefaultSharedPreferences(app);
-    }
 
     @Provides
     @GoCardNumber
-    public String providesGoCardNumber(SharedPreferences preferences) {
+    public String providesGoCardNumber(PreferencesProvider preferencesProvider) {
+        Preferences preferences = preferencesProvider.getPreferences();
         return preferences.getString("cardNum", "");
     }
 
     @Provides
     @GoCardPassword
-    public String providesGoCardPassword(SharedPreferences preferences) {
+    public String providesGoCardPassword(PreferencesProvider preferencesProvider) {
+        Preferences preferences = preferencesProvider.getPreferences();
         return preferences.getString("cardPass", "");
     }
 
     @Provides
     @GoCardNumberValid
-    public boolean providesGoCardNumberValid(SharedPreferences preferences) {
+    public boolean providesGoCardNumberValid(PreferencesProvider preferencesProvider) {
+        Preferences preferences = preferencesProvider.getPreferences();
         return preferences.contains("cardNum");
     }
 
     @Provides
     @GoCardPasswordValid
-    public boolean providesGoCardPasswordValid(SharedPreferences preferences) {
+    public boolean providesGoCardPasswordValid(PreferencesProvider preferencesProvider) {
+        Preferences preferences = preferencesProvider.getPreferences();
         return preferences.contains("cardPass");
     }
 

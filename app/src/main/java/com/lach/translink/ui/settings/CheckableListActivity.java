@@ -25,7 +25,6 @@ import com.lach.common.log.Log;
 import com.lach.common.ui.BaseActivity;
 import com.lach.common.ui.CursorRecyclerAdapter;
 import com.lach.common.ui.view.ScaleAnimator;
-import com.lach.common.util.ThemeHelper;
 import com.lach.translink.activities.R;
 import com.lach.translink.data.BaseDao;
 
@@ -51,9 +50,7 @@ public abstract class CheckableListActivity<T> extends BaseActivity implements L
         listDao = getListDao();
         getSupportLoaderManager().initLoader(LIST_DATA_LOADER, null, this);
 
-        ThemeHelper.applyTheme(this);
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.a_checkable_list);
 
         parent = findViewById(R.id.main_content);
@@ -222,7 +219,7 @@ public abstract class CheckableListActivity<T> extends BaseActivity implements L
 
     public static class CustomCursorLoader extends CursorLoader {
         final WeakReference<CheckableListActivity> checkableListActivityWeakReference;
-        final Loader.ForceLoadContentObserver mObserver;
+        final ForceLoadContentObserver mObserver;
 
         public CustomCursorLoader(CheckableListActivity activity) {
             super(activity);

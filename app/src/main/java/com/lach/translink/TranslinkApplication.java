@@ -4,13 +4,16 @@ import android.app.Activity;
 
 import com.lach.common.BaseApplication;
 import com.lach.common.data.CoreModule;
+import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.log.Instrumentation;
+import com.lach.common.util.ThemeHelper;
+import com.lach.translink.data.CoreComponent;
+import com.lach.translink.data.DaggerCoreComponentImpl;
 import com.lach.translink.data.DaggerDataComponentImpl;
 import com.lach.translink.data.DataComponent;
 import com.lach.translink.network.AppInit;
 import com.lach.translink.network.DaggerGoCardNetworkComponentImpl;
 import com.lach.translink.network.GoCardNetworkComponent;
-import com.lach.translink.network.GoCardNetworkModule;
 import com.lach.translink.webview.DaggerWebViewComponent;
 import com.lach.translink.webview.WebViewComponent;
 import com.lachlanm.xwalkfallback.WebViewFacade;
@@ -22,10 +25,14 @@ import javax.inject.Provider;
 public class TranslinkApplication extends BaseApplication {
 
     private CoreModule coreModule;
+    private CoreComponent coreComponent;
     private DataComponent dataComponent;
     private Provider<GoCardNetworkComponent> goCardNetworkComponentProvider;
 
     private boolean webViewBeenInitialised;
+
+    @Inject
+    PreferencesProvider preferencesProvider;
 
     @Inject
     WebViewFacade webViewFacade;
@@ -47,10 +54,27 @@ public class TranslinkApplication extends BaseApplication {
             @Override
             public GoCardNetworkComponent get() {
                 return DaggerGoCardNetworkComponentImpl.builder()
-                        .goCardNetworkModule(new GoCardNetworkModule(TranslinkApplication.this))
+                        .coreModule(getCoreModule())
                         .build();
             }
         };
+
+        // This must be injected now, as we rely on it to obtain the preferencesProvider
+        WebViewComponent webViewComponent = DaggerWebViewComponent.builder()
+                .coreModule(getCoreModule())
+                .build();
+
+        webViewComponent.inject(this);
+    }
+
+    @Override
+    public void applyTheme(Activity activity, boolean useActionBar) {
+        ThemeHelper.applyTheme(activity, preferencesProvider.getPreferences(), useActionBar);
+    }
+
+    @Override
+    public boolean isLightTheme(Activity activity) {
+        return ThemeHelper.isLightTheme(activity, preferencesProvider.getPreferences());
     }
 
     public synchronized CoreModule getCoreModule() {
@@ -73,17 +97,25 @@ public class TranslinkApplication extends BaseApplication {
         this.dataComponent = locationDataComponent;
     }
 
+    public synchronized CoreComponent getCoreComponent() {
+        if (coreComponent == null) {
+            coreComponent = DaggerCoreComponentImpl.builder()
+                    .coreModule(getCoreModule())
+                    .build();
+        }
+        return coreComponent;
+    }
+
+    public void setCoreComponent(CoreComponent coreComponent) {
+        this.coreComponent = coreComponent;
+    }
+
     public synchronized void initWebViewIfRequired(Activity activity) {
         if (webViewBeenInitialised) {
             return;
         }
         webViewBeenInitialised = true;
 
-        WebViewComponent webViewComponent = DaggerWebViewComponent.builder()
-                .coreModule(getCoreModule())
-                .build();
-
-        webViewComponent.inject(this);
         webViewFacade.getView(activity);
         webViewFacade.destroy();
         webViewFacade = null;

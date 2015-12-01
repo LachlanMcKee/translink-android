@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.lach.common.data.preference.Preferences;
+import com.lach.common.data.common.CommonPreference;
 import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.ui.view.PreferenceListFragment;
 import com.lach.translink.TranslinkApplication;
@@ -97,8 +97,7 @@ public class SettingsFragment extends PreferenceListFragment {
             }
         });
 
-        Preferences preferences = preferencesProvider.getPreferences();
-        currentThemeName = preferences.getString(getString(R.string.theme_pref_key), "");
+        currentThemeName = CommonPreference.THEME.get(preferencesProvider.getPreferences());
 
         Preference themePreference = getPreference(R.string.theme_pref_key);
         themePreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {

@@ -25,6 +25,7 @@ import com.lach.common.util.DialogUtil;
 import com.lach.common.util.NetworkUtil;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.BR;
+import com.lach.translink.ui.UiPreference;
 import com.lach.translink.data.journey.JourneyCriteria;
 import com.lach.translink.data.journey.favourite.JourneyCriteriaFavouriteDao;
 import com.lach.translink.data.journey.history.JourneyCriteriaHistoryDao;
@@ -131,7 +132,7 @@ public class SearchViewModel extends PrimaryViewModel {
                     JourneyCriteria selectedSearch = data.getParcelableExtra(HistoryDialog.INTENT_JOURNEY_CRITERIA_KEY);
 
                     Preferences preferences = preferencesProvider.getPreferences();
-                    updateJourneyCriteria(selectedSearch, preferences.getBoolean("IgnoreHistoryTime", true));
+                    updateJourneyCriteria(selectedSearch, UiPreference.IGNORE_HISTORY_TIME.get(preferences));
 
                     return true;
             }
@@ -255,7 +256,7 @@ public class SearchViewModel extends PrimaryViewModel {
 
                 // Pick the correct Results Activity based on the current theme.
                 Class resultActivityClass;
-                if ((((BaseApplication)activity.getApplication()).isLightTheme(activity))) {
+                if ((((BaseApplication)activity.getApplication()).isLightTheme())) {
                     resultActivityClass = JourneyResultActivity.class;
                 } else {
                     resultActivityClass = JourneyResultActivityDark.class;
@@ -479,7 +480,7 @@ public class SearchViewModel extends PrimaryViewModel {
         //loadSettings();
 
         Preferences preferences = preferencesProvider.getPreferences();
-        HistoryDialog dialog = HistoryDialog.newInstance(preferences.getBoolean("IgnoreHistoryTime", true));
+        HistoryDialog dialog = HistoryDialog.newInstance(UiPreference.IGNORE_HISTORY_TIME.get(preferences));
         dialog.setTargetFragment(getFragment(), REQUEST_HISTORY);
         dialog.show(getActivity().getSupportFragmentManager(), "dialog");
     }

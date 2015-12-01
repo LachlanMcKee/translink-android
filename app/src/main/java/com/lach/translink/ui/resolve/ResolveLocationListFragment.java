@@ -36,6 +36,7 @@ import com.lach.common.util.NetworkUtil;
 import com.lach.common.ui.widget.WrapLinearLayoutManager;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
+import com.lach.translink.ui.UiPreference;
 import com.lach.translink.data.location.history.LocationHistoryDao;
 import com.lach.translink.data.location.PlaceType;
 import com.lach.translink.tasks.resolve.TaskFindLocation;
@@ -186,7 +187,7 @@ public class ResolveLocationListFragment extends AsyncTaskFragment {
         application.getDataComponent().inject(this);
 
         Preferences preferences = preferencesProvider.getPreferences();
-        if (preferences.getBoolean("AutomaticKeyboard", false)) {
+        if (UiPreference.AUTOMATIC_KEYBOARD.get(preferences)) {
             activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
         } else {

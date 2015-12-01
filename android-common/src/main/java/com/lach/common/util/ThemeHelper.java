@@ -1,15 +1,16 @@
 package com.lach.common.util;
 
 import android.app.Activity;
-import android.content.Context;
 
+import com.lach.common.BuildConfig;
 import com.lach.common.R;
+import com.lach.common.data.common.CommonPreference;
 import com.lach.common.data.preference.Preferences;
 
 public class ThemeHelper {
 
     public static void applyTheme(Activity activity, Preferences prefs, boolean useActionBar) {
-        if (isLightTheme(activity, prefs)) {
+        if (isLightTheme(prefs)) {
             if (useActionBar) {
                 activity.setTheme(R.style.AppThemeLight);
             } else {
@@ -24,12 +25,8 @@ public class ThemeHelper {
         }
     }
 
-    public static boolean isLightTheme(Context context, Preferences prefs) {
-        String lightThemeType = context.getString(R.string.theme_light);
-        String themePrefKey = context.getString(R.string.theme_pref_key);
-
-        String themeType = prefs.getString(themePrefKey, lightThemeType);
-        return themeType.equals(lightThemeType);
+    public static boolean isLightTheme(Preferences prefs) {
+        return CommonPreference.THEME.get(prefs).equals(BuildConfig.THEME_VALUE_LIGHT);
     }
 
 }

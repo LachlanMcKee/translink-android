@@ -5,12 +5,12 @@ import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+import com.lach.common.data.common.CommonPreference;
 import com.lach.common.data.preference.Preferences;
 import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.ui.BaseActivity;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
-import com.lach.translink.util.DataResource;
 
 import javax.inject.Inject;
 
@@ -35,10 +35,8 @@ public class SearchActivity extends BaseActivity {
         TranslinkApplication application = (TranslinkApplication) getApplication();
         application.getCoreComponent().inject(this);
 
-        new DataResource().migrate((TranslinkApplication) getApplication());
-
         Preferences preferences = preferencesProvider.getPreferences();
-        currentThemeName = preferences.getString(getString(R.string.theme_pref_key), getString(R.string.theme_light));
+        currentThemeName = CommonPreference.THEME.get(preferences);
 
         if (savedInstanceState == null) {
             FragmentManager fm = getSupportFragmentManager();
@@ -58,7 +56,7 @@ public class SearchActivity extends BaseActivity {
         super.onResume();
 
         Preferences preferences = preferencesProvider.getPreferences();
-        String themeName = preferences.getString(getString(R.string.theme_pref_key), getString(R.string.theme_light));
+        String themeName = CommonPreference.THEME.get(preferences);
 
         if (!themeName.equals(currentThemeName)) {
 

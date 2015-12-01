@@ -2,7 +2,6 @@ package com.lach.translink.ui.search;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,8 +41,6 @@ public class SearchFragment extends ViewModelFragment<SearchViewModel> {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        PreferenceManager.setDefaultValues(getActivity(), R.xml.menu, false);
-
         // Tell the application that the fragment is allowed an options menu.
         this.setHasOptionsMenu(true);
 

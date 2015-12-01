@@ -23,6 +23,6 @@ public abstract class BaseApplication extends Application {
 
     public abstract void applyTheme(Activity activity, boolean useActionBar);
 
-    public abstract boolean isLightTheme(Activity activity);
+    public abstract boolean isLightTheme();
 
 }

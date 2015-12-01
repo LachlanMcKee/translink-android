@@ -10,6 +10,7 @@ import com.lach.common.data.preference.Preferences;
 import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.log.Log;
 import com.lach.translink.data.journey.JourneyCriteria;
+import com.lach.translink.data.journey.JourneyPreference;
 import com.lach.translink.data.journey.JourneyTimeCriteria;
 import com.lach.translink.data.journey.JourneyTransport;
 import com.lach.translink.network.UserAgentInterceptor;
@@ -71,8 +72,8 @@ public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse
         FormEncodingBuilder formData = new FormEncodingBuilder();
 
         Preferences preferences = preferencesProvider.getPreferences();
-        String walkMax = preferences.getString("maxwalk", "1000");
-        String walkSpeed = preferences.getString("walkspeed", "Normal");
+        String walkMax = JourneyPreference.MAX_WALKING_DISTANCE.get(preferences);
+        String walkSpeed = JourneyPreference.WALK_SPEED.get(preferences);
 
         formData.add("Start", journeyCriteria.getFromAddress());
         formData.add("End", journeyCriteria.getToAddress());
@@ -121,14 +122,14 @@ public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse
             formData.add("TransportModes", "Tram");
         }
 
-        String serviceTypes = preferences.getString("serviceTypes", "Regular~Express~NightLink");
+        String serviceTypes = JourneyPreference.SERVICE_TYPES.get(preferences);
         String[] services = serviceTypes.split("~");
 
         for (String s : services) {
             formData.add("ServiceTypes", s);
         }
 
-        String fareTypes = preferences.getString("fareTypes", "Free~Standard~Prepaid");
+        String fareTypes = JourneyPreference.FARE_TYPES.get(preferences);
         String[] fares = fareTypes.split("~");
 
         for (String s : fares) {

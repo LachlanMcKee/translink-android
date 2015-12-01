@@ -20,12 +20,16 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.lach.common.BaseApplication;
+import com.lach.common.data.preference.BooleanPreference;
+import com.lach.common.data.preference.DoublePreference;
+import com.lach.common.data.preference.FloatPreference;
 import com.lach.common.data.preference.Preferences;
 import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.log.Log;
 import com.lach.common.ui.view.ScaleAnimator;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
+import com.lach.translink.ui.UiPreference;
 import com.lach.translink.data.location.PlaceType;
 import com.squareup.otto.Bus;
 
@@ -39,11 +43,12 @@ public class ResolveLocationMapFragment extends Fragment implements GoogleMap.On
     private static final String TAG = "ResolveLocationMapFragment";
 
     private static final String PLACE_TYPE = "place_type";
-    private static final String POSITION_SET_KEY = "position_set";
-    private static final String LAT_KEY = "lat";
-    private static final String LONG_KEY = "long";
-    private static final String ZOOM_KEY = "zoom";
-    private static final String BEARING_KEY = "bearing";
+
+    private static final BooleanPreference PREF_POSITION_SET = new BooleanPreference("position_set", false);
+    private static final DoublePreference PREF_LAT = new DoublePreference("lat", 0.0d);
+    private static final DoublePreference PREF_LONG = new DoublePreference("long", 0.0d);
+    private static final FloatPreference PREF_ZOOM = new FloatPreference("zoom", 0.0f);
+    private static final FloatPreference PREF_BEARING = new FloatPreference("bearing", 0.0f);
 
     private static final String BUNDLE_CURRENT_MARKER_POSITION = "current_marker_position";
 
@@ -118,7 +123,7 @@ public class ResolveLocationMapFragment extends Fragment implements GoogleMap.On
         }
 
         Preferences preferences = preferencesProvider.getPreferences();
-        if (preferences.getBoolean("AutomaticKeyboard", false)) {
+        if (UiPreference.AUTOMATIC_KEYBOARD.get(preferences)) {
             getActivity().getWindow().setSoftInputMode(
                     WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         } else {
@@ -221,13 +226,13 @@ public class ResolveLocationMapFragment extends Fragment implements GoogleMap.On
         CameraPosition cameraPosition;
 
         Preferences preferences = preferencesProvider.getPreferences();
-        boolean lastPositionSet = preferences.getBoolean(POSITION_SET_KEY, false);
+        boolean lastPositionSet = PREF_POSITION_SET.get(preferences);
 
         if (lastPositionSet) {
-            double latitude = Double.longBitsToDouble(preferences.getLong(LAT_KEY, 0));
-            double longitude = Double.longBitsToDouble(preferences.getLong(LONG_KEY, 0));
-            float zoom = preferences.getFloat(ZOOM_KEY, 0);
-            float bearing = preferences.getFloat(BEARING_KEY, 0);
+            double latitude = PREF_LAT.get(preferences);
+            double longitude = PREF_LONG.get(preferences);
+            float zoom = PREF_ZOOM.get(preferences);
+            float bearing = PREF_BEARING.get(preferences);
 
             cameraPosition = new CameraPosition.Builder().target(new LatLng(latitude, longitude))
                     .zoom(zoom)
@@ -301,12 +306,12 @@ public class ResolveLocationMapFragment extends Fragment implements GoogleMap.On
         // Save the current camera position for next time.
         Preferences preferences = preferencesProvider.getPreferences();
         Preferences.Editor editor = preferences.edit();
-        editor.putBoolean(POSITION_SET_KEY, true);
+        PREF_POSITION_SET.set(editor, true);
 
-        editor.putLong(LAT_KEY, Double.doubleToLongBits(position.target.latitude));
-        editor.putLong(LONG_KEY, Double.doubleToLongBits(position.target.longitude));
-        editor.putFloat(ZOOM_KEY, position.zoom);
-        editor.putFloat(BEARING_KEY, position.bearing);
+        PREF_LAT.set(editor, position.target.latitude);
+        PREF_LONG.set(editor, position.target.longitude);
+        PREF_ZOOM.set(editor, position.zoom);
+        PREF_BEARING.set(editor, position.bearing);
 
         editor.apply();
     }

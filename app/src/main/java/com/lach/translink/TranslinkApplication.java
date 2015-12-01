@@ -11,7 +11,7 @@ import com.lach.translink.data.CoreComponent;
 import com.lach.translink.data.DaggerCoreComponentImpl;
 import com.lach.translink.data.DaggerDataComponentImpl;
 import com.lach.translink.data.DataComponent;
-import com.lach.translink.network.AppInit;
+import com.lach.translink.app.AppInit;
 import com.lach.translink.network.DaggerGoCardNetworkComponentImpl;
 import com.lach.translink.network.GoCardNetworkComponent;
 import com.lach.translink.webview.DaggerWebViewComponent;
@@ -73,8 +73,8 @@ public class TranslinkApplication extends BaseApplication {
     }
 
     @Override
-    public boolean isLightTheme(Activity activity) {
-        return ThemeHelper.isLightTheme(activity, preferencesProvider.getPreferences());
+    public boolean isLightTheme() {
+        return ThemeHelper.isLightTheme(preferencesProvider.getPreferences());
     }
 
     public synchronized CoreModule getCoreModule() {

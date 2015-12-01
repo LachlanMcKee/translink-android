@@ -19,6 +19,7 @@ import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.ui.dialog.ButterCustomDialogFragment;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
+import com.lach.translink.data.gocard.GoCardPreference;
 
 import javax.inject.Inject;
 
@@ -62,8 +63,8 @@ public class GoCardDetailsDialog extends ButterCustomDialogFragment {
 
         // If any details are saved, show a clear button.
         Preferences preferences = preferencesProvider.getPreferences();
-        String cardNumValue = preferences.getString("cardNum", null);
-        String cardNumPass = preferences.getString("cardPass", null);
+        String cardNumValue = GoCardPreference.CARD_NUMBER.get(preferences);
+        String cardNumPass = GoCardPreference.PASSWORD.get(preferences);
         if (cardNumValue != null || cardNumPass != null) {
             dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "Clear",
                     new DialogInterface.OnClickListener() {
@@ -87,8 +88,9 @@ public class GoCardDetailsDialog extends ButterCustomDialogFragment {
         application.getCoreComponent().inject(this);
 
         Preferences preferences = preferencesProvider.getPreferences();
-        String cardNumValue = preferences.getString("cardNum", null);
-        String cardNumPass = preferences.getString("cardPass", null);
+        String cardNumValue = GoCardPreference.CARD_NUMBER.get(preferences);
+        String cardNumPass = GoCardPreference.PASSWORD.get(preferences);
+
         if (cardNumValue != null) {
             cardNumber.setText(cardNumValue);
         }
@@ -135,10 +137,10 @@ public class GoCardDetailsDialog extends ButterCustomDialogFragment {
 
         Preferences preferences = preferencesProvider.getPreferences();
         Preferences.Editor editor = preferences.edit();
-        editor.putString("cardNum", cardNumber);
+        GoCardPreference.CARD_NUMBER.set(editor, cardNumber);
 
         if (password.length() > 0) {
-            editor.putString("cardPass", password);
+            GoCardPreference.PASSWORD.set(editor, password);
         }
         editor.apply();
 
@@ -149,8 +151,8 @@ public class GoCardDetailsDialog extends ButterCustomDialogFragment {
     private void clear() {
         Preferences preferences = preferencesProvider.getPreferences();
         Preferences.Editor editor = preferences.edit();
-        editor.remove("cardNum");
-        editor.remove("cardPass");
+        GoCardPreference.CARD_NUMBER.remove(editor);
+        GoCardPreference.PASSWORD.remove(editor);
         editor.apply();
 
         Toast.makeText(getActivity(), "Go-Card details cleared.", Toast.LENGTH_SHORT).show();

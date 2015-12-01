@@ -1,8 +1,8 @@
 package com.lach.translink.network;
 
 import com.lach.common.data.CoreModule;
-import com.lach.common.data.preference.Preferences;
 import com.lach.common.data.preference.PreferencesProvider;
+import com.lach.translink.data.gocard.GoCardPreference;
 import com.squareup.okhttp.Interceptor;
 
 import java.net.CookieManager;
@@ -21,29 +21,25 @@ public class GoCardNetworkModule {
     @Provides
     @GoCardNumber
     public String providesGoCardNumber(PreferencesProvider preferencesProvider) {
-        Preferences preferences = preferencesProvider.getPreferences();
-        return preferences.getString("cardNum", "");
+        return GoCardPreference.CARD_NUMBER.get(preferencesProvider.getPreferences());
     }
 
     @Provides
     @GoCardPassword
     public String providesGoCardPassword(PreferencesProvider preferencesProvider) {
-        Preferences preferences = preferencesProvider.getPreferences();
-        return preferences.getString("cardPass", "");
+        return GoCardPreference.PASSWORD.get(preferencesProvider.getPreferences());
     }
 
     @Provides
     @GoCardNumberValid
     public boolean providesGoCardNumberValid(PreferencesProvider preferencesProvider) {
-        Preferences preferences = preferencesProvider.getPreferences();
-        return preferences.contains("cardNum");
+        return GoCardPreference.CARD_NUMBER.exists(preferencesProvider.getPreferences());
     }
 
     @Provides
     @GoCardPasswordValid
     public boolean providesGoCardPasswordValid(PreferencesProvider preferencesProvider) {
-        Preferences preferences = preferencesProvider.getPreferences();
-        return preferences.contains("cardPass");
+        return GoCardPreference.PASSWORD.exists(preferencesProvider.getPreferences());
     }
 
     @Provides

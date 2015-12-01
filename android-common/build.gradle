@@ -1,6 +1,11 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.neenbedankt.android-apt'
 
+def addStringProperty(config, String javaName, String resName, String value) {
+    config.buildConfigField "String", javaName, "\"$value\""
+    config.resValue "string", resName, value
+}
+
 repositories {
     maven {
         url "https://mint.splunk.com/gradle/"
@@ -40,6 +45,10 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion as Integer
         targetSdkVersion rootProject.ext.targetSdkVersion as Integer
+
+        addStringProperty(delegate, "PREF_THEME_KEY", "theme_pref_key", "themeKey")
+        addStringProperty(delegate, "THEME_VALUE_LIGHT", "theme_light", "light")
+        addStringProperty(delegate, "THEME_VALUE_DARK", "theme_dark", "dark")
     }
 
     dataBinding {

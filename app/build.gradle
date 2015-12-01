@@ -1,6 +1,11 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
+def addStringProperty(config, String javaName, String resName, String value) {
+    config.buildConfigField "String", javaName, "\"$value\""
+    config.resValue "string", resName, value
+}
+
 repositories {
     maven { url "https://mint.splunk.com/gradle/" }
     maven { url "https://jitpack.io" }
@@ -20,6 +25,13 @@ android {
         versionCode 1007
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        addStringProperty(delegate, "PREF_KEY_MAX_WALK", "max_walk_pref_key", "maxwalk")
+        addStringProperty(delegate, "PREF_KEY_WALK_SPEED", "walk_speed_pref_key", "walkspeed")
+        addStringProperty(delegate, "PREF_KEY_SERVICE_TYPES", "service_types_pref_key", "serviceTypes")
+        addStringProperty(delegate, "PREF_KEY_FARE_TYPES", "fare_types_pref_key", "fareTypes")
+        addStringProperty(delegate, "PREF_KEY_AUTOMATIC_KEYBOARD", "automatic_keyboard_pref_key", "AutomaticKeyboard")
+        addStringProperty(delegate, "PREF_KEY_IGNORE_HISTORY_TIME", "ignore_history_time_pref_key", "IgnoreHistoryTime")
     }
 
     dataBinding {

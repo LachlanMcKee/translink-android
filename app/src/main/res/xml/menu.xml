@@ -44,43 +44,39 @@
     </com.lach.common.ui.preference.EnhancedPreferenceCategory>
     <com.lach.common.ui.preference.EnhancedPreferenceCategory android:title="Advanced search">
         <com.lach.common.ui.preference.EnhancedListPreference
-            android:defaultValue="1000"
             android:dialogTitle="@string/dialog_walk_maximum_preference"
             android:entries="@array/maximum_walking_array"
             android:entryValues="@array/maximum_walking_values_array"
-            android:key="maxwalk"
+            android:key="@string/max_walk_pref_key"
             android:title="@string/walk_maximum_preference"
             android:widgetLayout="@null"
             app:pref_icon="?ic_directions_walk">
         </com.lach.common.ui.preference.EnhancedListPreference>
         <com.lach.common.ui.preference.EnhancedListPreference
-            android:defaultValue="Normal"
             android:dialogTitle="@string/dialog_walk_speed_preference"
             android:entries="@array/walking_speed_array"
             android:entryValues="@array/walking_speed_values_array"
-            android:key="walkspeed"
+            android:key="@string/walk_speed_pref_key"
             android:title="@string/walk_speed_preference"
             android:widgetLayout="@null"
             app:pref_icon="?ic_directions_run">
         </com.lach.common.ui.preference.EnhancedListPreference>
 
         <com.lach.common.ui.preference.MultiSelectPreference
-            android:defaultValue="Regular~Express~NightLink"
             android:dialogTitle="Transport Service Types"
             android:entries="@array/services_array"
             android:entryValues="@array/services_values_array"
-            android:key="serviceTypes"
+            android:key="@string/service_types_pref_key"
             android:title="Service Types"
             android:widgetLayout="@null"
             app:pref_icon="?ic_service_type"
             app:value_mandatory="true"/>
 
         <com.lach.common.ui.preference.MultiSelectPreference
-            android:defaultValue="Free~Standard~Prepaid"
             android:dialogTitle="Fare Types"
             android:entries="@array/fare_array"
             android:entryValues="@array/fare_values_array"
-            android:key="fareTypes"
+            android:key="@string/fare_types_pref_key"
             android:title="Fare Types"
             android:widgetLayout="@null"
             app:pref_icon="?ic_fare_type"
@@ -89,23 +85,20 @@
 
     <com.lach.common.ui.preference.EnhancedPreferenceCategory android:title="Misc">
         <com.lach.common.ui.preference.EnhancedCheckboxPreference
-            android:defaultValue="false"
-            android:key="AutomaticKeyboard"
+            android:key="@string/automatic_keyboard_pref_key"
             android:summaryOff="Keyboard won't be shown automatically"
             android:summaryOn="Keyboard will be shown automatically"
             android:title="Automatic Keyboard"
             app:pref_icon="?ic_keyboard">
         </com.lach.common.ui.preference.EnhancedCheckboxPreference>
         <com.lach.common.ui.preference.EnhancedCheckboxPreference
-            android:defaultValue="true"
-            android:key="IgnoreHistoryTime"
+            android:key="@string/ignore_history_time_pref_key"
             android:summaryOff="Time will be used for history"
             android:summaryOn="Time won't be used for history"
             android:title="Ignore time for history"
             app:pref_icon="?ic_time">
         </com.lach.common.ui.preference.EnhancedCheckboxPreference>
         <com.lach.common.ui.preference.EnhancedListPreference
-            android:defaultValue="@string/theme_light"
             android:dialogTitle="@string/dialog_theme_preference"
             android:entries="@array/theme_array"
             android:entryValues="@array/theme_values_array"

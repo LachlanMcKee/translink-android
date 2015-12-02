@@ -46,7 +46,7 @@ public class JourneyCriteriaHistoryDao extends DbFlowDao<JourneyCriteriaHistory,
     }
 
     @Override
-    public void insertRows(List<JourneyCriteriaHistory> itemsToAdd) {
+    public void insertRows(boolean wait, List<JourneyCriteriaHistory> itemsToAdd) {
         TransactionManager instance = TransactionManager.getInstance();
 
         //
@@ -59,14 +59,20 @@ public class JourneyCriteriaHistoryDao extends DbFlowDao<JourneyCriteriaHistory,
                     .orderBy(OrderBy.columns(JourneyCriteriaHistoryModel$Table.DATECREATED).ascending())
                     .limit(newRowCount - MAX_ROWS);
 
-            instance.addTransaction(new DeleteTransaction<>(
+            DeleteTransaction<JourneyCriteriaHistoryModel> transaction = new DeleteTransaction<>(
                     DBTransactionInfo.create(),
                     new ConditionQueryBuilder<>(JourneyCriteriaHistoryModel.class,
                             Condition.column(JourneyCriteriaHistoryModel$Table.ID).in(oldHistorySubQuery))
-            ));
+            );
+            
+            if (wait) {
+                transaction.onExecute();
+            } else {
+                instance.addTransaction(transaction);
+            }
         }
 
-        super.insertRows(itemsToAdd);
+        super.insertRows(wait, itemsToAdd);
     }
 
     /**

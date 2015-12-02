@@ -45,29 +45,41 @@ public abstract class DbFlowDao<TYPE, MODEL extends Model> implements BaseDao<TY
     }
 
     @Override
-    public void insertRows(List<TYPE> itemsToAdd) {
+    public void insertRows(boolean wait, List<TYPE> itemsToAdd) {
         TransactionManager instance = TransactionManager.getInstance();
 
         // We know 100% that the only implementation of LocationFavourite is LocationFavouriteModel.
-        instance.addTransaction(new InsertModelTransaction<>(ProcessModelInfo.withModels((List<MODEL>) itemsToAdd)));
+        InsertModelTransaction<MODEL> transaction = new InsertModelTransaction<>(ProcessModelInfo.withModels((List<MODEL>) itemsToAdd));
+
+        if (wait) {
+            transaction.onExecute();
+        } else {
+            instance.addTransaction(transaction);
+        }
     }
 
     @Override
-    public void insertRows(TYPE... itemsToAdd) {
-        insertRows(Arrays.asList(itemsToAdd));
+    public void insertRows(boolean wait, TYPE... itemsToAdd) {
+        insertRows(wait, Arrays.asList(itemsToAdd));
     }
 
     @Override
-    public void deleteRows(List<TYPE> itemsToDelete) {
+    public void deleteRows(boolean wait, List<TYPE> itemsToDelete) {
         TransactionManager instance = TransactionManager.getInstance();
 
         // We know 100% that the only implementation of LocationFavourite is LocationFavouriteModel.
-        instance.addTransaction(new DeleteModelListTransaction(ProcessModelInfo.withModels((List<MODEL>) itemsToDelete)));
+        DeleteModelListTransaction<MODEL> transaction = new DeleteModelListTransaction(ProcessModelInfo.withModels((List<MODEL>) itemsToDelete));
+
+        if (wait) {
+            transaction.onExecute();
+        } else {
+            instance.addTransaction(transaction);
+        }
     }
 
     @Override
-    public void deleteRows(TYPE... itemsToDelete) {
-        deleteRows(Arrays.asList(itemsToDelete));
+    public void deleteRows(boolean wait, TYPE... itemsToDelete) {
+        deleteRows(wait, Arrays.asList(itemsToDelete));
     }
 
     @Override

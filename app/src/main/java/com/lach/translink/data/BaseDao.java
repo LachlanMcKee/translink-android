@@ -59,28 +59,28 @@ public interface BaseDao<TYPE, MODEL> {
      *
      * @param itemsToAdd the items to be added.
      */
-    void insertRows(List<TYPE> itemsToAdd);
+    void insertRows(boolean wait, List<TYPE> itemsToAdd);
 
     /**
      * Inserts a list of types.
      *
      * @param itemsToAdd the items to be added.
      */
-    void insertRows(TYPE... itemsToAdd);
+    void insertRows(boolean wait, TYPE... itemsToAdd);
 
     /**
      * Deletes a list of types.
      *
      * @param itemsToDelete the items to be deleted.
      */
-    void deleteRows(List<TYPE> itemsToDelete);
+    void deleteRows(boolean wait, List<TYPE> itemsToDelete);
 
     /**
      * Deletes a list of types.
      *
      * @param itemsToDelete the items to be deleted.
      */
-    void deleteRows(TYPE... itemsToDelete);
+    void deleteRows(boolean wait, TYPE... itemsToDelete);
 
     /**
      * Deletes every row in the persisted source.

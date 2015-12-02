@@ -1,5 +1,6 @@
 package com.lach.translink.ui.search;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
@@ -11,6 +12,8 @@ import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.ui.BaseActivity;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
+import com.lach.translink.data.place.BusStopDao;
+import com.lach.translink.ui.place.BusStopUpdateActivity;
 
 import javax.inject.Inject;
 
@@ -48,7 +51,11 @@ public class SearchActivity extends BaseActivity {
             ft.commit();
         }
 
-        initWebView();
+        if (new BusStopDao().getRowCount() == 0) {
+            startActivity(new Intent(this, BusStopUpdateActivity.class));
+        } else {
+            initWebView();
+        }
     }
 
     @Override

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/activity_padding"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/update_bus_stops_text"
+        style="@style/TextAppearance.AppCompat.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="28dp"
+        android:text="@string/update_bus_updating_label"/>
+
+    <ProgressBar
+        android:id="@+id/update_bus_stops_spinner"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_below="@id/update_bus_stops_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:indeterminate="true"
+        android:indeterminateDrawable="?progress_drawable"
+        android:padding="@dimen/padding_small"/>
+
+    <Button
+        android:id="@+id/update_bus_stops_continue_button"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/btn_continue"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+</RelativeLayout>

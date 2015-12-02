@@ -37,7 +37,7 @@ public class FavouriteLocationsActivity extends CheckableListActivity<LocationFa
                 LocationFavourite locationFavourite = getListDao().createModel();
                 locationFavourite.setAddress(address);
 
-                getListDao().insertRows(locationFavourite);
+                getListDao().insertRows(true, locationFavourite);
                 reloadData();
 
                 Toast.makeText(this, "Location added", Toast.LENGTH_SHORT).show();

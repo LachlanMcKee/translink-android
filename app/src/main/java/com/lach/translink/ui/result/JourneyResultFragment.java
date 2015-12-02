@@ -334,7 +334,7 @@ public class JourneyResultFragment extends AsyncTaskFragment {
         history.setDateCreated(new Date());
         history.setJourneyCriteria(criteria);
 
-        journeyCriteriaHistoryDao.insertRows(history);
+        journeyCriteriaHistoryDao.insertRows(false, history);
     }
 
     public interface JourneyResultListener {

@@ -71,6 +71,9 @@
         <activity
             android:name="com.lach.translink.ui.gocard.GoCardInfoActivity"
             android:label="@string/activity_title_go_card"/>
+        <activity
+            android:name="com.lach.translink.ui.place.BusStopUpdateActivity"
+            android:label="@string/activity_title_install_bus"/>
     </application>
 
 </manifest>

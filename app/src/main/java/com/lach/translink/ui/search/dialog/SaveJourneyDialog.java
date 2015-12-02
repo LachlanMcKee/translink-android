@@ -149,7 +149,7 @@ public class SaveJourneyDialog extends ButterCustomDialogFragment {
         favourite.setDateCreated(new Date());
         favourite.setJourneyCriteria(criteria);
 
-        journeyCriteriaFavouriteDao.insertRows(favourite);
+        journeyCriteriaFavouriteDao.insertRows(false, favourite);
 
         Toast.makeText(getActivity(), "Journey added successfully.", Toast.LENGTH_SHORT).show();
 

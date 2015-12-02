@@ -181,7 +181,7 @@ public abstract class CheckableListActivity<T> extends BaseActivity implements L
         }
 
         // Delete items and update the list.
-        listDao.deleteRows(previouslyDeletedItems);
+        listDao.deleteRows(true, previouslyDeletedItems);
         reloadData();
 
         // All the selected items have been deleted.
@@ -209,7 +209,7 @@ public abstract class CheckableListActivity<T> extends BaseActivity implements L
                     public void onClick(View v) {
                         if (previouslyDeletedItems.size() > 0) {
                             // Re-add the items and update the list.
-                            listDao.insertRows(previouslyDeletedItems);
+                            listDao.insertRows(true, previouslyDeletedItems);
                             reloadData();
                         }
                     }

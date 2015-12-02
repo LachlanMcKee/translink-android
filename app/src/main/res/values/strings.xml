@@ -11,6 +11,7 @@
     <string name="activity_title_favourite_journeys">Journeys</string>
     <string name="activity_title_resolve_location">Resolve Location</string>
     <string name="activity_title_go_card">Go-Card</string>
+    <string name="activity_title_install_bus">Update Bus Stops</string>
 
     <!-- Preference Screen -->
     <string name="Locations_Preference_Menu">LocationsPreferenceMenu</string>
@@ -49,6 +50,7 @@
 
     <string name="find">Find</string>
     <string name="reset">Reset</string>
+    <string name="btn_continue">Continue</string>
 
     <!-- Resolve Location Activity -->
     <string name="resolve_map_subtitle_intro">Tap anywhere to place a pin</string>
@@ -79,6 +81,10 @@
     <string name="result_label">Result</string>
     <string name="event">Event Detail</string>
     <string name="result">Result Detail</string>
+
+    <!-- Update bus stops Activity -->
+    <string name="update_bus_updating_label">Updating bus stops…</string>
+    <string name="update_bus_finished_label">Bus stops updated</string>
 
     <!-- Common -->
     <string name="from_label">Starting Point</string>

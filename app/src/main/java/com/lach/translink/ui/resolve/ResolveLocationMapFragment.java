@@ -1,7 +1,8 @@
 package com.lach.translink.ui.resolve;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,10 +17,15 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.lach.common.BaseApplication;
+import com.lach.common.async.AsyncResult;
+import com.lach.common.async.AsyncTaskFragment;
 import com.lach.common.data.preference.BooleanPreference;
 import com.lach.common.data.preference.DoublePreference;
 import com.lach.common.data.preference.FloatPreference;
@@ -29,9 +35,18 @@ import com.lach.common.log.Log;
 import com.lach.common.ui.view.ScaleAnimator;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
-import com.lach.translink.ui.UiPreference;
 import com.lach.translink.data.location.PlaceType;
+import com.lach.translink.data.place.BusStop;
+import com.lach.translink.tasks.place.TaskGetBusStops;
+import com.lach.translink.ui.UiPreference;
 import com.squareup.otto.Bus;
+
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -39,10 +54,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class ResolveLocationMapFragment extends Fragment implements GoogleMap.OnMapClickListener {
+public class ResolveLocationMapFragment extends AsyncTaskFragment implements GoogleMap.OnMapClickListener, GoogleMap.OnCameraChangeListener, GoogleMap.OnMarkerClickListener {
     private static final String TAG = "ResolveLocationMapFragment";
 
     private static final String PLACE_TYPE = "place_type";
+
+    private static final int TASK_GET_BUS_STOPS = 0;
 
     private static final BooleanPreference PREF_POSITION_SET = new BooleanPreference("position_set", false);
     private static final DoublePreference PREF_LAT = new DoublePreference("lat", 0.0d);
@@ -58,8 +75,17 @@ public class ResolveLocationMapFragment extends Fragment implements GoogleMap.On
                     .bearing(0)
                     .build();
 
+    private static final float BUS_STOP_MIN_ZOOM = 15.0f;
+    private BitmapDescriptor busSelectedBitmapDescriptor;
+    private BitmapDescriptor busUnselectedBitmapDescriptor;
+
     private GoogleMap mMap;
-    private LatLng mCurrentMarkerPosition;
+
+    private LatLng mAddressMarkerPosition;
+    private Marker mAddressMarker;
+    private BusStop mSelectedBusStop = null;
+    private Map<Long, BusStopContent> mVisibleBusStops;
+    private Map<String, Long> mMarkerBusStopRelation;
 
     @Inject
     PreferencesProvider preferencesProvider;
@@ -100,6 +126,9 @@ public class ResolveLocationMapFragment extends Fragment implements GoogleMap.On
         application.getCoreComponent().inject(this);
 
         ButterKnife.inject(this, view);
+
+        mVisibleBusStops = new HashMap<>();
+        mMarkerBusStopRelation = new HashMap<>();
 
         mapView = (MapView) view.findViewById(R.id.resolve_map);
         mapView.onCreate(savedInstanceState);
@@ -143,7 +172,7 @@ public class ResolveLocationMapFragment extends Fragment implements GoogleMap.On
 
         // Reload the current marker position if it exists.
         if (savedInstanceState != null) {
-            mCurrentMarkerPosition = savedInstanceState.getParcelable(BUNDLE_CURRENT_MARKER_POSITION);
+            mAddressMarkerPosition = savedInstanceState.getParcelable(BUNDLE_CURRENT_MARKER_POSITION);
         }
 
         mapView.getMapAsync(new OnMapReadyCallback() {
@@ -151,8 +180,8 @@ public class ResolveLocationMapFragment extends Fragment implements GoogleMap.On
             public void onMapReady(GoogleMap googleMap) {
                 initMapSettings(googleMap);
 
-                if (mCurrentMarkerPosition != null) {
-                    addMarker(mCurrentMarkerPosition);
+                if (mAddressMarkerPosition != null) {
+                    setAddressMarker(mAddressMarkerPosition);
                 }
             }
         });
@@ -190,6 +219,12 @@ public class ResolveLocationMapFragment extends Fragment implements GoogleMap.On
             mMap = null;
         }
 
+        mAddressMarker = null;
+        mSelectedBusStop = null;
+
+        mVisibleBusStops.clear();
+        mVisibleBusStops = null;
+
         ButterKnife.reset(this);
     }
 
@@ -208,7 +243,7 @@ public class ResolveLocationMapFragment extends Fragment implements GoogleMap.On
     @Override
     public void onSaveInstanceState(Bundle outState) {
         mapView.onSaveInstanceState(outState);
-        outState.putParcelable(BUNDLE_CURRENT_MARKER_POSITION, mCurrentMarkerPosition);
+        outState.putParcelable(BUNDLE_CURRENT_MARKER_POSITION, mAddressMarkerPosition);
 
         super.onSaveInstanceState(outState);
     }
@@ -218,10 +253,16 @@ public class ResolveLocationMapFragment extends Fragment implements GoogleMap.On
 
         mMap = googleMap;
 
+        busSelectedBitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
+        busUnselectedBitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
+
         googleMap.setMyLocationEnabled(true);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
 
         googleMap.setOnMapClickListener(this);
+        googleMap.setOnCameraChangeListener(this);
+        googleMap.setOnMarkerClickListener(this);
+        googleMap.setInfoWindowAdapter(new HiddenMapWindowAdapter(getActivity()));
 
         CameraPosition cameraPosition;
 
@@ -258,21 +299,31 @@ public class ResolveLocationMapFragment extends Fragment implements GoogleMap.On
 
     @Override
     public void onMapClick(LatLng latLng) {
-        addMarker(latLng);
+        setAddressMarker(latLng);
     }
 
-    private void addMarker(LatLng latLng) {
-        mMap.clear();
+    private void setAddressMarker(LatLng latLng) {
+        showContinueButton();
+        clearSelectedBusStop();
 
-        boolean hasExistingMarker = (mCurrentMarkerPosition != null);
-        mCurrentMarkerPosition = latLng;
+        // Remove the previous marker if it exists.
+        clearAddressMarker();
 
-        mMap.addMarker(new MarkerOptions().position(latLng));
-
-        showContinueButton(!hasExistingMarker);
+        mAddressMarkerPosition = latLng;
+        mAddressMarker = mMap.addMarker(new MarkerOptions().position(latLng));
     }
 
-    private void showContinueButton(boolean animate) {
+    private void clearAddressMarker() {
+        if (mAddressMarker != null) {
+            mAddressMarker.remove();
+            mAddressMarker = null;
+            mAddressMarkerPosition = null;
+        }
+    }
+
+    private void showContinueButton() {
+        boolean animate = (mAddressMarker == null && mSelectedBusStop == null);
+
         if (!animate) {
             continueButton.setVisibility(View.VISIBLE);
         }
@@ -285,7 +336,70 @@ public class ResolveLocationMapFragment extends Fragment implements GoogleMap.On
     }
 
     @Override
+    protected void onTaskFinished(int taskId, AsyncResult result) {
+        if (mMap == null) {
+            return;
+        }
+
+        //
+        // Get the current keys, we can prevent creating new markers, and remove old ones.
+        //
+        Set<Long> existingKeys = new HashSet<>(mVisibleBusStops.keySet());
+
+        List<BusStop> busStops = (List<BusStop>) result.getItem();
+        for (BusStop stop : busStops) {
+            long stopId = stop.getId();
+
+            if (existingKeys.contains(stopId)) {
+                //
+                // If the marker already exists, don't create a new one. Remove the id as we delete
+                // the markers matching the remaining keys.
+                //
+                existingKeys.remove(stopId);
+                continue;
+            }
+
+            // We may be re-adding the currently selected bus stop's marker.
+            BitmapDescriptor bitmapDescriptor;
+            if (mSelectedBusStop != null && mSelectedBusStop.getId() == stopId) {
+                bitmapDescriptor = busSelectedBitmapDescriptor;
+            } else {
+                bitmapDescriptor = busUnselectedBitmapDescriptor;
+            }
+
+            Marker marker = mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(stop.getLatitude(), stop.getLongitude()))
+                    .icon(bitmapDescriptor)
+            );
+
+            // Add the marker for later reference.
+            mVisibleBusStops.put(stopId, new BusStopContent(stop, marker));
+            mMarkerBusStopRelation.put(marker.getId(), stopId);
+        }
+
+        // Remove the unused markers.
+        for (Long oldBusStopId : existingKeys) {
+            BusStopContent content = mVisibleBusStops.get(oldBusStopId);
+
+            if (content != null) {
+                mMarkerBusStopRelation.remove(content.marker.getId());
+                content.marker.remove();
+            }
+
+            mVisibleBusStops.remove(oldBusStopId);
+        }
+    }
+
+    @Override
+    protected void onTaskCancelled(int taskId) {
+
+    }
+
+    @Override
     public void onDestroy() {
+        // Always cancel the bus stop markers, as the new configuration may have a different boundary.
+        cancelCurrentTask(false);
+
         mapView.onDestroy();
         super.onDestroy();
     }
@@ -318,11 +432,114 @@ public class ResolveLocationMapFragment extends Fragment implements GoogleMap.On
 
     @OnClick(R.id.resolve_map_continue)
     void confirmMarker() {
-        if (mCurrentMarkerPosition == null) {
+        if (mAddressMarkerPosition == null) {
             return;
         }
 
-        getBus().post(new ResolveLocationEvents.MapMarkerSelectedEvent(mCurrentMarkerPosition));
+        getBus().post(new ResolveLocationEvents.MapMarkerSelectedEvent(mAddressMarkerPosition));
     }
 
+    @Override
+    public void onCameraChange(CameraPosition cameraPosition) {
+        if (mMap != null && cameraPosition.zoom >= BUS_STOP_MIN_ZOOM) {
+            boolean taskRunning = isTaskRunning();
+            Log.debug(TAG, "onCameraChange. Zoom valid. Task running: " + taskRunning);
+
+            if (taskRunning) {
+                cancelCurrentTask(false);
+            }
+
+            createTask(TASK_GET_BUS_STOPS, new TaskGetBusStops())
+                    .parameters(mMap.getProjection().getVisibleRegion().latLngBounds)
+                    .start(ResolveLocationMapFragment.this);
+        }
+    }
+
+    private void clearSelectedBusStop() {
+        if (mSelectedBusStop != null) {
+            long busStopId = mSelectedBusStop.getId();
+            BusStopContent previouslySelectedBusStop = mVisibleBusStops.get(busStopId);
+
+            // The previously selected bus stop may not be on the screen, so don't bother updating the marker.
+            if (previouslySelectedBusStop != null) {
+                replaceBusStopMarker(previouslySelectedBusStop.marker, busUnselectedBitmapDescriptor, busStopId);
+            }
+
+            mSelectedBusStop = null;
+        }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        clearSelectedBusStop();
+
+        String unSelectedMarkerId = marker.getId();
+        Long newlySelectedBusStopId = mMarkerBusStopRelation.get(unSelectedMarkerId);
+
+        if (newlySelectedBusStopId == null) {
+            Log.warn(TAG, "mSelectedBusStopId not found.");
+            return true;
+        }
+
+        showContinueButton();
+        clearAddressMarker();
+
+        Marker newMarker = replaceBusStopMarker(marker, busSelectedBitmapDescriptor, newlySelectedBusStopId);
+        newMarker.showInfoWindow();
+
+        BusStopContent busStopContent = mVisibleBusStops.get(newlySelectedBusStopId);
+        mSelectedBusStop = busStopContent.busStop;
+
+        return true;
+    }
+
+    private Marker replaceBusStopMarker(Marker oldMarker, BitmapDescriptor bitmapDescriptor, long busStopId) {
+        Marker newMarker = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(oldMarker.getPosition().latitude, oldMarker.getPosition().longitude))
+                .icon(bitmapDescriptor)
+        );
+        mMarkerBusStopRelation.remove(oldMarker.getId());
+        mMarkerBusStopRelation.put(newMarker.getId(), busStopId);
+
+        BusStopContent busStopContent = mVisibleBusStops.get(busStopId);
+        busStopContent.marker = newMarker;
+
+        oldMarker.remove();
+
+        return newMarker;
+    }
+
+    private static class BusStopContent {
+        final BusStop busStop;
+        Marker marker;
+
+        public BusStopContent(BusStop busStop, Marker marker) {
+            this.busStop = busStop;
+            this.marker = marker;
+        }
+    }
+
+    public static class HiddenMapWindowAdapter implements GoogleMap.InfoWindowAdapter {
+        private WeakReference<Activity> activityRef = null;
+
+        public HiddenMapWindowAdapter(Activity activity) {
+            this.activityRef = new WeakReference<>(activity);
+        }
+
+        // Hack to prevent info window from displaying: use a 0dp/0dp frame
+        @SuppressLint("InflateParams")
+        @Override
+        public View getInfoWindow(Marker marker) {
+            Activity activity = activityRef.get();
+            if (activity == null) {
+                return null;
+            }
+            return activity.getLayoutInflater().inflate(R.layout.no_info_window, null);
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+            return null;
+        }
+    }
 }

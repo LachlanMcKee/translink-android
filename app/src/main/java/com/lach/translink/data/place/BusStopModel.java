@@ -69,4 +69,9 @@ public class BusStopModel extends BaseModel implements BusStop {
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
+
+    @Override
+    public String toString() {
+        return id + " " + description;
+    }
 }

@@ -1,11 +1,11 @@
-package com.lach.translink.data.place;
+package com.lach.translink.data.place.bus;
 
 public interface BusStop {
     long getId();
 
-    long getTranslinkId();
+    String getStationId();
 
-    void setTranslinkId(long translinkId);
+    void setStationId(String stationId);
 
     String getDescription();
 

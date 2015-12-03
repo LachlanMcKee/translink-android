@@ -14,6 +14,7 @@ import com.lach.translink.data.BaseDao;
 import com.lach.translink.data.journey.JourneyCriteria;
 import com.lach.translink.data.journey.favourite.JourneyCriteriaFavourite;
 import com.lach.translink.data.journey.favourite.JourneyCriteriaFavouriteDao;
+import com.lach.translink.data.place.PlaceParser;
 import com.lach.translink.util.JourneyCriteriaHelper;
 
 import javax.inject.Inject;
@@ -55,8 +56,10 @@ public class FavouriteJourneysActivity extends CheckableListActivity<JourneyCrit
                 setText(h.title, item.getName());
 
                 JourneyCriteria criteria = item.getJourneyCriteria();
-                setText(h.fromLocationLabel, h.fromLocation, criteria.getFromAddress());
-                setText(h.toLocationLabel, h.toLocation, criteria.getToAddress());
+
+                PlaceParser placeParser = new PlaceParser();
+                setText(h.fromLocationLabel, h.fromLocation, placeParser.prettyPrintPlace(criteria.getFromAddress()));
+                setText(h.toLocationLabel, h.toLocation, placeParser.prettyPrintPlace(criteria.getToAddress()));
 
                 setText(h.description, JourneyCriteriaHelper.createJourneyDescription(criteria));
             }

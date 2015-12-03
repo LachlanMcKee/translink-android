@@ -9,6 +9,7 @@ import com.lach.common.ui.adapter.ViewHolderArrayAdapter;
 import com.lach.translink.activities.R;
 import com.lach.translink.data.journey.JourneyCriteria;
 import com.lach.translink.data.journey.history.JourneyCriteriaHistory;
+import com.lach.translink.data.place.PlaceParser;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -57,8 +58,9 @@ public class HistoryArrayAdapter extends ViewHolderArrayAdapter<JourneyCriteriaH
         public void updateViewHolder(HistoryViewHolder holder, JourneyCriteriaHistory item) {
             JourneyCriteria journeyCriteria = item.getJourneyCriteria();
 
-            holder.fromLocation.setText(journeyCriteria.getFromAddress());
-            holder.toLocation.setText(journeyCriteria.getToAddress());
+            PlaceParser placeParser = new PlaceParser();
+            holder.fromLocation.setText(placeParser.prettyPrintPlace(journeyCriteria.getFromAddress()));
+            holder.toLocation.setText(placeParser.prettyPrintPlace(journeyCriteria.getToAddress()));
 
             if (!ignoreHistoryTime) {
                 DateFormat timeFormat = SimpleDateFormat.getTimeInstance(DateFormat.SHORT);

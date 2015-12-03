@@ -11,6 +11,7 @@ import com.lach.translink.TranslinkApplication;
 import com.lach.translink.data.location.PlaceType;
 import com.lach.translink.data.location.favourite.LocationFavourite;
 import com.lach.translink.data.location.favourite.LocationFavouriteDao;
+import com.lach.translink.data.place.PlaceParser;
 import com.lach.translink.ui.SharedEvents;
 
 import java.util.List;
@@ -44,8 +45,9 @@ public class SavedLocationsDialog extends ButterCustomDialogFragment {
         final List<? extends LocationFavourite> addressList = locationFavouriteDao.getAllRowsAsItems();
         CharSequence[] items = new CharSequence[addressList.size()];
 
+        PlaceParser placeParser = new PlaceParser();
         for (int i = 0; i < addressList.size(); i++) {
-            items[i] = addressList.get(i).getAddress();
+            items[i] = placeParser.prettyPrintPlace(addressList.get(i).getAddress());
         }
 
         b.setTitle("Pick a location");

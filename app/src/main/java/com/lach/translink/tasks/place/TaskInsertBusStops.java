@@ -6,9 +6,9 @@ import com.lach.common.async.AsyncResult;
 import com.lach.common.async.Task;
 import com.lach.common.data.TaskGenericErrorType;
 import com.lach.common.log.Log;
-import com.lach.translink.data.place.BusStop;
-import com.lach.translink.data.place.BusStopDao;
-import com.lach.translink.data.place.BusStopModel;
+import com.lach.translink.data.place.bus.BusStop;
+import com.lach.translink.data.place.bus.BusStopDao;
+import com.lach.translink.data.place.bus.BusStopModel;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -21,10 +21,10 @@ public class TaskInsertBusStops implements Task<Void> {
 
     // Common CSV known information
     private static final int CSV_COLUMN_COUNT = 16;
-    private static final int CSV_ESTIMATED_ITEMS = 4000;
+    private static final int CSV_ESTIMATED_ITEMS = 7000;
 
     // Known CSV indexes.
-    private static final int COL_TRANSLINK_ID = 1;
+    private static final int COL_STATION_ID = 0;
     private static final int COL_DESCRIPTION = 2;
     private static final int COL_LATITUDE = 7;
     private static final int COL_LONGITUDE = 8;
@@ -74,14 +74,17 @@ public class TaskInsertBusStops implements Task<Void> {
         while ((line = reader.readLine()) != null) {
             csvSplit(line, values);
 
-            String translinkId = values[COL_TRANSLINK_ID];
-            if (translinkId.isEmpty()) {
+            String stationId = values[COL_STATION_ID];
+            if (stationId.isEmpty()) {
                 continue;
             }
 
             BusStopModel model = dao.createModel();
-            model.setTranslinkId(Long.parseLong(translinkId));
+
+            // Pad with zeros until it is 6 characters.
+            model.setStationId(String.format("%06d", Integer.parseInt(stationId)));
             model.setDescription(values[COL_DESCRIPTION]);
+
             model.setLatitude(Double.parseDouble(values[COL_LATITUDE]));
             model.setLongitude(Double.parseDouble(values[COL_LONGITUDE]));
 

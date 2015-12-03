@@ -5,8 +5,8 @@ import com.lach.common.async.AsyncResult;
 import com.lach.common.async.Task;
 import com.lach.common.data.TaskGenericErrorType;
 import com.lach.common.log.Log;
-import com.lach.translink.data.place.BusStop;
-import com.lach.translink.data.place.BusStopDao;
+import com.lach.translink.data.place.bus.BusStop;
+import com.lach.translink.data.place.bus.BusStopDao;
 
 import java.util.List;
 

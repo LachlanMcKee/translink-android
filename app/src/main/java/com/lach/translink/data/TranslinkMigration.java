@@ -2,7 +2,7 @@ package com.lach.translink.data;
 
 import android.database.sqlite.SQLiteDatabase;
 
-import com.lach.translink.data.place.BusStopModel$Adapter;
+import com.lach.translink.data.place.bus.BusStopModel$Adapter;
 import com.raizlabs.android.dbflow.annotation.Migration;
 import com.raizlabs.android.dbflow.sql.migration.BaseMigration;
 

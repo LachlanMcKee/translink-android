@@ -12,7 +12,7 @@ import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.ui.BaseActivity;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
-import com.lach.translink.data.place.BusStopDao;
+import com.lach.translink.data.place.bus.BusStopDao;
 import com.lach.translink.ui.place.BusStopUpdateActivity;
 
 import javax.inject.Inject;

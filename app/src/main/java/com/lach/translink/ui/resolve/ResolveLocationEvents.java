@@ -2,21 +2,34 @@ package com.lach.translink.ui.resolve;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.lach.translink.data.location.PlaceType;
+import com.lach.translink.data.place.bus.BusStop;
 
 public interface ResolveLocationEvents {
 
     class ShowMapEvent {
     }
 
-    class MapMarkerSelectedEvent {
+    class MapAddressSelectedEvent {
         private final LatLng point;
 
-        public MapMarkerSelectedEvent(LatLng point) {
+        public MapAddressSelectedEvent(LatLng point) {
             this.point = point;
         }
 
         public LatLng getPoint() {
             return point;
+        }
+    }
+
+    class MapBusStopSelectedEvent {
+        private final BusStop busStop;
+
+        public MapBusStopSelectedEvent(BusStop busStop) {
+            this.busStop = busStop;
+        }
+
+        public BusStop getBusStop() {
+            return busStop;
         }
     }
 

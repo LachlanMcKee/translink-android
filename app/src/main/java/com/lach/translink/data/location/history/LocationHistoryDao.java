@@ -2,6 +2,7 @@ package com.lach.translink.data.location.history;
 
 import com.lach.common.log.Log;
 import com.lach.translink.data.DbFlowDao;
+import com.lach.translink.data.place.PlaceParser;
 import com.raizlabs.android.dbflow.runtime.TransactionManager;
 import com.raizlabs.android.dbflow.runtime.transaction.SelectListTransaction;
 import com.raizlabs.android.dbflow.runtime.transaction.TransactionListenerAdapter;
@@ -76,11 +77,14 @@ public class LocationHistoryDao extends DbFlowDao<LocationHistory, LocationHisto
                             return;
                         }
 
+
+                        PlaceParser placeParser = new PlaceParser();
+
                         // Iterate through the history and create a results location list.
                         ArrayList<String> locationHistoryList = new ArrayList<>();
                         if (locationHistories != null) {
                             for (LocationHistory history : locationHistories) {
-                                locationHistoryList.add(history.getAddress());
+                                locationHistoryList.add(placeParser.prettyPrintPlace(history.getAddress()));
                             }
                         }
 

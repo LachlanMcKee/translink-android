@@ -29,6 +29,11 @@ public abstract class DbFlowDao<TYPE, MODEL extends Model> implements BaseDao<TY
     }
 
     @Override
+    public TYPE get(long id) {
+        return (TYPE) new Select().from(getModelClass()).byIds(id).querySingle();
+    }
+
+    @Override
     public Cursor getAllRowsCursor() {
         return getAllRowsQuery().query();
     }

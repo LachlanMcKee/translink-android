@@ -15,6 +15,7 @@ import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
 import com.lach.translink.data.location.history.LocationHistoryDao;
 import com.lach.translink.data.location.PlaceType;
+import com.lach.translink.data.place.PlaceParser;
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
@@ -72,23 +73,24 @@ public class ResolveLocationActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    @Subscribe
-    public void onLocationSelected(ResolveLocationEvents.LocationSelectedEvent locationSelectedEvent) {
-        String translinkAddress = locationSelectedEvent.getAddress();
-
+    private void setSelectedAddressAndFinish(String address) {
         // Add the selected location to the location history.
-        updateLocationHistory(translinkAddress);
+        updateLocationHistory(address);
 
         // Send the result back to the calling activity.
         Intent data = new Intent();
-        data.putExtra(PLACE_TYPE_KEY, locationSelectedEvent.getPlaceType());
-        data.putExtra(ADDRESS_KEY, translinkAddress);
-        data.putExtra(IS_FAVOURITE_KEY, locationSelectedEvent.isFavourite());
+        data.putExtra(PLACE_TYPE_KEY, mPlaceType);
+        data.putExtra(ADDRESS_KEY, address);
 
         setResult(Activity.RESULT_OK, data);
 
         finish();
         overridePendingTransition(0, 0);
+    }
+
+    @Subscribe
+    public void onLocationSelected(ResolveLocationEvents.LocationSelectedEvent locationSelectedEvent) {
+        setSelectedAddressAndFinish(locationSelectedEvent.getAddress());
     }
 
     @Subscribe
@@ -105,7 +107,7 @@ public class ResolveLocationActivity extends BaseActivity {
     }
 
     @Subscribe
-    public void onMapMarkerSelected(ResolveLocationEvents.MapMarkerSelectedEvent event) {
+    public void onMapAddressSelected(ResolveLocationEvents.MapAddressSelectedEvent event) {
         // Remove the map fragment from the back stack.
         FragmentManager fm = getSupportFragmentManager();
         fm.popBackStack();
@@ -113,6 +115,12 @@ public class ResolveLocationActivity extends BaseActivity {
         if (listFragment != null) {
             listFragment.setMapLookupPoint(event.getPoint());
         }
+    }
+
+    @Subscribe
+    public void onMapBusStopSelected(ResolveLocationEvents.MapBusStopSelectedEvent event) {
+        PlaceParser placeParser = new PlaceParser();
+        setSelectedAddressAndFinish(placeParser.encodeBusStop(event.getBusStop()));
     }
 
     @Override

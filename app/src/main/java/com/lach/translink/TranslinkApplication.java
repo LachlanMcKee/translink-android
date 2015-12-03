@@ -41,6 +41,13 @@ public class TranslinkApplication extends BaseApplication {
     public void onCreate() {
         super.onCreate();
 
+        // This must be injected now, as we rely on it to obtain the preferencesProvider
+        WebViewComponent webViewComponent = DaggerWebViewComponent.builder()
+                .coreModule(getCoreModule())
+                .build();
+
+        webViewComponent.inject(this);
+
         // Load any application specific logic. This can be overridden within a build type.
         AppInit.init(this);
 
@@ -58,13 +65,6 @@ public class TranslinkApplication extends BaseApplication {
                         .build();
             }
         };
-
-        // This must be injected now, as we rely on it to obtain the preferencesProvider
-        WebViewComponent webViewComponent = DaggerWebViewComponent.builder()
-                .coreModule(getCoreModule())
-                .build();
-
-        webViewComponent.inject(this);
     }
 
     @Override
@@ -127,5 +127,9 @@ public class TranslinkApplication extends BaseApplication {
 
     public GoCardNetworkComponent createGoCardNetworkComponent() {
         return goCardNetworkComponentProvider.get();
+    }
+
+    public PreferencesProvider getPreferencesProvider() {
+        return preferencesProvider;
     }
 }

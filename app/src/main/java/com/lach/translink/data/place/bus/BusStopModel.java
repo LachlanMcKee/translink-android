@@ -1,4 +1,4 @@
-package com.lach.translink.data.place;
+package com.lach.translink.data.place.bus;
 
 import com.lach.translink.data.TranslinkDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
@@ -14,7 +14,7 @@ public class BusStopModel extends BaseModel implements BusStop {
     long id;
 
     @Column
-    long translinkId;
+    String stationId;
 
     @Column
     String description;
@@ -30,14 +30,13 @@ public class BusStopModel extends BaseModel implements BusStop {
         return id;
     }
 
-    @Override
-    public long getTranslinkId() {
-        return translinkId;
+    public String getStationId() {
+        return stationId;
     }
 
     @Override
-    public void setTranslinkId(long translinkId) {
-        this.translinkId = translinkId;
+    public void setStationId(String stationId) {
+        this.stationId = stationId;
     }
 
     @Override

@@ -13,6 +13,10 @@ public abstract class Preference<T> {
 
     public abstract void set(Preferences.Editor editor, T value);
 
+    public void setDefault(Preferences.Editor editor) {
+        set(editor, defaultValue);
+    }
+
     public boolean exists(Preferences preferences) {
         return preferences.contains(key);
     }

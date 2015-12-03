@@ -36,7 +36,7 @@ import com.lach.common.ui.view.ScaleAnimator;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
 import com.lach.translink.data.location.PlaceType;
-import com.lach.translink.data.place.BusStop;
+import com.lach.translink.data.place.bus.BusStop;
 import com.lach.translink.tasks.place.TaskGetBusStops;
 import com.lach.translink.ui.UiPreference;
 import com.squareup.otto.Bus;
@@ -432,11 +432,12 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
 
     @OnClick(R.id.resolve_map_continue)
     void confirmMarker() {
-        if (mAddressMarkerPosition == null) {
-            return;
+        if (mAddressMarkerPosition != null) {
+            getBus().post(new ResolveLocationEvents.MapAddressSelectedEvent(mAddressMarkerPosition));
         }
-
-        getBus().post(new ResolveLocationEvents.MapMarkerSelectedEvent(mAddressMarkerPosition));
+        if (mSelectedBusStop != null) {
+            getBus().post(new ResolveLocationEvents.MapBusStopSelectedEvent(mSelectedBusStop));
+        }
     }
 
     @Override

@@ -32,6 +32,13 @@ public interface BaseDao<TYPE, MODEL> {
     long getRowCount();
 
     /**
+     * Gets the record for the given id.
+     *
+     * @return the record which matches the id.
+     */
+    TYPE get(long id);
+
+    /**
      * Creates a cursor which has access to all of the rows.
      *
      * @return a new cursor. Ensure that it is closed when required.

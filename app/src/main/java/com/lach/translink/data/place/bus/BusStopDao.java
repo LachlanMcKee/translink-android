@@ -1,8 +1,7 @@
-package com.lach.translink.data.place;
+package com.lach.translink.data.place.bus;
 
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.lach.translink.data.DbFlowDao;
-import com.lach.translink.data.location.history.LocationHistoryModel$Table;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;

@@ -9,6 +9,7 @@ import com.lach.common.ui.adapter.ViewHolderArrayAdapter;
 import com.lach.translink.activities.R;
 import com.lach.translink.data.journey.JourneyCriteria;
 import com.lach.translink.data.journey.favourite.JourneyCriteriaFavourite;
+import com.lach.translink.data.place.PlaceParser;
 import com.lach.translink.util.JourneyCriteriaHelper;
 
 import java.util.List;
@@ -68,8 +69,9 @@ public class JourneyAdapter extends ViewHolderArrayAdapter<JourneyCriteriaFavour
             setText(holder.title, item.getName());
 
             JourneyCriteria criteria = item.getJourneyCriteria();
-            setText(holder.fromLocationLabel, holder.fromLocation, criteria.getFromAddress());
-            setText(holder.toLocationLabel, holder.toLocation, criteria.getToAddress());
+            PlaceParser placeParser = new PlaceParser();
+            setText(holder.fromLocationLabel, holder.fromLocation, placeParser.prettyPrintPlace(criteria.getFromAddress()));
+            setText(holder.toLocationLabel, holder.toLocation, placeParser.prettyPrintPlace(criteria.getToAddress()));
             setText(holder.description, JourneyCriteriaHelper.createJourneyDescription(criteria));
         }
     }

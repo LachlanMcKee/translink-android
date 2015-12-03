@@ -17,6 +17,8 @@ import com.lach.common.util.ClipboardUtil;
 import com.lach.common.util.DialogUtil;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.BR;
+import com.lach.translink.data.place.PlaceParser;
+import com.lach.translink.data.place.bus.BusStopParser;
 import com.lach.translink.ui.BaseViewModel;
 import com.lach.translink.ui.PrimaryViewModel;
 import com.lach.translink.ui.SharedEvents;
@@ -121,7 +123,8 @@ public class SearchPlaceViewModel extends BaseViewModel {
 
     @Bindable
     public String getLocationDescription() {
-        return address;
+        PlaceParser placeParser = new PlaceParser();
+        return placeParser.prettyPrintPlace(address);
     }
 
     public View.OnClickListener getLabelClickListener() {
@@ -163,7 +166,7 @@ public class SearchPlaceViewModel extends BaseViewModel {
                         switch (item) {
                             case 0:
                                 if (address != null) {
-                                    ClipboardUtil.setClipboardText(getActivity(), address);
+                                    ClipboardUtil.setClipboardText(getActivity(), getLocationDescription());
                                 }
                                 break;
 

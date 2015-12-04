@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.lach.common.BaseApplication;
 import com.lach.common.ui.BaseActivity;
 import com.lach.translink.activities.R;
 import com.lach.translink.data.journey.JourneyCriteria;
@@ -94,8 +95,8 @@ public class JourneyResultActivity extends BaseActivity implements JourneyResult
     }
 
     @Override
-    public boolean shouldApplyTheme() {
-        return false;
+    public BaseApplication.ThemeType getThemeType() {
+        return BaseApplication.ThemeType.NONE;
     }
 
     private void updateToolbarVisibility() {

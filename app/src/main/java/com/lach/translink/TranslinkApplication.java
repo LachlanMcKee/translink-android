@@ -6,7 +6,6 @@ import com.lach.common.BaseApplication;
 import com.lach.common.data.CoreModule;
 import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.log.Instrumentation;
-import com.lach.common.util.ThemeHelper;
 import com.lach.translink.data.CoreComponent;
 import com.lach.translink.data.DaggerCoreComponentImpl;
 import com.lach.translink.data.DaggerDataComponentImpl;
@@ -67,16 +66,6 @@ public class TranslinkApplication extends BaseApplication {
         };
     }
 
-    @Override
-    public void applyTheme(Activity activity, boolean useActionBar) {
-        ThemeHelper.applyTheme(activity, preferencesProvider.getPreferences(), useActionBar);
-    }
-
-    @Override
-    public boolean isLightTheme() {
-        return ThemeHelper.isLightTheme(preferencesProvider.getPreferences());
-    }
-
     public synchronized CoreModule getCoreModule() {
         if (coreModule == null) {
             coreModule = new CoreModule(this);
@@ -129,6 +118,7 @@ public class TranslinkApplication extends BaseApplication {
         return goCardNetworkComponentProvider.get();
     }
 
+    @Override
     public PreferencesProvider getPreferencesProvider() {
         return preferencesProvider;
     }

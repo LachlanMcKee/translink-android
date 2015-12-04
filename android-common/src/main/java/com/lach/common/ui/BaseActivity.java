@@ -20,9 +20,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Apply the a dynamic theme to the activity if required.
-        if (shouldApplyTheme()) {
+        BaseApplication.ThemeType themeType = getThemeType();
+        if (themeType != BaseApplication.ThemeType.NONE) {
             BaseApplication application = (BaseApplication) getApplication();
-            application.applyTheme(this, isActionBarUsed());
+            application.applyTheme(this, themeType);
         }
 
         super.onCreate(savedInstanceState);
@@ -33,12 +34,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         ButterKnife.inject(this);
     }
 
-    public boolean isActionBarUsed() {
-        return true;
-    }
-
-    public boolean shouldApplyTheme() {
-        return true;
+    public BaseApplication.ThemeType getThemeType() {
+        return BaseApplication.ThemeType.STANDARD;
     }
 
     private Bus getBus() {

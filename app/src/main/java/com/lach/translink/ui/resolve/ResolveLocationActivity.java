@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.lach.common.BaseApplication;
 import com.lach.common.ui.BaseActivity;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
@@ -136,8 +137,8 @@ public class ResolveLocationActivity extends BaseActivity {
     }
 
     @Override
-    public boolean isActionBarUsed() {
-        return false;
+    public BaseApplication.ThemeType getThemeType() {
+        return BaseApplication.ThemeType.NO_ACTION_BAR;
     }
 
     private void hideKeyboard() {

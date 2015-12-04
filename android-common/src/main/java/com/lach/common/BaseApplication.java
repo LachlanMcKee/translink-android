@@ -5,23 +5,8 @@ import android.app.Application;
 
 import com.lach.common.data.common.CommonPreference;
 import com.lach.common.data.preference.PreferencesProvider;
-import com.squareup.otto.Bus;
-import com.squareup.otto.ThreadEnforcer;
 
 public abstract class BaseApplication extends Application {
-
-    private static Bus mEventBus;
-
-    public static Bus getEventBus() {
-        return mEventBus;
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        mEventBus = new Bus(ThreadEnforcer.MAIN);
-    }
 
     public void applyTheme(Activity activity, ThemeType themeType) {
         if (themeType == ThemeType.NONE) {

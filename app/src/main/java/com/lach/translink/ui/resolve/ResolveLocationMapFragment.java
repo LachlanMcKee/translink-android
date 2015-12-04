@@ -2,6 +2,8 @@ package com.lach.translink.ui.resolve;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -23,7 +26,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.lach.common.BaseApplication;
 import com.lach.common.async.AsyncResult;
 import com.lach.common.async.AsyncTaskFragment;
 import com.lach.common.data.preference.BooleanPreference;
@@ -39,7 +41,6 @@ import com.lach.translink.data.location.PlaceType;
 import com.lach.translink.data.place.bus.BusStop;
 import com.lach.translink.tasks.place.TaskGetBusStops;
 import com.lach.translink.ui.UiPreference;
-import com.squareup.otto.Bus;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -59,6 +60,8 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
 
     private static final String PLACE_TYPE = "place_type";
 
+    private static final int RESULT_CODE_CONFIRM_BUS_STOP = 0;
+
     private static final int TASK_GET_BUS_STOPS = 0;
 
     private static final BooleanPreference PREF_POSITION_SET = new BooleanPreference("position_set", false);
@@ -68,6 +71,10 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
     private static final FloatPreference PREF_BEARING = new FloatPreference("bearing", 0.0f);
 
     private static final String BUNDLE_CURRENT_MARKER_POSITION = "current_marker_position";
+    private static final String BUNDLE_IS_BUS_ACTIVITY_OPEN = "is_bus_activity_open";
+    private static final String BUNDLE_SELECTED_BUS_STOP = "selected_bus_stop";
+    private static final String BUNDLE_LATITUDE_LENGTH_FOR_PIXEL = "latitude_length_for_pixel";
+    private static final String BUNDLE_LATITUDE_LENGTH_ZOOM = "latitude_length_zoom";
 
     private static final CameraPosition BRISBANE =
             new CameraPosition.Builder().target(new LatLng(-27.4679400, 153.0280900))
@@ -80,6 +87,10 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
     private BitmapDescriptor busUnselectedBitmapDescriptor;
 
     private GoogleMap mMap;
+    private float latitudeLengthZoomLevel = 0.0f;
+    private double latitudeLengthForPixel = 0.0d;
+    private boolean isBusActivityOpen;
+    private boolean ignoreFirstCameraChange;
 
     private LatLng mAddressMarkerPosition;
     private Marker mAddressMarker;
@@ -93,10 +104,13 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
     @InjectView(R.id.resolve_map_coordinator)
     ViewGroup coordinatorLayout;
 
-    @InjectView(R.id.resolve_map_title)
+    @InjectView(R.id.appbar)
+    View appBar;
+
+    @InjectView(R.id.resolve_title)
     TextView title;
 
-    @InjectView(R.id.resolve_map_subtitle)
+    @InjectView(R.id.resolve_subtitle)
     TextView subtitle;
 
     @InjectView(R.id.resolve_map_continue)
@@ -130,7 +144,26 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
         mVisibleBusStops = new HashMap<>();
         mMarkerBusStopRelation = new HashMap<>();
 
-        mapView = (MapView) view.findViewById(R.id.resolve_map);
+        // Reload the current marker position if it exists.
+        if (savedInstanceState != null) {
+            mAddressMarkerPosition = savedInstanceState.getParcelable(BUNDLE_CURRENT_MARKER_POSITION);
+            isBusActivityOpen = savedInstanceState.getBoolean(BUNDLE_IS_BUS_ACTIVITY_OPEN);
+
+            mSelectedBusStop = savedInstanceState.getParcelable(BUNDLE_SELECTED_BUS_STOP);
+
+            // Remove the property, as un-marshalling this seems to cause issues with the map view onCreate.
+            savedInstanceState.remove(BUNDLE_SELECTED_BUS_STOP);
+
+            latitudeLengthForPixel = savedInstanceState.getDouble(BUNDLE_LATITUDE_LENGTH_FOR_PIXEL, 0);
+            latitudeLengthZoomLevel = savedInstanceState.getFloat(BUNDLE_LATITUDE_LENGTH_ZOOM, 0);
+        }
+
+        ViewGroup mapViewContainer = (ViewGroup) view.findViewById(R.id.resolve_map_container);
+
+        // Configure the map.
+        mapView = new MapView(getActivity(), createGoogleMapOptions());
+
+        mapViewContainer.addView(mapView);
         mapView.onCreate(savedInstanceState);
 
         try {
@@ -170,11 +203,6 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
         }
         title.setText("Choose " + description);
 
-        // Reload the current marker position if it exists.
-        if (savedInstanceState != null) {
-            mAddressMarkerPosition = savedInstanceState.getParcelable(BUNDLE_CURRENT_MARKER_POSITION);
-        }
-
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
@@ -187,16 +215,9 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
         });
     }
 
-    protected Bus getBus() {
-        return BaseApplication.getEventBus();
-    }
-
     @Override
     public void onResume() {
         super.onResume();
-
-        // Register ourselves so that we can provide the initial value.
-        getBus().register(this);
         mapView.onResume();
     }
 
@@ -204,9 +225,9 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
     public void onPause() {
         super.onPause();
 
-        // Always unregister when an object no longer should be on the bus.
-        getBus().unregister(this);
-        mapView.onPause();
+        if (!isBusActivityOpen) {
+            mapView.onPause();
+        }
     }
 
     @Override
@@ -214,6 +235,10 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
         super.onDestroyView();
 
         saveLastCameraPosition();
+
+        // Ensure the map is paused to prevent memory leaks if onPause was skipped previously.
+        mapView.onPause();
+
         if (mMap != null) {
             mMap.setMyLocationEnabled(false);
             mMap = null;
@@ -245,33 +270,50 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
         mapView.onSaveInstanceState(outState);
         outState.putParcelable(BUNDLE_CURRENT_MARKER_POSITION, mAddressMarkerPosition);
 
+        outState.putBoolean(BUNDLE_IS_BUS_ACTIVITY_OPEN, isBusActivityOpen);
+        outState.putParcelable(BUNDLE_SELECTED_BUS_STOP, mSelectedBusStop);
+
+        outState.putDouble(BUNDLE_LATITUDE_LENGTH_FOR_PIXEL, latitudeLengthForPixel);
+        outState.putFloat(BUNDLE_LATITUDE_LENGTH_ZOOM, latitudeLengthZoomLevel);
+
         super.onSaveInstanceState(outState);
     }
 
-    private void initMapSettings(GoogleMap googleMap) {
-        MapsInitializer.initialize(getActivity());
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RESULT_CODE_CONFIRM_BUS_STOP) {
+            isBusActivityOpen = false;
 
-        mMap = googleMap;
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    getBus().postSticky(new ResolveLocationEvents.MapBusStopSelectedEvent(mSelectedBusStop));
+                    return;
 
-        busSelectedBitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
-        busUnselectedBitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
+                case Activity.RESULT_CANCELED:
+                    clearSelectedBusStop();
+                    updateBusStopMarkers();
+                    return;
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
-        googleMap.setMyLocationEnabled(true);
-        googleMap.getUiSettings().setMapToolbarEnabled(false);
-
-        googleMap.setOnMapClickListener(this);
-        googleMap.setOnCameraChangeListener(this);
-        googleMap.setOnMarkerClickListener(this);
-        googleMap.setInfoWindowAdapter(new HiddenMapWindowAdapter(getActivity()));
-
-        CameraPosition cameraPosition;
+    private GoogleMapOptions createGoogleMapOptions() {
+        GoogleMapOptions options = new GoogleMapOptions();
 
         Preferences preferences = preferencesProvider.getPreferences();
         boolean lastPositionSet = PREF_POSITION_SET.get(preferences);
 
+        CameraPosition cameraPosition;
         if (lastPositionSet) {
             double latitude = PREF_LAT.get(preferences);
             double longitude = PREF_LONG.get(preferences);
+
+            if (mSelectedBusStop != null) {
+                latitude = mSelectedBusStop.getLatitude() - calculateBusStopLatitudeOffset();
+                longitude = mSelectedBusStop.getLongitude();
+            }
+
             float zoom = PREF_ZOOM.get(preferences);
             float bearing = PREF_BEARING.get(preferences);
 
@@ -283,18 +325,25 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
             cameraPosition = BRISBANE;
         }
 
-        if (!googleMap.getCameraPosition().equals(cameraPosition)) {
-            changeCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), false);
-        }
+        options.camera(cameraPosition);
+        options.mapToolbarEnabled(false);
+        return options;
     }
 
-    @SuppressWarnings("SameParameterValue")
-    private void changeCamera(CameraUpdate update, boolean animate) {
-        if (animate) {
-            mMap.animateCamera(update);
-        } else {
-            mMap.moveCamera(update);
-        }
+    private void initMapSettings(GoogleMap googleMap) {
+        MapsInitializer.initialize(getActivity());
+
+        mMap = googleMap;
+
+        busSelectedBitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
+        busUnselectedBitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
+
+        googleMap.setMyLocationEnabled(true);
+
+        googleMap.setOnMapClickListener(this);
+        googleMap.setOnCameraChangeListener(this);
+        googleMap.setOnMarkerClickListener(this);
+        googleMap.setInfoWindowAdapter(new HiddenMapWindowAdapter(getActivity()));
     }
 
     @Override
@@ -322,7 +371,7 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
     }
 
     private void showContinueButton() {
-        boolean animate = (mAddressMarker == null && mSelectedBusStop == null);
+        boolean animate = (mAddressMarker == null);
 
         if (!animate) {
             continueButton.setVisibility(View.VISIBLE);
@@ -388,6 +437,10 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
 
             mVisibleBusStops.remove(oldBusStopId);
         }
+
+        if (mSelectedBusStop != null) {
+            selectBusStopMarker(mSelectedBusStop.getId(), false);
+        }
     }
 
     @Override
@@ -431,40 +484,43 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
     }
 
     @OnClick(R.id.resolve_map_continue)
-    void confirmMarker() {
+    void confirmAddressMarker() {
         if (mAddressMarkerPosition != null) {
             getBus().post(new ResolveLocationEvents.MapAddressSelectedEvent(mAddressMarkerPosition));
-        }
-        if (mSelectedBusStop != null) {
-            getBus().post(new ResolveLocationEvents.MapBusStopSelectedEvent(mSelectedBusStop));
         }
     }
 
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
-        if (mMap != null && cameraPosition.zoom >= BUS_STOP_MIN_ZOOM) {
-            boolean taskRunning = isTaskRunning();
-            Log.debug(TAG, "onCameraChange. Zoom valid. Task running: " + taskRunning);
-
-            if (taskRunning) {
-                cancelCurrentTask(false);
-            }
-
-            createTask(TASK_GET_BUS_STOPS, new TaskGetBusStops())
-                    .parameters(mMap.getProjection().getVisibleRegion().latLngBounds)
-                    .start(ResolveLocationMapFragment.this);
+        if (ignoreFirstCameraChange) {
+            Log.debug(TAG, "onCameraChange. Ignored");
+            ignoreFirstCameraChange = false;
+            return;
         }
+
+        updateBusStopMarkers();
+    }
+
+    private void updateBusStopMarkers() {
+        if (mMap == null || mMap.getCameraPosition().zoom < BUS_STOP_MIN_ZOOM) {
+            return;
+        }
+
+        boolean taskRunning = isTaskRunning();
+        Log.debug(TAG, "onCameraChange. Zoom valid. Task running: " + taskRunning);
+
+        if (taskRunning) {
+            cancelCurrentTask(false);
+        }
+
+        createTask(TASK_GET_BUS_STOPS, new TaskGetBusStops())
+                .parameters(mMap.getProjection().getVisibleRegion().latLngBounds)
+                .start(ResolveLocationMapFragment.this);
     }
 
     private void clearSelectedBusStop() {
         if (mSelectedBusStop != null) {
-            long busStopId = mSelectedBusStop.getId();
-            BusStopContent previouslySelectedBusStop = mVisibleBusStops.get(busStopId);
-
-            // The previously selected bus stop may not be on the screen, so don't bother updating the marker.
-            if (previouslySelectedBusStop != null) {
-                replaceBusStopMarker(previouslySelectedBusStop.marker, busUnselectedBitmapDescriptor, busStopId);
-            }
+            replaceBusStopMarker(mSelectedBusStop.getId(), busUnselectedBitmapDescriptor);
 
             mSelectedBusStop = null;
         }
@@ -482,19 +538,114 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
             return true;
         }
 
-        showContinueButton();
         clearAddressMarker();
-
-        Marker newMarker = replaceBusStopMarker(marker, busSelectedBitmapDescriptor, newlySelectedBusStopId);
-        newMarker.showInfoWindow();
-
-        BusStopContent busStopContent = mVisibleBusStops.get(newlySelectedBusStopId);
-        mSelectedBusStop = busStopContent.busStop;
+        selectBusStopMarker(newlySelectedBusStopId, true);
 
         return true;
     }
 
-    private Marker replaceBusStopMarker(Marker oldMarker, BitmapDescriptor bitmapDescriptor, long busStopId) {
+    private void selectBusStopMarker(long busStopId, boolean moveCamera) {
+        Marker newMarker = replaceBusStopMarker(busStopId, busSelectedBitmapDescriptor);
+        if (newMarker == null) {
+            return;
+        }
+
+        newMarker.showInfoWindow();
+
+        BusStopContent busStopContent = mVisibleBusStops.get(busStopId);
+        mSelectedBusStop = busStopContent.busStop;
+
+        if (!moveCamera) {
+            return;
+        }
+
+        Log.debug(TAG, "Animating camera to bus stop marker");
+
+        GoogleMap.CancelableCallback openActivityCallback = null;
+        boolean animateCamera = false;
+
+        if (!isBusActivityOpen) {
+            // Only animate if this activity is in the foreground.
+            animateCamera = true;
+
+            openActivityCallback = new GoogleMap.CancelableCallback() {
+                @Override
+                public void onFinish() {
+                    isBusActivityOpen = true;
+                    startActivityForResult(ResolveBusStopActivity.createIntent(getActivity(), mSelectedBusStop), RESULT_CODE_CONFIRM_BUS_STOP);
+                }
+
+                @Override
+                public void onCancel() {
+
+                }
+            };
+        }
+
+        // We need to calculate the conversion between pixels and latitude.
+        float zoomLevel = mMap.getCameraPosition().zoom;
+        if (latitudeLengthZoomLevel != zoomLevel) {
+            LatLng latLng1 = mMap.getProjection().fromScreenLocation(new Point(0, 0));
+            LatLng latLng2 = mMap.getProjection().fromScreenLocation(new Point(0, 1));
+
+            latitudeLengthForPixel = Math.abs(latLng1.latitude - latLng2.latitude);
+            latitudeLengthZoomLevel = zoomLevel;
+        }
+
+        LatLng markerOffsetPosition = new LatLng(
+                mSelectedBusStop.getLatitude() - calculateBusStopLatitudeOffset(),
+                mSelectedBusStop.getLongitude());
+
+        moveCameraToPosition(markerOffsetPosition, animateCamera, true, openActivityCallback);
+    }
+
+    private double calculateBusStopLatitudeOffset() {
+        // Determine the percentage of the screen used by the prompt.
+        double promptHeightPx = getResources().getDimensionPixelSize(R.dimen.bus_stop_prompt_height);
+
+        return ((promptHeightPx / 4) * latitudeLengthForPixel);
+    }
+
+    private void moveCameraToPosition(LatLng target, boolean animate, boolean ignoreCameraUpdate, final GoogleMap.CancelableCallback callback) {
+        ignoreFirstCameraChange = ignoreCameraUpdate;
+
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(target)
+                .zoom(mMap.getCameraPosition().zoom)
+                .build();
+
+        GoogleMap.CancelableCallback actualCallback = null;
+        if (callback != null) {
+            actualCallback = new GoogleMap.CancelableCallback() {
+                @Override
+                public void onFinish() {
+                    callback.onFinish();
+                }
+
+                @Override
+                public void onCancel() {
+                    ignoreFirstCameraChange = false;
+                    callback.onCancel();
+                }
+            };
+        }
+
+        CameraUpdate update = CameraUpdateFactory.newCameraPosition(cameraPosition);
+        if (animate) {
+            mMap.animateCamera(update, 200, actualCallback);
+        } else {
+            mMap.moveCamera(update);
+        }
+    }
+
+    private Marker replaceBusStopMarker(long busStopId, BitmapDescriptor bitmapDescriptor) {
+        BusStopContent busStopContent = mVisibleBusStops.get(busStopId);
+        if (busStopContent == null) {
+            return null;
+        }
+
+        Marker oldMarker = busStopContent.marker;
+
         Marker newMarker = mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(oldMarker.getPosition().latitude, oldMarker.getPosition().longitude))
                 .icon(bitmapDescriptor)
@@ -502,7 +653,6 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
         mMarkerBusStopRelation.remove(oldMarker.getId());
         mMarkerBusStopRelation.put(newMarker.getId(), busStopId);
 
-        BusStopContent busStopContent = mVisibleBusStops.get(busStopId);
         busStopContent.marker = newMarker;
 
         oldMarker.remove();

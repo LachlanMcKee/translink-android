@@ -8,10 +8,8 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.lach.common.BaseApplication;
-import com.squareup.otto.Bus;
-
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 
 public abstract class ButterCustomDialogFragment extends DialogFragment {
 
@@ -59,24 +57,8 @@ public abstract class ButterCustomDialogFragment extends DialogFragment {
         return false;
     }
 
-    protected Bus getBus() {
-        return BaseApplication.getEventBus();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        // Register ourselves so that we can provide the initial value.
-        getBus().register(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        // Always unregister when an object no longer should be on the bus.
-        getBus().unregister(this);
+    protected EventBus getBus() {
+        return EventBus.getDefault();
     }
 
 }

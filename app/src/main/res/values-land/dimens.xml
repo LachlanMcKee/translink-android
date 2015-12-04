@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="resolve_app_bar_height">60dp</dimen>
+    <dimen name="bus_stop_prompt_height">120dp</dimen>
+</resources>

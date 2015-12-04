@@ -10,25 +10,24 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 
-import com.lach.common.BaseApplication;
 import com.lach.common.ui.BaseActivity;
 import com.lach.common.ui.view.Debouncer;
 import com.lach.common.util.ClipboardUtil;
 import com.lach.common.util.DialogUtil;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.BR;
+import com.lach.translink.data.location.PlaceType;
+import com.lach.translink.data.location.favourite.LocationFavouriteDao;
 import com.lach.translink.data.place.PlaceParser;
-import com.lach.translink.data.place.bus.BusStopParser;
 import com.lach.translink.ui.BaseViewModel;
 import com.lach.translink.ui.PrimaryViewModel;
 import com.lach.translink.ui.SharedEvents;
 import com.lach.translink.ui.resolve.ResolveLocationActivity;
-import com.lach.translink.data.location.favourite.LocationFavouriteDao;
-import com.lach.translink.data.location.PlaceType;
 import com.lach.translink.ui.search.dialog.SavedLocationsDialog;
-import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
 
 public class SearchPlaceViewModel extends BaseViewModel {
     private final int REQUEST_LOCATION_ID = 101;
@@ -74,13 +73,13 @@ public class SearchPlaceViewModel extends BaseViewModel {
     @Override
     public void onResume() {
         super.onResume();
-        BaseApplication.getEventBus().register(this);
+        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        BaseApplication.getEventBus().unregister(this);
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -220,8 +219,7 @@ public class SearchPlaceViewModel extends BaseViewModel {
         notifyPropertyChanged(BR.locationDescription);
     }
 
-    @Subscribe
-    public void onSavedLocationSelected(SharedEvents.SavedLocationSelectedEvent event) {
+    public void onEvent(SharedEvents.SavedLocationSelectedEvent event) {
         String address = event.getAddress();
         if (address != null && event.getPlaceType() == placeType) {
             changeLocation(address);

@@ -3,13 +3,14 @@ package com.lach.common.ui;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.v7.app.AppCompatActivity;
 
 import com.lach.common.BaseApplication;
 import com.lach.common.log.Log;
-import com.squareup.otto.Bus;
 
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 
 public abstract class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
@@ -30,6 +31,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         Log.debug(TAG, "onCreate");
 
         mAllowCommit = true;
+    }
+
+    @Override
+    public void setContentView(@LayoutRes int layoutResID) {
+        super.setContentView(layoutResID);
 
         ButterKnife.inject(this);
     }
@@ -38,8 +44,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         return BaseApplication.ThemeType.STANDARD;
     }
 
-    private Bus getBus() {
-        return BaseApplication.getEventBus();
+    public EventBus getEventBus() {
+        return EventBus.getDefault();
     }
 
     @Override
@@ -52,9 +58,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.debug(TAG, "onResume");
-
-        // Register ourselves so that we can provide the initial value.
-        getBus().register(this);
     }
 
     @Override
@@ -67,9 +70,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         Log.debug(TAG, "onPause");
-
-        // Always unregister when an object no longer should be on the bus.
-        getBus().unregister(this);
     }
 
     @Override

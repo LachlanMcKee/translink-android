@@ -234,6 +234,11 @@ abstract public class AsyncTaskFragment extends ButterFragment {
         }
 
         public void executeTask() {
+            Log.debug(TAG, "executeTask");
+            if (mTaskRef == null) {
+                return;
+            }
+
             ProgressAsyncTask task = mTaskRef.get();
             Log.debug(TAG, "executeTask. task exists: " + (task != null));
 
@@ -244,6 +249,11 @@ abstract public class AsyncTaskFragment extends ButterFragment {
         }
 
         public void cancelTask(boolean notify) {
+            Log.debug(TAG, "cancelTask");
+            if (mTaskRef == null) {
+                return;
+            }
+
             ProgressAsyncTask task = mTaskRef.get();
             Log.debug(TAG, "cancelTask. Task exists: " + (task != null));
 
@@ -264,7 +274,7 @@ abstract public class AsyncTaskFragment extends ButterFragment {
         }
 
         public boolean isTaskActive() {
-            return mTaskRef.get() != null;
+            return mTaskRef != null && mTaskRef.get() != null;
         }
 
         // This is also called by the AsyncTask.
@@ -274,7 +284,9 @@ abstract public class AsyncTaskFragment extends ButterFragment {
 
             // If we aren't resumed, setting the task to null will allow us to dismiss ourselves in
             // onResume().
-            mTaskRef.clear();
+            if (mTaskRef != null) {
+                mTaskRef.clear();
+            }
 
             // Tell the fragment that we are done.
             T taskFragment = getTaskFragment();
@@ -297,12 +309,12 @@ abstract public class AsyncTaskFragment extends ButterFragment {
         }
 
         public void onResume() {
-            boolean taskExists = mTaskRef.get() == null;
+            boolean taskExists = (mTaskRef != null && mTaskRef.get() != null);
             Log.debug(TAG, "onResume. taskExists: " + taskExists);
 
             // This is a little hacky, but we will see if the task has finished while we weren't
             // in this activity, and then we can dismiss ourselves.
-            if (taskExists) {
+            if (!taskExists) {
                 callDestroy();
             }
         }

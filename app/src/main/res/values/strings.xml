@@ -12,6 +12,7 @@
     <string name="activity_title_resolve_location">Resolve Location</string>
     <string name="activity_title_go_card">Go-Card</string>
     <string name="activity_title_install_bus">Update Bus Stops</string>
+    <string name="activity_title_resolve_bus">Confirm Bus Stop</string>
 
     <!-- Preference Screen -->
     <string name="Locations_Preference_Menu">LocationsPreferenceMenu</string>

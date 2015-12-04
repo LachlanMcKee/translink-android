@@ -1,4 +1,7 @@
 <resources>
     <dimen name="map_fab_margin_offset">-48dp</dimen>
     <dimen name="map_location_button_margin">16dp</dimen>
+
+    <dimen name="resolve_app_bar_height">75dp</dimen>
+    <dimen name="bus_stop_prompt_height">200dp</dimen>
 </resources>

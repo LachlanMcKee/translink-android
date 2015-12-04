@@ -1,6 +1,8 @@
 package com.lach.translink.data.place.bus;
 
-public interface BusStop {
+import android.os.Parcelable;
+
+public interface BusStop extends Parcelable {
     long getId();
 
     String getStationId();

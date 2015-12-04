@@ -17,7 +17,6 @@ import com.lach.translink.activities.R;
 import com.lach.translink.data.location.history.LocationHistoryDao;
 import com.lach.translink.data.location.PlaceType;
 import com.lach.translink.data.place.PlaceParser;
-import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
@@ -69,7 +68,22 @@ public class ResolveLocationActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        getEventBus().registerSticky(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        getEventBus().unregister(this);
+    }
+
+    @Override
     protected void onDestroy() {
+        getEventBus().removeAllStickyEvents();
         listFragment = null;
         super.onDestroy();
     }
@@ -89,13 +103,11 @@ public class ResolveLocationActivity extends BaseActivity {
         overridePendingTransition(0, 0);
     }
 
-    @Subscribe
-    public void onLocationSelected(ResolveLocationEvents.LocationSelectedEvent locationSelectedEvent) {
+    public void onEvent(ResolveLocationEvents.LocationSelectedEvent locationSelectedEvent) {
         setSelectedAddressAndFinish(locationSelectedEvent.getAddress());
     }
 
-    @Subscribe
-    public void onShowMap(ResolveLocationEvents.ShowMapEvent event) {
+    public void onEvent(ResolveLocationEvents.ShowMapEvent event) {
         hideKeyboard();
 
         ResolveLocationMapFragment mapFragment = ResolveLocationMapFragment.newInstance(mPlaceType);
@@ -107,8 +119,7 @@ public class ResolveLocationActivity extends BaseActivity {
         ft.commit();
     }
 
-    @Subscribe
-    public void onMapAddressSelected(ResolveLocationEvents.MapAddressSelectedEvent event) {
+    public void onEvent(ResolveLocationEvents.MapAddressSelectedEvent event) {
         // Remove the map fragment from the back stack.
         FragmentManager fm = getSupportFragmentManager();
         fm.popBackStack();
@@ -118,8 +129,9 @@ public class ResolveLocationActivity extends BaseActivity {
         }
     }
 
-    @Subscribe
-    public void onMapBusStopSelected(ResolveLocationEvents.MapBusStopSelectedEvent event) {
+    public void onEvent(ResolveLocationEvents.MapBusStopSelectedEvent event) {
+        getEventBus().removeStickyEvent(event);
+
         PlaceParser placeParser = new PlaceParser();
         setSelectedAddressAndFinish(placeParser.encodeBusStop(event.getBusStop()));
     }

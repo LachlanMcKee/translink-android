@@ -44,6 +44,7 @@ import com.lach.translink.tasks.resolve.TaskFindLocation;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -72,6 +73,9 @@ public class ResolveLocationListFragment extends AsyncTaskFragment {
     private static final String BUNDLE_PREVIOUS_SEARCH_TEXT = "previous_search_text";
 
     private static final String BUNDLE_CURRENT_UI_MODE = "current_ui_mode";
+
+    // Search must contain at least three characters, or three numbers without spaces.
+    private static final Pattern PATTERN_VALID_ADDRESS_SEARCH = Pattern.compile("[a-zA-Z]{3,}");
 
     @InjectView(R.id.resolve_list_root)
     View mRoot;
@@ -500,8 +504,13 @@ public class ResolveLocationListFragment extends AsyncTaskFragment {
             // Check that the input is valid.
             boolean isValid = searchText.length() >= 3;
             if (isValid) {
-                // Check if there are at least 3 alphabet characters before starting the search.
-                isValid = searchText.matches(".*[a-zA-Z]{3,}.*");
+                // Special case for stop ids. It must be at least three numbers, and at most six.
+                isValid = searchText.matches("[0-9]{3,6}");
+
+                if (!isValid) {
+                    // Check if there are at least 3 alphabet characters in a row before starting the search.
+                    isValid = PATTERN_VALID_ADDRESS_SEARCH.matcher(searchText).find();
+                }
             }
 
             if (isValid) {

@@ -46,6 +46,15 @@ public class ResolveLocationUiTest extends ResolveLocationTestCase {
         changeCriteria("Wyn", true);
         changeCriteria("W n", false);
         changeCriteria("W n-123", false);
+
+        //
+        // Special validation rules for stop ids are as follows
+        // - the string must have at least three numeric characters and at most six.
+        //
+        changeCriteria("00", false);
+        changeCriteria("001", true);
+        changeCriteria("001234", true);
+        changeCriteria("0012345", false);
     }
 
     public void testSearchCriteriaPersistence() {

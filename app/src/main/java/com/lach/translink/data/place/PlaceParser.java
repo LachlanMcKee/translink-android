@@ -4,12 +4,15 @@ import com.lach.translink.data.place.bus.BusStop;
 import com.lach.translink.data.place.bus.BusStopDao;
 import com.lach.translink.data.place.bus.BusStopParser;
 
+import javax.inject.Inject;
+
 public class PlaceParser {
 
     BusStopDao busStopDao;
 
-    public PlaceParser() {
-        busStopDao = new BusStopDao();
+    @Inject
+    public PlaceParser(BusStopDao busStopDao) {
+        this.busStopDao = busStopDao;
     }
 
     public String getPlaceSearchText(String address, boolean useLatLng) {

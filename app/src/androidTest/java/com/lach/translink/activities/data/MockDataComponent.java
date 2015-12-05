@@ -8,7 +8,13 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {MockLocationDataModule.class, MockJourneyDataModule.class, MockProviderHelperModule.class})
+@Component(modules = {
+        MockLocationDataModule.class,
+        MockJourneyDataModule.class,
+        MockPlaceDataModule.class,
+        MockProviderHelperModule.class,
+        MockCoreModule.class
+})
 public interface MockDataComponent extends DataComponent {
 
     ResolveLocationTestCase inject(ResolveLocationTestCase inject);

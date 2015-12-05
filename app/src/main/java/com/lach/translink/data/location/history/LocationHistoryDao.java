@@ -18,11 +18,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Dao in charge of delivering {@link LocationHistoryDao} database results.
  */
 public class LocationHistoryDao extends DbFlowDao<LocationHistory, LocationHistoryModel> {
     private static final String TAG = LocationHistoryDao.class.getSimpleName();
+    private final PlaceParser placeParser;
+
+    @Inject
+    public LocationHistoryDao(PlaceParser placeParser) {
+        this.placeParser = placeParser;
+    }
 
     @Override
     public Class<? extends Model> getModelClass() {
@@ -76,9 +84,6 @@ public class LocationHistoryDao extends DbFlowDao<LocationHistory, LocationHisto
                             Log.warn(TAG, "historyLoadListener is not assigned");
                             return;
                         }
-
-
-                        PlaceParser placeParser = new PlaceParser();
 
                         // Iterate through the history and create a results location list.
                         ArrayList<String> locationHistoryList = new ArrayList<>();

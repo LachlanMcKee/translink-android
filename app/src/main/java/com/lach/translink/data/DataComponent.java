@@ -1,8 +1,11 @@
 package com.lach.translink.data;
 
 import com.lach.translink.ui.history.HistoryDialog;
+import com.lach.translink.ui.place.BusStopUpdateFragment;
 import com.lach.translink.ui.resolve.ResolveLocationActivity;
 import com.lach.translink.ui.resolve.ResolveLocationListFragment;
+import com.lach.translink.ui.resolve.ResolveLocationMapFragment;
+import com.lach.translink.ui.search.SearchActivity;
 import com.lach.translink.ui.search.SearchPlaceViewModel;
 import com.lach.translink.ui.search.SearchViewModel;
 import com.lach.translink.ui.search.dialog.FavouriteJourneysDialog;
@@ -37,4 +40,10 @@ public interface DataComponent {
     void inject(SettingsFragment settingsFragment);
 
     void inject(DataResource dataResource);
+
+    void inject(SearchActivity searchActivity);
+
+    void inject(ResolveLocationMapFragment resolveLocationMapFragment);
+
+    void inject(BusStopUpdateFragment busStopUpdateFragment);
 }

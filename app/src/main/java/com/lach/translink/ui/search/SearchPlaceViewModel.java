@@ -38,6 +38,9 @@ public class SearchPlaceViewModel extends BaseViewModel {
     @Inject
     LocationFavouriteDao locationFavouriteDao;
 
+    @Inject
+    PlaceParser placeParser;
+
     public SearchPlaceViewModel(SearchViewModel parent, PlaceType placeType) {
         super(parent);
         this.placeType = placeType;
@@ -122,7 +125,6 @@ public class SearchPlaceViewModel extends BaseViewModel {
 
     @Bindable
     public String getLocationDescription() {
-        PlaceParser placeParser = new PlaceParser();
         return placeParser.prettyPrintPlace(address);
     }
 

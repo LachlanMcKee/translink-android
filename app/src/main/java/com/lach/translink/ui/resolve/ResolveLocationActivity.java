@@ -35,6 +35,9 @@ public class ResolveLocationActivity extends BaseActivity {
     @Inject
     LocationHistoryDao locationHistoryDao;
 
+    @Inject
+    PlaceParser placeParser;
+
     public static Intent createIntent(Context context) {
         return createIntent(context, null);
     }
@@ -131,8 +134,6 @@ public class ResolveLocationActivity extends BaseActivity {
 
     public void onEvent(ResolveLocationEvents.MapBusStopSelectedEvent event) {
         getEventBus().removeStickyEvent(event);
-
-        PlaceParser placeParser = new PlaceParser();
         setSelectedAddressAndFinish(placeParser.encodeBusStop(event.getBusStop()));
     }
 

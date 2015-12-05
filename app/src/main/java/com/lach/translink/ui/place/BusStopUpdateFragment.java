@@ -13,8 +13,12 @@ import android.widget.TextView;
 import com.lach.common.async.AsyncResult;
 import com.lach.common.async.AsyncTaskFragment;
 import com.lach.common.log.Log;
+import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
 import com.lach.translink.tasks.place.TaskInsertBusStops;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -29,6 +33,9 @@ public class BusStopUpdateFragment extends AsyncTaskFragment {
 
     private static final int TASK_INSTALL = 0;
 
+    @Inject
+    Provider<TaskInsertBusStops> insertBusStopsTaskProvider;
+
     @InjectView(R.id.update_bus_stops_text)
     TextView label;
 
@@ -42,9 +49,12 @@ public class BusStopUpdateFragment extends AsyncTaskFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        TranslinkApplication application = (TranslinkApplication) getActivity().getApplication();
+        application.getDataComponent().inject(this);
+
         if (!isTaskRunning()) {
             Log.debug(TAG, "Starting install task.");
-            startTask(TASK_INSTALL, new TaskInsertBusStops(getActivity()));
+            startTask(TASK_INSTALL, insertBusStopsTaskProvider.get());
         }
     }
 

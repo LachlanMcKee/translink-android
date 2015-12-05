@@ -15,11 +15,13 @@ import com.lach.translink.util.JourneyCriteriaHelper;
 import java.util.List;
 
 public class JourneyAdapter extends ViewHolderArrayAdapter<JourneyCriteriaFavourite> {
-
+    private final PlaceParser placeParser;
     private final boolean isCheckable;
 
-    public JourneyAdapter(Context context, List<? extends JourneyCriteriaFavourite> favouriteList, boolean isCheckable) {
+    public JourneyAdapter(Context context, PlaceParser placeParser, List<? extends JourneyCriteriaFavourite> favouriteList, boolean isCheckable) {
         super(context, R.layout.l_journey_history, (List<JourneyCriteriaFavourite>) favouriteList);
+
+        this.placeParser = placeParser;
         this.isCheckable = isCheckable;
 
         addViewHolderHelper(new JourneyViewHolderHelper());
@@ -69,7 +71,6 @@ public class JourneyAdapter extends ViewHolderArrayAdapter<JourneyCriteriaFavour
             setText(holder.title, item.getName());
 
             JourneyCriteria criteria = item.getJourneyCriteria();
-            PlaceParser placeParser = new PlaceParser();
             setText(holder.fromLocationLabel, holder.fromLocation, placeParser.prettyPrintPlace(criteria.getFromAddress()));
             setText(holder.toLocationLabel, holder.toLocation, placeParser.prettyPrintPlace(criteria.getToAddress()));
             setText(holder.description, JourneyCriteriaHelper.createJourneyDescription(criteria));

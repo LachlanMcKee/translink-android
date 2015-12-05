@@ -24,6 +24,9 @@ public class FavouriteJourneysActivity extends CheckableListActivity<JourneyCrit
     @Inject
     JourneyCriteriaFavouriteDao journeyCriteriaFavouriteDao;
 
+    @Inject
+    PlaceParser placeParser;
+
     @Override
     public String getTypeDescription() {
         return "journeys";
@@ -57,7 +60,6 @@ public class FavouriteJourneysActivity extends CheckableListActivity<JourneyCrit
 
                 JourneyCriteria criteria = item.getJourneyCriteria();
 
-                PlaceParser placeParser = new PlaceParser();
                 setText(h.fromLocationLabel, h.fromLocation, placeParser.prettyPrintPlace(criteria.getFromAddress()));
                 setText(h.toLocationLabel, h.toLocation, placeParser.prettyPrintPlace(criteria.getToAddress()));
 

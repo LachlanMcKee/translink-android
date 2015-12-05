@@ -23,6 +23,9 @@ import javax.inject.Inject;
 public class SearchActivity extends BaseActivity {
 
     @Inject
+    BusStopDao busStopDao;
+
+    @Inject
     PreferencesProvider preferencesProvider;
 
     private String currentThemeName;
@@ -36,7 +39,7 @@ public class SearchActivity extends BaseActivity {
         setContentView(R.layout.a_single_fragment);
 
         TranslinkApplication application = (TranslinkApplication) getApplication();
-        application.getCoreComponent().inject(this);
+        application.getDataComponent().inject(this);
 
         Preferences preferences = preferencesProvider.getPreferences();
         currentThemeName = CommonPreference.THEME.get(preferences);
@@ -51,7 +54,7 @@ public class SearchActivity extends BaseActivity {
             ft.commit();
         }
 
-        if (new BusStopDao().getRowCount() == 0) {
+        if (busStopDao.getRowCount() == 0) {
             startActivity(new Intent(this, BusStopUpdateActivity.class));
         } else {
             initWebView();

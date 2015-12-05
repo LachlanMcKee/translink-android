@@ -50,6 +50,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -101,6 +102,9 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
     @Inject
     PreferencesProvider preferencesProvider;
 
+    @Inject
+    Provider<TaskGetBusStops> getBusStopsTaskProvider;
+
     @InjectView(R.id.resolve_map_coordinator)
     ViewGroup coordinatorLayout;
 
@@ -137,7 +141,7 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
         super.onViewCreated(view, savedInstanceState);
 
         TranslinkApplication application = (TranslinkApplication) getActivity().getApplication();
-        application.getCoreComponent().inject(this);
+        application.getDataComponent().inject(this);
 
         ButterKnife.inject(this, view);
 
@@ -513,7 +517,7 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
             cancelCurrentTask(false);
         }
 
-        createTask(TASK_GET_BUS_STOPS, new TaskGetBusStops())
+        createTask(TASK_GET_BUS_STOPS, getBusStopsTaskProvider.get())
                 .parameters(mMap.getProjection().getVisibleRegion().latLngBounds)
                 .start(ResolveLocationMapFragment.this);
     }

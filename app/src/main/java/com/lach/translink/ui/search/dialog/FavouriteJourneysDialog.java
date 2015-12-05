@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.data.journey.favourite.JourneyCriteriaFavourite;
 import com.lach.translink.data.journey.favourite.JourneyCriteriaFavouriteDao;
+import com.lach.translink.data.place.PlaceParser;
 
 import java.util.List;
 
@@ -23,6 +24,9 @@ public class FavouriteJourneysDialog extends DialogFragment {
 
     @Inject
     JourneyCriteriaFavouriteDao journeyCriteriaFavouriteDao;
+
+    @Inject
+    PlaceParser placeParser;
 
     public static FavouriteJourneysDialog newInstance() {
         return new FavouriteJourneysDialog();
@@ -40,7 +44,7 @@ public class FavouriteJourneysDialog extends DialogFragment {
 
         final List<? extends JourneyCriteriaFavourite> favouriteList = journeyCriteriaFavouriteDao.getAllRowsAsItems();
 
-        JourneyAdapter adapter = new JourneyAdapter(getActivity(), favouriteList, false);
+        JourneyAdapter adapter = new JourneyAdapter(getActivity(), placeParser, favouriteList, false);
         b.setAdapter(adapter,
                 new DialogInterface.OnClickListener() {
 

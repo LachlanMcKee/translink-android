@@ -10,8 +10,16 @@ import com.lach.translink.data.place.bus.BusStopDao;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class TaskGetBusStops implements Task<List<BusStop>> {
     private static final String TAG = TaskGetBusStops.class.getSimpleName();
+    private final BusStopDao busStopDao;
+
+    @Inject
+    public TaskGetBusStops(BusStopDao busStopDao) {
+        this.busStopDao = busStopDao;
+    }
 
     @Override
     public AsyncResult<List<BusStop>> execute(Object... params) {
@@ -31,7 +39,7 @@ public class TaskGetBusStops implements Task<List<BusStop>> {
 
         LatLngBounds latLngBounds = (LatLngBounds) params[0];
 
-        List<BusStop> busStopList = (List<BusStop>) new BusStopDao().getBusStopsWithinRegion(latLngBounds);
+        List<BusStop> busStopList = (List<BusStop>) busStopDao.getBusStopsWithinRegion(latLngBounds);
         return new AsyncResult<>(busStopList);
     }
 

@@ -25,6 +25,9 @@ public class SavedLocationsDialog extends ButterCustomDialogFragment {
     @Inject
     LocationFavouriteDao locationFavouriteDao;
 
+    @Inject
+    PlaceParser placeParser;
+
     public static SavedLocationsDialog newInstance(PlaceType placeType) {
         SavedLocationsDialog dialog = new SavedLocationsDialog();
 
@@ -45,7 +48,6 @@ public class SavedLocationsDialog extends ButterCustomDialogFragment {
         final List<? extends LocationFavourite> addressList = locationFavouriteDao.getAllRowsAsItems();
         CharSequence[] items = new CharSequence[addressList.size()];
 
-        PlaceParser placeParser = new PlaceParser();
         for (int i = 0; i < addressList.size(); i++) {
             items[i] = placeParser.prettyPrintPlace(addressList.get(i).getAddress());
         }

@@ -16,13 +16,15 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class HistoryArrayAdapter extends ViewHolderArrayAdapter<JourneyCriteriaHistory> {
-
+    private final PlaceParser placeParser;
     private final boolean ignoreHistoryTime;
 
-    public HistoryArrayAdapter(Context context, List<? extends JourneyCriteriaHistory> list, boolean ignoreHistoryTime) {
+    public HistoryArrayAdapter(Context context, PlaceParser placeParser, List<? extends JourneyCriteriaHistory> list, boolean ignoreHistoryTime) {
         super(context, R.layout.l_journey_history, (List<JourneyCriteriaHistory>) list);
 
+        this.placeParser = placeParser;
         this.ignoreHistoryTime = ignoreHistoryTime;
+
         addViewHolderHelper(new HistoryViewHolderHelper());
     }
 
@@ -58,7 +60,6 @@ public class HistoryArrayAdapter extends ViewHolderArrayAdapter<JourneyCriteriaH
         public void updateViewHolder(HistoryViewHolder holder, JourneyCriteriaHistory item) {
             JourneyCriteria journeyCriteria = item.getJourneyCriteria();
 
-            PlaceParser placeParser = new PlaceParser();
             holder.fromLocation.setText(placeParser.prettyPrintPlace(journeyCriteria.getFromAddress()));
             holder.toLocation.setText(placeParser.prettyPrintPlace(journeyCriteria.getToAddress()));
 

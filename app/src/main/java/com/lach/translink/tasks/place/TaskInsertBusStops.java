@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.lach.common.async.AsyncResult;
 import com.lach.common.async.Task;
+import com.lach.common.data.ApplicationContext;
 import com.lach.common.data.TaskGenericErrorType;
 import com.lach.common.log.Log;
 import com.lach.translink.data.place.bus.BusStop;
@@ -15,6 +16,8 @@ import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class TaskInsertBusStops implements Task<Void> {
     private static final String TAG = TaskInsertBusStops.class.getSimpleName();
@@ -29,10 +32,13 @@ public class TaskInsertBusStops implements Task<Void> {
     private static final int COL_LATITUDE = 7;
     private static final int COL_LONGITUDE = 8;
 
-    WeakReference<Context> contextRef;
+    private final WeakReference<Context> contextRef;
+    private final BusStopDao busStopDao;
 
-    public TaskInsertBusStops(Context context) {
-        contextRef = new WeakReference<>(context);
+    @Inject
+    public TaskInsertBusStops(@ApplicationContext Context context, BusStopDao busStopDao) {
+        this.contextRef = new WeakReference<>(context);
+        this.busStopDao = busStopDao;
     }
 
     @Override
@@ -61,8 +67,6 @@ public class TaskInsertBusStops implements Task<Void> {
         InputStreamReader is = new InputStreamReader(context.getAssets().open("bus_stops.csv"));
         contextRef.clear();
 
-        BusStopDao dao = new BusStopDao();
-
         BufferedReader reader = new BufferedReader(is);
         reader.readLine();
         String line;
@@ -79,7 +83,7 @@ public class TaskInsertBusStops implements Task<Void> {
                 continue;
             }
 
-            BusStopModel model = dao.createModel();
+            BusStopModel model = busStopDao.createModel();
 
             // Pad with zeros until it is 6 characters.
             model.setStationId(String.format("%06d", Integer.parseInt(stationId)));
@@ -92,7 +96,7 @@ public class TaskInsertBusStops implements Task<Void> {
         }
 
         Log.debug(TAG, "Inserting " + busStopList.size() + " bus stops.");
-        dao.insertRows(true, busStopList);
+        busStopDao.insertRows(true, busStopList);
         Log.debug(TAG, "Finished inserting.");
 
         return result;

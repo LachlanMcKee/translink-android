@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.data.journey.history.JourneyCriteriaHistory;
 import com.lach.translink.data.journey.history.JourneyCriteriaHistoryDao;
+import com.lach.translink.data.place.PlaceParser;
 
 import java.util.List;
 
@@ -24,6 +25,9 @@ public class HistoryDialog extends DialogFragment {
 
     @Inject
     JourneyCriteriaHistoryDao journeyCriteriaHistoryDao;
+
+    @Inject
+    PlaceParser placeParser;
 
     public static HistoryDialog newInstance(boolean ignoreHistoryTime) {
         HistoryDialog dialog = new HistoryDialog();
@@ -48,7 +52,7 @@ public class HistoryDialog extends DialogFragment {
         application.getDataComponent().inject(this);
 
         final List<? extends JourneyCriteriaHistory> criteriaHistory = journeyCriteriaHistoryDao.getAllRowsAsItems();
-        b.setAdapter(new HistoryArrayAdapter(getActivity(), criteriaHistory, ignoreHistoryTime),
+        b.setAdapter(new HistoryArrayAdapter(getActivity(), placeParser, criteriaHistory, ignoreHistoryTime),
                 new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int item) {

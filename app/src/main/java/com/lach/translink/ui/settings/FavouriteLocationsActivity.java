@@ -1,7 +1,6 @@
 package com.lach.translink.ui.settings;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
@@ -22,14 +21,8 @@ public class FavouriteLocationsActivity extends CheckableListActivity<LocationFa
     @Inject
     LocationFavouriteDao locationFavouriteDao;
 
+    @Inject
     PlaceParser placeParser;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        placeParser = new PlaceParser();
-    }
 
     @Override
     protected BaseDao<LocationFavourite, ? extends LocationFavourite> getListDao() {

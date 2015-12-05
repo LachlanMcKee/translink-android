@@ -6,8 +6,4 @@ import com.lach.translink.ui.search.SearchActivity;
 
 public interface CoreComponent {
     void inject(GoCardDetailsDialog inject);
-
-    void inject(ResolveLocationMapFragment inject);
-
-    void inject(SearchActivity inject);
 }

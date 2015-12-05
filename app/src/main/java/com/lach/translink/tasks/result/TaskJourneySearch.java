@@ -48,12 +48,15 @@ public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse
 
     private final Context context;
     private final PreferencesProvider preferencesProvider;
+    private final PlaceParser placeParser;
     private final CookieManagerFacade cookieManager;
 
     @Inject
-    public TaskJourneySearch(@ApplicationContext Context context, PreferencesProvider preferencesProvider, CookieManagerFacade cookieManager) {
+    public TaskJourneySearch(@ApplicationContext Context context, PreferencesProvider preferencesProvider,
+                             PlaceParser placeParser, CookieManagerFacade cookieManager) {
         this.context = context;
         this.preferencesProvider = preferencesProvider;
+        this.placeParser = placeParser;
         this.cookieManager = cookieManager;
     }
 
@@ -104,7 +107,6 @@ public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse
         //
         // Use the correct search text if the criteria was encoded.
         //
-        PlaceParser placeParser = new PlaceParser();
         String fromAddress = placeParser.getPlaceSearchText(journeyCriteria.getFromAddress(),
                 previousRecoverableErrors != null && previousRecoverableErrors.badStart);
 

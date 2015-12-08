@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -35,6 +34,7 @@ import com.lach.common.data.preference.Preferences;
 import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.log.Log;
 import com.lach.common.ui.view.ScaleAnimator;
+import com.lach.common.util.MapUtil;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
 import com.lach.translink.data.location.PlaceType;
@@ -169,24 +169,7 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
 
         mapViewContainer.addView(mapView);
         mapView.onCreate(savedInstanceState);
-
-        try {
-            // Get the button view
-            View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
-
-            RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
-
-            int buttonMargin = getResources().getDimensionPixelOffset(R.dimen.map_location_button_margin);
-
-            // position on right bottom
-            rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
-            rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-            rlp.setMargins(0, 0, buttonMargin, buttonMargin);
-
-        } catch (Exception ignored) {
-            // If we fail to move the button it isn't the end of the world.
-            Log.warn(TAG, "Unable to move the myLocation button.");
-        }
+        MapUtil.moveLocationButtonToBottomRight(mapView, getResources().getDimensionPixelOffset(R.dimen.map_location_button_margin));
 
         Preferences preferences = preferencesProvider.getPreferences();
         if (UiPreference.AUTOMATIC_KEYBOARD.get(preferences)) {
@@ -206,6 +189,8 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
             description = "location";
         }
         title.setText("Choose " + description);
+
+        hideContinueButton();
 
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -294,6 +279,8 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
                     return;
 
                 case Activity.RESULT_CANCELED:
+                    hideContinueButton();
+
                     clearSelectedBusStop();
                     updateBusStopMarkers();
                     return;
@@ -386,6 +373,11 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
             continueButtonScaler.show();
         }
         subtitle.setText(R.string.resolve_map_subtitle_continue);
+    }
+
+    private void hideContinueButton() {
+        continueButton.setVisibility(View.GONE);
+        subtitle.setText(R.string.resolve_map_subtitle_intro);
     }
 
     @Override

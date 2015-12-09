@@ -12,12 +12,13 @@ import com.lach.common.log.Log;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
 
-public class TaskGetAddress implements Task<List<Address>> {
+public class TaskGetAddress implements Task<List<String>> {
     private static final String TAG = "TaskGetAddress";
     private final WeakReference<Context> contextRef;
 
@@ -27,7 +28,7 @@ public class TaskGetAddress implements Task<List<Address>> {
     }
 
     @Override
-    public AsyncResult<List<Address>> execute(Object... params) {
+    public AsyncResult<List<String>> execute(Object... params) {
         Context context = contextRef.get();
         if (context == null) {
             Log.warn(TAG, "Context was not set.");
@@ -40,7 +41,11 @@ public class TaskGetAddress implements Task<List<Address>> {
             List<Address> addressList = gc.getFromLocation(destination.latitude, destination.longitude, 1);
 
             if (addressList != null) {
-                return new AsyncResult<>(addressList);
+                List<String> formattedAddresses = new ArrayList<>(addressList.size());
+                for (Address address : addressList) {
+                    formattedAddresses.add(getAddressText(address));
+                }
+                return new AsyncResult<>(formattedAddresses);
             }
 
         } catch (IOException ex) {
@@ -48,6 +53,15 @@ public class TaskGetAddress implements Task<List<Address>> {
         }
 
         return new AsyncResult<>(TaskGenericErrorType.INVALID_NETWORK_RESPONSE);
+    }
+
+    private String getAddressText(Address address) {
+        String line1 = address.getAddressLine(0);
+        String line2 = address.getLocality();
+        if (line2 != null) {
+            return line1 + ", " + line2;
+        }
+        return line1;
     }
 
 }

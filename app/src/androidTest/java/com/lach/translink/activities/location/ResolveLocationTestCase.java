@@ -8,7 +8,7 @@ import com.lach.common.data.provider.ContactAddressExtractor;
 import com.lach.common.tasks.TaskGetAddress;
 import com.lach.common.log.Log;
 import com.lach.translink.activities.R;
-import com.lach.translink.ui.resolve.ResolveLocationActivity;
+import com.lach.translink.ui.impl.resolve.ResolveLocationActivity;
 import com.lach.translink.activities.data.DaggerMockDataComponent;
 import com.lach.translink.activities.data.MockDataComponent;
 import com.lach.translink.data.location.PlaceType;

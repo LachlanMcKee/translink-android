@@ -14,12 +14,15 @@ import com.lach.translink.ui.impl.search.dialog.SavedLocationsDialog;
 import com.lach.translink.ui.impl.settings.FavouriteJourneysActivity;
 import com.lach.translink.ui.impl.settings.FavouriteLocationsActivity;
 import com.lach.translink.ui.impl.settings.SettingsFragment;
+import com.lach.translink.ui.presenter.resolve.ResolveLocationListPresenterImpl;
 import com.lach.translink.util.DataResource;
 
 public interface DataComponent {
     void inject(ResolveLocationActivity inject);
 
-    void inject(ResolveLocationListFragment inject);
+    void inject(ResolveLocationListFragment resolveLocationListPresenter);
+
+    void inject(ResolveLocationListPresenterImpl resolveLocationListPresenterImpl);
 
     void inject(FavouriteJourneysActivity inject);
 

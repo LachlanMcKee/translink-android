@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Address;
 import android.net.Uri;
 import android.support.test.espresso.ViewAssertion;
 import android.support.test.espresso.intent.Intents;
@@ -21,7 +20,6 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -99,10 +97,8 @@ public class ResolveLocationUiTest extends ResolveLocationTestCase {
     public void testMapIntegration() throws InterruptedException {
         init(false);
 
-        List<Address> addressList = new ArrayList<>(1);
-        Address address = new Address(Locale.getDefault());
-        address.setAddressLine(0, DUMMY_ADDRESS);
-        addressList.add(address);
+        List<String> addressList = new ArrayList<>(1);
+        addressList.add(DUMMY_ADDRESS);
 
         Mockito.doReturn(new AsyncResult<>(addressList))
                 .when(taskGetAddress)

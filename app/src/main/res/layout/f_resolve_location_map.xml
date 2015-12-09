@@ -15,7 +15,7 @@
         android:layout_below="@id/appbar"
         tools:background="#d2d2db"/>
 
-    <com.lach.translink.ui.resolve.ResolveBusStopInfoView
+    <com.lach.translink.ui.impl.resolve.ResolveBusStopInfoView
         android:id="@+id/resolve_map_bus_stop_info"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

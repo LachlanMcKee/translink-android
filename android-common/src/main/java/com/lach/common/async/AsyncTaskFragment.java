@@ -20,13 +20,8 @@ import com.lach.common.util.DialogUtil;
 
 import java.lang.ref.WeakReference;
 
-abstract public class AsyncTaskFragment extends ButterFragment {
+public abstract class AsyncTaskFragment extends ButterFragment implements AsyncTaskUi {
     private static final String TAG = "AsyncTaskFragment";
-
-    protected abstract void onTaskFinished(int taskId, AsyncResult result);
-
-    @SuppressWarnings("UnusedParameters")
-    protected abstract void onTaskCancelled(int taskId);
 
     // Code to identify the fragment that is calling onActivityResult(). We don't really need
     // this since we only have one fragment to deal with.
@@ -62,6 +57,7 @@ abstract public class AsyncTaskFragment extends ButterFragment {
         super.onDestroy();
     }
 
+    @Override
     public boolean onTaskError(int taskId, int errorId) {
         return false;
     }

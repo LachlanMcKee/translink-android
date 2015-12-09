@@ -1,19 +1,19 @@
 package com.lach.translink.data;
 
-import com.lach.translink.ui.history.HistoryDialog;
-import com.lach.translink.ui.place.BusStopUpdateFragment;
-import com.lach.translink.ui.resolve.ResolveLocationActivity;
-import com.lach.translink.ui.resolve.ResolveLocationListFragment;
-import com.lach.translink.ui.resolve.ResolveLocationMapFragment;
-import com.lach.translink.ui.search.SearchActivity;
-import com.lach.translink.ui.search.SearchPlaceViewModel;
-import com.lach.translink.ui.search.SearchViewModel;
-import com.lach.translink.ui.search.dialog.FavouriteJourneysDialog;
-import com.lach.translink.ui.search.dialog.SaveJourneyDialog;
-import com.lach.translink.ui.search.dialog.SavedLocationsDialog;
-import com.lach.translink.ui.settings.FavouriteJourneysActivity;
-import com.lach.translink.ui.settings.FavouriteLocationsActivity;
-import com.lach.translink.ui.settings.SettingsFragment;
+import com.lach.translink.ui.impl.history.HistoryDialog;
+import com.lach.translink.ui.impl.place.BusStopUpdateFragment;
+import com.lach.translink.ui.impl.resolve.ResolveLocationActivity;
+import com.lach.translink.ui.impl.resolve.ResolveLocationListFragment;
+import com.lach.translink.ui.impl.resolve.ResolveLocationMapFragment;
+import com.lach.translink.ui.impl.search.SearchActivity;
+import com.lach.translink.ui.impl.search.SearchPlaceViewModel;
+import com.lach.translink.ui.impl.search.SearchViewModel;
+import com.lach.translink.ui.impl.search.dialog.FavouriteJourneysDialog;
+import com.lach.translink.ui.impl.search.dialog.SaveJourneyDialog;
+import com.lach.translink.ui.impl.search.dialog.SavedLocationsDialog;
+import com.lach.translink.ui.impl.settings.FavouriteJourneysActivity;
+import com.lach.translink.ui.impl.settings.FavouriteLocationsActivity;
+import com.lach.translink.ui.impl.settings.SettingsFragment;
 import com.lach.translink.util.DataResource;
 
 public interface DataComponent {

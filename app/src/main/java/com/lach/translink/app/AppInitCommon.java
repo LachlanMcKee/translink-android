@@ -7,7 +7,7 @@ import com.lach.common.data.preference.BooleanPreference;
 import com.lach.common.data.preference.Preferences;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.data.journey.JourneyPreference;
-import com.lach.translink.ui.UiPreference;
+import com.lach.translink.ui.impl.UiPreference;
 import com.lach.translink.util.DataResource;
 
 public class AppInitCommon {

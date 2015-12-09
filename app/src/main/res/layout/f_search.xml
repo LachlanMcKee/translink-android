@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.lach.translink.ui.search.SearchViewModel"/>
+            type="com.lach.translink.ui.impl.search.SearchViewModel"/>
     </data>
 
     <RelativeLayout

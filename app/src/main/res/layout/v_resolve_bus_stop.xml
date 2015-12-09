@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <View
+        android:id="@+id/resolve_bus_dismiss"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#50000000" />
+
+    <LinearLayout
+        android:id="@+id/resolve_bus_stop_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bus_stop_prompt_height"
+        android:layout_gravity="bottom"
+        android:background="@color/background_material_light"
+        android:clickable="true"
+        android:minHeight="@dimen/bus_stop_prompt_height"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_padding">
+
+        <TextView
+            android:id="@+id/resolve_bus_stop_description"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Description" />
+
+    </LinearLayout>
+
+</merge>

@@ -2,7 +2,6 @@ package com.lach.translink.ui.resolve;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -61,8 +60,6 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
 
     private static final String PLACE_TYPE = "place_type";
 
-    private static final int RESULT_CODE_CONFIRM_BUS_STOP = 0;
-
     private static final int TASK_GET_BUS_STOPS = 0;
 
     private static final BooleanPreference PREF_POSITION_SET = new BooleanPreference("position_set", false);
@@ -72,7 +69,6 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
     private static final FloatPreference PREF_BEARING = new FloatPreference("bearing", 0.0f);
 
     private static final String BUNDLE_CURRENT_MARKER_POSITION = "current_marker_position";
-    private static final String BUNDLE_IS_BUS_ACTIVITY_OPEN = "is_bus_activity_open";
     private static final String BUNDLE_SELECTED_BUS_STOP = "selected_bus_stop";
     private static final String BUNDLE_LATITUDE_LENGTH_FOR_PIXEL = "latitude_length_for_pixel";
     private static final String BUNDLE_LATITUDE_LENGTH_ZOOM = "latitude_length_zoom";
@@ -90,7 +86,6 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
     private GoogleMap mMap;
     private float latitudeLengthZoomLevel = 0.0f;
     private double latitudeLengthForPixel = 0.0d;
-    private boolean isBusActivityOpen;
     private boolean ignoreFirstCameraChange;
 
     private LatLng mAddressMarkerPosition;
@@ -119,6 +114,9 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
 
     @InjectView(R.id.resolve_map_continue)
     View continueButton;
+
+    @InjectView(R.id.resolve_map_bus_stop_info)
+    ResolveBusStopInfoView busStopInfoView;
 
     // Don't data-bind this. We need to reference it after onDestroyView.
     MapView mapView;
@@ -151,7 +149,6 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
         // Reload the current marker position if it exists.
         if (savedInstanceState != null) {
             mAddressMarkerPosition = savedInstanceState.getParcelable(BUNDLE_CURRENT_MARKER_POSITION);
-            isBusActivityOpen = savedInstanceState.getBoolean(BUNDLE_IS_BUS_ACTIVITY_OPEN);
 
             mSelectedBusStop = savedInstanceState.getParcelable(BUNDLE_SELECTED_BUS_STOP);
 
@@ -202,6 +199,18 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
                 }
             }
         });
+
+        busStopInfoView.setDismissListener(new ResolveBusStopInfoView.DismissListener() {
+            @Override
+            public void onDismissCompleted() {
+                hideContinueButton();
+
+                clearSelectedBusStop();
+                updateBusStopMarkers();
+
+                busStopInfoView.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
@@ -213,10 +222,7 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
     @Override
     public void onPause() {
         super.onPause();
-
-        if (!isBusActivityOpen) {
-            mapView.onPause();
-        }
+        mapView.onPause();
     }
 
     @Override
@@ -224,9 +230,6 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
         super.onDestroyView();
 
         saveLastCameraPosition();
-
-        // Ensure the map is paused to prevent memory leaks if onPause was skipped previously.
-        mapView.onPause();
 
         if (mMap != null) {
             mMap.setMyLocationEnabled(false);
@@ -259,34 +262,12 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
         mapView.onSaveInstanceState(outState);
         outState.putParcelable(BUNDLE_CURRENT_MARKER_POSITION, mAddressMarkerPosition);
 
-        outState.putBoolean(BUNDLE_IS_BUS_ACTIVITY_OPEN, isBusActivityOpen);
         outState.putParcelable(BUNDLE_SELECTED_BUS_STOP, mSelectedBusStop);
 
         outState.putDouble(BUNDLE_LATITUDE_LENGTH_FOR_PIXEL, latitudeLengthForPixel);
         outState.putFloat(BUNDLE_LATITUDE_LENGTH_ZOOM, latitudeLengthZoomLevel);
 
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RESULT_CODE_CONFIRM_BUS_STOP) {
-            isBusActivityOpen = false;
-
-            switch (resultCode) {
-                case Activity.RESULT_OK:
-                    getBus().postSticky(new ResolveLocationEvents.MapBusStopSelectedEvent(mSelectedBusStop));
-                    return;
-
-                case Activity.RESULT_CANCELED:
-                    hideContinueButton();
-
-                    clearSelectedBusStop();
-                    updateBusStopMarkers();
-                    return;
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private GoogleMapOptions createGoogleMapOptions() {
@@ -362,7 +343,7 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
     }
 
     private void showContinueButton() {
-        boolean animate = (mAddressMarker == null);
+        boolean animate = (mAddressMarker == null && mSelectedBusStop == null);
 
         if (!animate) {
             continueButton.setVisibility(View.VISIBLE);
@@ -483,6 +464,9 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
     void confirmAddressMarker() {
         if (mAddressMarkerPosition != null) {
             getBus().post(new ResolveLocationEvents.MapAddressSelectedEvent(mAddressMarkerPosition));
+
+        } else if (mSelectedBusStop != null) {
+            getBus().post(new ResolveLocationEvents.MapBusStopSelectedEvent(mSelectedBusStop));
         }
     }
 
@@ -548,8 +532,16 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
 
         newMarker.showInfoWindow();
 
+        boolean isBusStopAlreadySelected = (mSelectedBusStop != null);
+        showContinueButton();
+
         BusStopContent busStopContent = mVisibleBusStops.get(busStopId);
         mSelectedBusStop = busStopContent.busStop;
+
+        if (isBusStopAlreadySelected) {
+            busStopInfoView.setVisibility(View.VISIBLE);
+            busStopInfoView.show(mSelectedBusStop, false);
+        }
 
         if (!moveCamera) {
             return;
@@ -560,15 +552,15 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
         GoogleMap.CancelableCallback openActivityCallback = null;
         boolean animateCamera = false;
 
-        if (!isBusActivityOpen) {
+        if (!isBusStopAlreadySelected) {
             // Only animate if this activity is in the foreground.
             animateCamera = true;
 
             openActivityCallback = new GoogleMap.CancelableCallback() {
                 @Override
                 public void onFinish() {
-                    isBusActivityOpen = true;
-                    startActivityForResult(ResolveBusStopActivity.createIntent(getActivity(), mSelectedBusStop), RESULT_CODE_CONFIRM_BUS_STOP);
+                    busStopInfoView.setVisibility(View.VISIBLE);
+                    busStopInfoView.show(mSelectedBusStop, true);
                 }
 
                 @Override
@@ -654,6 +646,14 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Goo
         oldMarker.remove();
 
         return newMarker;
+    }
+
+    public boolean handleBackPressed() {
+        if (busStopInfoView.getVisibility() == View.VISIBLE) {
+            busStopInfoView.dismiss();
+            return true;
+        }
+        return false;
     }
 
     private static class BusStopContent {

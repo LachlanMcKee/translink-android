@@ -74,10 +74,6 @@
         <activity
             android:name="com.lach.translink.ui.place.BusStopUpdateActivity"
             android:label="@string/activity_title_install_bus"/>
-        <activity
-            android:name="com.lach.translink.ui.resolve.ResolveBusStopActivity"
-            android:label="@string/activity_title_resolve_bus"
-            android:theme="@style/AppThemeLight.Transparent"/>
     </application>
 
 </manifest>

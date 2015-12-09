@@ -74,7 +74,7 @@ public class ResolveLocationActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-        getEventBus().registerSticky(this);
+        getEventBus().register(this);
     }
 
     @Override
@@ -86,7 +86,6 @@ public class ResolveLocationActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        getEventBus().removeAllStickyEvents();
         listFragment = null;
         super.onDestroy();
     }
@@ -133,7 +132,6 @@ public class ResolveLocationActivity extends BaseActivity {
     }
 
     public void onEvent(ResolveLocationEvents.MapBusStopSelectedEvent event) {
-        getEventBus().removeStickyEvent(event);
         setSelectedAddressAndFinish(placeParser.encodeBusStop(event.getBusStop()));
     }
 
@@ -143,6 +141,15 @@ public class ResolveLocationActivity extends BaseActivity {
             if (listFragment != null && listFragment.isVisible()) {
                 if (listFragment.handleBackPressed()) {
                     return true;
+                }
+
+            } else {
+                FragmentManager fm = getSupportFragmentManager();
+                ResolveLocationMapFragment mapFragment = (ResolveLocationMapFragment) fm.findFragmentByTag(TAG_MAP);
+                if (mapFragment != null && mapFragment.isVisible()) {
+                    if (mapFragment.handleBackPressed()) {
+                        return true;
+                    }
                 }
             }
         }

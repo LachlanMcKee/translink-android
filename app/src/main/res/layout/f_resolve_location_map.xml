@@ -15,6 +15,14 @@
         android:layout_below="@id/appbar"
         tools:background="#d2d2db"/>
 
+    <com.lach.translink.ui.resolve.ResolveBusStopInfoView
+        android:id="@+id/resolve_map_bus_stop_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/appbar"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/resolve_map_continue"
         android:layout_width="wrap_content"

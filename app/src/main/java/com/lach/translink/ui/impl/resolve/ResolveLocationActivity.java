@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
@@ -121,14 +122,23 @@ public class ResolveLocationActivity extends BaseActivity {
         ft.commit();
     }
 
-    public void onEvent(ResolveLocationEvents.MapAddressSelectedEvent event) {
+    public void onEvent(final ResolveLocationEvents.MapAddressSelectedEvent event) {
         // Remove the map fragment from the back stack.
         FragmentManager fm = getSupportFragmentManager();
         fm.popBackStack();
 
-        if (listFragment != null) {
-            listFragment.setMapLookupPoint(event.getPoint());
-        }
+        //
+        // Execute this after 'popBackStack' has finished. The delay is only used to get this off the UI thread.
+        // Since the popBackStack eventually runs once the UI thread is finished, we are queuing this.
+        //
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (listFragment != null) {
+                    listFragment.setMapLookupPoint(event.getPoint());
+                }
+            }
+        }, 1);
     }
 
     public void onEvent(ResolveLocationEvents.MapBusStopSelectedEvent event) {

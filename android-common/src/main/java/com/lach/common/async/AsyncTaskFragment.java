@@ -173,6 +173,7 @@ public abstract class AsyncTaskFragment extends ButterFragment implements AsyncT
             ft.add((Fragment) taskFragment, TASK_FRAGMENT_TAG);
             ft.commit();
         }
+        getFragmentManager().executePendingTransactions();
     }
 
     public interface TaskFragment {

@@ -1,17 +1,13 @@
 package com.lach.translink.ui.presenter.resolve;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.lach.common.async.AsyncTaskUi;
+import com.lach.common.data.map.MapPosition;
 import com.lach.translink.data.location.PlaceType;
 import com.lach.translink.ui.presenter.BasePresenter;
 import com.lach.translink.ui.view.resolve.ResolveLocationListView;
 
-public interface ResolveLocationListPresenter extends BasePresenter, AsyncTaskUi {
+public interface ResolveLocationListPresenter extends BasePresenter<ResolveLocationListView>, AsyncTaskUi {
     void setPlaceType(PlaceType placeType);
-
-    void setView(ResolveLocationListView view);
-
-    void removeView();
 
     void updateSearch(SearchType searchType);
 
@@ -25,7 +21,7 @@ public interface ResolveLocationListPresenter extends BasePresenter, AsyncTaskUi
 
     void updateStreet(String street);
 
-    void setMapLookupPoint(LatLng point);
+    void setMapLookupPoint(MapPosition point);
 
     void sendSaveLocationSelectedEvent(String address);
 

@@ -7,6 +7,7 @@ import android.os.Message;
 import com.google.android.gms.maps.model.LatLng;
 import com.lach.common.async.AsyncResult;
 import com.lach.common.async.AsyncTaskFragment;
+import com.lach.common.data.map.MapPosition;
 import com.lach.common.data.preference.Preferences;
 import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.log.Log;
@@ -38,7 +39,8 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
     private static final String BUNDLE_HISTORY = "history";
 
     private static final String BUNDLE_TRANSLINK_SEARCH_TERM = "translink_search";
-    private static final String BUNDLE_COORDINATES_SEARCH_TERM = "coordinates";
+    private static final String BUNDLE_COORDINATES_SEARCH_LATITUDE = "coordinates_lat";
+    private static final String BUNDLE_COORDINATES_SEARCH_LONGITUDE = "coordinates_long";
 
     private static final String BUNDLE_SEARCH_TEXT = "search_text";
     private static final String BUNDLE_PREVIOUS_SEARCH_TEXT = "previous_search_text";
@@ -51,7 +53,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
     // Search values.
     private String previousSearchText;
     private String currentTranslinkLookupText;
-    private LatLng addressLookupLatLng;
+    private MapPosition addressLookupPosition;
 
     private ResolveLocationListPresenterImpl.UiMode mCurrentUIMode;
 
@@ -121,9 +123,9 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
         }
 
         // An address lookup request may have been sent during a configuration change.
-        boolean outstandingRequest = (addressLookupLatLng != null);
+        boolean outstandingRequest = (addressLookupPosition != null);
         if (outstandingRequest) {
-            updateLookupAddressInternal(addressLookupLatLng);
+            updateLookupAddressInternal(addressLookupPosition);
 
         } else {
             // If the address lookup wasn't provided, attempt to get it from the saved state.
@@ -132,12 +134,18 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
 
             if (savedInstanceState != null) {
                 mCurrentUIMode = (UiMode) savedInstanceState.getSerializable(BUNDLE_CURRENT_UI_MODE);
-                addressLookupLatLng = savedInstanceState.getParcelable(BUNDLE_COORDINATES_SEARCH_TERM);
+
+                double addressLookupLatitude = savedInstanceState.getDouble(BUNDLE_COORDINATES_SEARCH_LATITUDE, -1);
+                double addressLookupLongitude = savedInstanceState.getDouble(BUNDLE_COORDINATES_SEARCH_LONGITUDE, -1);
+                if (addressLookupLatitude != -1 && addressLookupLongitude != -1) {
+                    addressLookupPosition = new MapPosition(addressLookupLatitude, addressLookupLongitude);
+                }
+
                 currentTranslinkLookupText = savedInstanceState.getString(BUNDLE_TRANSLINK_SEARCH_TERM);
 
                 // Ensure that the UI mode is not invalid. Perhaps a thread was cancelled, and the UI mode was not properly reset.
                 if (mCurrentUIMode == null ||
-                        (mCurrentUIMode == UiMode.ADDRESS_LOOKUP && addressLookupLatLng == null) ||
+                        (mCurrentUIMode == UiMode.ADDRESS_LOOKUP && addressLookupPosition == null) ||
                         (mCurrentUIMode == UiMode.TRANSLINK_LOOKUP && currentTranslinkLookupText == null)) {
 
                     mCurrentUIMode = UiMode.NORMAL;
@@ -157,6 +165,11 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
     }
 
     @Override
+    public void onDestroy() {
+
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         if (mTranslinkSearchHandler != null) {
             mTranslinkSearchHandler.removeCallbacksAndMessages(null);
@@ -169,8 +182,9 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
         if (currentTranslinkLookupText != null) {
             outState.putString(BUNDLE_TRANSLINK_SEARCH_TERM, currentTranslinkLookupText);
         }
-        if (addressLookupLatLng != null) {
-            outState.putParcelable(BUNDLE_COORDINATES_SEARCH_TERM, addressLookupLatLng);
+        if (addressLookupPosition != null) {
+            outState.putDouble(BUNDLE_COORDINATES_SEARCH_LATITUDE, addressLookupPosition.getLatitude());
+            outState.putDouble(BUNDLE_COORDINATES_SEARCH_LONGITUDE, addressLookupPosition.getLongitude());
         }
         outState.putString(BUNDLE_PREVIOUS_SEARCH_TEXT, previousSearchText);
 
@@ -260,7 +274,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
             // Clear the text from the search textbox.
             updateSearchText("", false);
 
-            if (searchType == SearchType.COORDINATES && addressLookupLatLng != null) {
+            if (searchType == SearchType.COORDINATES && addressLookupPosition != null) {
                 newUIMode = UiMode.ADDRESS_LOOKUP;
             }
         }
@@ -271,7 +285,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
         switch (newUIMode) {
             case ADDRESS_LOOKUP:
                 view.createTask(TASK_GET_ADDRESS, getAddressesAsyncTaskProvider.get())
-                        .parameters(addressLookupLatLng)
+                        .parameters(new LatLng(addressLookupPosition.getLatitude(), addressLookupPosition.getLongitude()))
                         .start((AsyncTaskFragment) view);
                 break;
 
@@ -303,7 +317,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
         view.updateUi(mCurrentUIMode, existingAddressList);
 
         if (uiMode.searchType == ResolveLocationListPresenterImpl.SearchType.COORDINATES) {
-            view.updateSearchMode(false, addressLookupLatLng.latitude + ", " + addressLookupLatLng.longitude);
+            view.updateSearchMode(false, addressLookupPosition.latitude + ", " + addressLookupPosition.longitude);
 
         } else {
             view.updateSearchMode(true, getSearchHint());
@@ -358,21 +372,21 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
     }
 
     @Override
-    public void setMapLookupPoint(LatLng point) {
-        addressLookupLatLng = point;
+    public void setMapLookupPoint(MapPosition point) {
+        addressLookupPosition = point;
 
         // If the UI hasn't been inflated yet, this will be updated later.
-        if (view.isUiReady()) {
+        if (!view.isUiReady()) {
             return;
         }
-        updateLookupAddressInternal(addressLookupLatLng);
+        updateLookupAddressInternal(addressLookupPosition);
     }
 
-    private void updateLookupAddressInternal(LatLng point) {
+    private void updateLookupAddressInternal(MapPosition point) {
         Log.debug(TAG, "updateLookupAddressInternal. point: " + point);
 
-        addressLookupLatLng = point;
-        if (addressLookupLatLng != null) {
+        addressLookupPosition = point;
+        if (addressLookupPosition != null) {
             updateSearch(SearchType.COORDINATES);
         }
     }

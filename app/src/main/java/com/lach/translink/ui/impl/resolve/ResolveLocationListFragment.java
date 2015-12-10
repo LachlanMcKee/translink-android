@@ -21,7 +21,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.lach.common.async.AsyncResult;
 import com.lach.common.async.AsyncTaskFragment;
 import com.lach.common.data.provider.ContactAddressExtractor;
@@ -31,6 +30,7 @@ import com.lach.common.util.NetworkUtil;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
 import com.lach.translink.data.location.PlaceType;
+import com.lach.common.data.map.MapPosition;
 import com.lach.translink.ui.presenter.resolve.ResolveLocationListPresenter;
 import com.lach.translink.ui.presenter.resolve.ResolveLocationListPresenterImpl;
 import com.lach.translink.ui.view.resolve.ResolveLocationListView;
@@ -457,7 +457,7 @@ public class ResolveLocationListFragment extends AsyncTaskFragment implements Re
         return true;
     }
 
-    public void setMapLookupPoint(LatLng point) {
+    public void setMapLookupPoint(MapPosition point) {
         if (mPresenter != null) {
             mPresenter.setMapLookupPoint(point);
         }

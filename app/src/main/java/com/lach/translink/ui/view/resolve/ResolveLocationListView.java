@@ -1,13 +1,11 @@
 package com.lach.translink.ui.view.resolve;
 
-import com.lach.common.async.AsyncTaskFragment;
-import com.lach.common.async.Task;
 import com.lach.translink.ui.presenter.resolve.ResolveLocationListPresenterImpl;
-import com.lach.translink.ui.view.BaseView;
+import com.lach.translink.ui.view.TaskView;
 
 import java.util.ArrayList;
 
-public interface ResolveLocationListView extends BaseView {
+public interface ResolveLocationListView extends TaskView {
     void toggleKeyboard(boolean visible);
 
     void updateHistory(ArrayList<String> history);
@@ -25,8 +23,4 @@ public interface ResolveLocationListView extends BaseView {
     void updateSearchMode(boolean isEnabled, String hint);
 
     void showNotification(String message);
-
-    AsyncTaskFragment.TaskBuilder createTask(int taskSearchTranslink, Task task);
-
-    void cancelCurrentTask(boolean notify);
 }

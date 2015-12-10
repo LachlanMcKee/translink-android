@@ -1,8 +1,8 @@
 package com.lach.translink.ui.impl.resolve;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.lach.translink.data.location.PlaceType;
 import com.lach.translink.data.place.bus.BusStop;
+import com.lach.common.data.map.MapPosition;
 
 public interface ResolveLocationEvents {
 
@@ -10,13 +10,13 @@ public interface ResolveLocationEvents {
     }
 
     class MapAddressSelectedEvent {
-        private final LatLng point;
+        private final MapPosition point;
 
-        public MapAddressSelectedEvent(LatLng point) {
+        public MapAddressSelectedEvent(MapPosition point) {
             this.point = point;
         }
 
-        public LatLng getPoint() {
+        public MapPosition getPoint() {
             return point;
         }
     }

@@ -6,8 +6,6 @@ import com.lach.common.BaseApplication;
 import com.lach.common.data.CoreModule;
 import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.log.Instrumentation;
-import com.lach.translink.data.CoreComponent;
-import com.lach.translink.data.DaggerCoreComponentImpl;
 import com.lach.translink.data.DaggerDataComponentImpl;
 import com.lach.translink.data.DataComponent;
 import com.lach.translink.app.AppInit;
@@ -24,7 +22,6 @@ import javax.inject.Provider;
 public class TranslinkApplication extends BaseApplication {
 
     private CoreModule coreModule;
-    private CoreComponent coreComponent;
     private DataComponent dataComponent;
     private Provider<GoCardNetworkComponent> goCardNetworkComponentProvider;
 
@@ -56,6 +53,7 @@ public class TranslinkApplication extends BaseApplication {
         // Loads the DbFlow manager used for database handling.
         FlowManager.init(this);
 
+        // This is used to avoid keeping the singleton http client in memory for any longer than required.
         goCardNetworkComponentProvider = new Provider<GoCardNetworkComponent>() {
             @Override
             public GoCardNetworkComponent get() {
@@ -84,19 +82,6 @@ public class TranslinkApplication extends BaseApplication {
 
     public void setDataComponent(DataComponent locationDataComponent) {
         this.dataComponent = locationDataComponent;
-    }
-
-    public synchronized CoreComponent getCoreComponent() {
-        if (coreComponent == null) {
-            coreComponent = DaggerCoreComponentImpl.builder()
-                    .coreModule(getCoreModule())
-                    .build();
-        }
-        return coreComponent;
-    }
-
-    public void setCoreComponent(CoreComponent coreComponent) {
-        this.coreComponent = coreComponent;
     }
 
     public synchronized void initWebViewIfRequired(Activity activity) {

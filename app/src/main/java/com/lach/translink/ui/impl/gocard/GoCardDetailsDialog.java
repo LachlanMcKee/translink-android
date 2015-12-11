@@ -14,12 +14,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.lach.common.data.preference.Preferences;
-import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.ui.dialog.ButterCustomDialogFragment;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
-import com.lach.translink.data.gocard.GoCardPreference;
+import com.lach.translink.network.GoCardCredentials;
 
 import javax.inject.Inject;
 
@@ -28,7 +26,7 @@ import butterknife.InjectView;
 public class GoCardDetailsDialog extends ButterCustomDialogFragment {
 
     @Inject
-    PreferencesProvider preferencesProvider;
+    GoCardCredentials goCardCredentials;
 
     @InjectView(R.id.gocard_number)
     EditText cardNumber;
@@ -62,10 +60,7 @@ public class GoCardDetailsDialog extends ButterCustomDialogFragment {
         });
 
         // If any details are saved, show a clear button.
-        Preferences preferences = preferencesProvider.getPreferences();
-        String cardNumValue = GoCardPreference.CARD_NUMBER.get(preferences);
-        String cardNumPass = GoCardPreference.PASSWORD.get(preferences);
-        if (cardNumValue != null || cardNumPass != null) {
+        if (goCardCredentials.credentialsExist()) {
             dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "Clear",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
@@ -85,16 +80,15 @@ public class GoCardDetailsDialog extends ButterCustomDialogFragment {
     @Override
     public void onDialogInjected(Bundle savedInstanceState) {
         TranslinkApplication application = (TranslinkApplication) getActivity().getApplication();
-        application.getCoreComponent().inject(this);
+        application.createGoCardNetworkComponent().inject(this);
 
-        Preferences preferences = preferencesProvider.getPreferences();
-        String cardNumValue = GoCardPreference.CARD_NUMBER.get(preferences);
-        String cardNumPass = GoCardPreference.PASSWORD.get(preferences);
-
+        String cardNumValue = goCardCredentials.getCardNumber();
         if (cardNumValue != null) {
             cardNumber.setText(cardNumValue);
         }
-        if (cardNumPass != null) {
+
+        // Avoid obtaining the password until it's required.
+        if (goCardCredentials.credentialsExist()) {
             cardPasswordInputLayout.setHint(getString(R.string.gocard_details_password_unchanged));
         } else {
             cardPasswordInputLayout.setHint(getString(R.string.gocard_details_enter_password));
@@ -135,26 +129,14 @@ public class GoCardDetailsDialog extends ButterCustomDialogFragment {
             return false;
         }
 
-        Preferences preferences = preferencesProvider.getPreferences();
-        Preferences.Editor editor = preferences.edit();
-        GoCardPreference.CARD_NUMBER.set(editor, cardNumber);
-
-        if (password.length() > 0) {
-            GoCardPreference.PASSWORD.set(editor, password);
-        }
-        editor.apply();
+        goCardCredentials.update(cardNumber, password);
 
         Toast.makeText(activity, "Go-Card details saved.", Toast.LENGTH_SHORT).show();
         return true;
     }
 
     private void clear() {
-        Preferences preferences = preferencesProvider.getPreferences();
-        Preferences.Editor editor = preferences.edit();
-        GoCardPreference.CARD_NUMBER.remove(editor);
-        GoCardPreference.PASSWORD.remove(editor);
-        editor.apply();
-
+        goCardCredentials.clear();
         Toast.makeText(getActivity(), "Go-Card details cleared.", Toast.LENGTH_SHORT).show();
     }
 

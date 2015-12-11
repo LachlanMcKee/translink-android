@@ -28,10 +28,10 @@ import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
 import com.lach.translink.data.gocard.GoCardDetails;
 import com.lach.translink.data.gocard.GoCardTransaction;
+import com.lach.translink.network.GoCardCredentials;
 import com.lach.translink.tasks.gocard.TaskGoCardDetails;
 import com.lach.translink.tasks.gocard.TaskGoCardHistory;
 import com.lach.translink.network.GoCardNetworkComponent;
-import com.lach.translink.network.GoCardNumberValid;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -73,12 +73,7 @@ public class GoCardInfoFragment extends AsyncTaskFragment {
     private ArrayList<GoCardTransaction> transactions;
 
     @Inject
-    @GoCardNumberValid
-    boolean cardNumberValid;
-
-    @Inject
-    @GoCardNumberValid
-    boolean cardPasswordValid;
+    GoCardCredentials goCardCredentials;
 
     private Date currentEndDate;
 
@@ -232,7 +227,7 @@ public class GoCardInfoFragment extends AsyncTaskFragment {
     }
 
     private void obtainGoCardData() {
-        if (!cardNumberValid || !cardPasswordValid) {
+        if (!goCardCredentials.credentialsExist()) {
             AlertDialog showDialog = DialogUtil.showAlertDialog(getActivity(),
                     "You have not set your Go-Card details, please update these within the settings screen.", "Go-Card details missing");
             showDialog.setOnDismissListener(new OnDismissListener() {

@@ -9,15 +9,16 @@ import com.squareup.okhttp.Response;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import javax.inject.Inject;
+
 public class GoCardHttpClient extends OkHttpClient {
-    private final String cardNumber;
-    private final String password;
+    private final GoCardCredentials goCardCredentials;
 
     private boolean hasInitialised = false;
 
-    public GoCardHttpClient(String cardNumber, String password) {
-        this.cardNumber = cardNumber;
-        this.password = password;
+    @Inject
+    public GoCardHttpClient(GoCardCredentials goCardCredentials) {
+        this.goCardCredentials = goCardCredentials;
     }
 
     @SuppressWarnings("UnusedReturnValue")
@@ -30,7 +31,7 @@ public class GoCardHttpClient extends OkHttpClient {
         String url;
         try {
             url = String.format("https://gocard.translink.com.au/webtix/welcome/welcome.do?cardOps=Display&cardNum=%s&pass=%s",
-                    cardNumber, URLEncoder.encode(password, "utf-8"));
+                    goCardCredentials.getCardNumber(), URLEncoder.encode(goCardCredentials.getPassword(), "utf-8"));
         } catch (UnsupportedEncodingException e) {
             return false;
         }

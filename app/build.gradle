@@ -176,4 +176,11 @@ dependencies {
     androidTestCompile "com.crittercism.dexmaker:dexmaker-dx:${DEXMAKER_VERSION}"
     androidTestCompile "org.mockito:mockito-core:${MOCKITO_VERSION}"
     androidTestApt "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'commons-io:commons-io:2.4'
+    testCompile 'org.powermock:powermock-api-mockito:1.6.1'
+    testCompile 'org.powermock:powermock-module-junit4-rule-agent:1.6.1'
+    testCompile 'org.powermock:powermock-module-junit4-rule:1.6.1'
+    testCompile 'org.powermock:powermock-module-junit4:1.6.1'
 }

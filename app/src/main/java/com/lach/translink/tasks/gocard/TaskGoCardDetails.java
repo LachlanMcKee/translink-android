@@ -9,8 +9,6 @@ import com.lach.common.log.Log;
 import com.lach.common.util.RegexUtil;
 import com.lach.translink.data.gocard.GoCardDetails;
 import com.lach.translink.network.GoCardHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 
@@ -46,31 +44,25 @@ public class TaskGoCardDetails implements Task<GoCardDetails> {
         return result;
     }
 
-    public AsyncResult<GoCardDetails> executeInternal() throws Exception {
-        client.init();
-
-        Request request = new Request.Builder()
-                .url("https://gocard.translink.com.au/webtix/tickets-and-fares/go-card/online/summary")
-                .build();
-
-        Response response;
-        String responseBody;
+    private AsyncResult<GoCardDetails> executeInternal() throws Exception {
+        GoCardHttpClient.Response response;
         try {
-            response = client.newCall(request).execute();
-            responseBody = response.body().string();
+            response = client.getResponseForUrl("https://gocard.translink.com.au/webtix/tickets-and-fares/go-card/online/summary");
 
         } catch (IOException ex) {
             return new AsyncResult<>(ERROR_CONNECTION_TROUBLE);
         }
 
-        if (!response.isSuccessful()) {
+        if (!response.isSuccess) {
             return new AsyncResult<>(ERROR_CONNECTION_TROUBLE);
         }
-        if (responseBody.contains("There was a problem")) {
-            Instrumentation.logEventWithData("GoCardInfoCredentialsException", InstrumentationLogLevel.Warning, "HTML", responseBody);
+        
+        String content = response.content;
+        if (content.contains("There was a problem")) {
+            Instrumentation.logEventWithData("GoCardInfoCredentialsException", InstrumentationLogLevel.Warning, "HTML", content);
             return new AsyncResult<>(ERROR_INVALID_CREDENTIALS);
         }
-        if (responseBody.contains("website is currently unavailable")) {
+        if (content.contains("website is currently unavailable")) {
             return new AsyncResult<>(ERROR_CONNECTION_TROUBLE);
         }
 
@@ -82,21 +74,21 @@ public class TaskGoCardDetails implements Task<GoCardDetails> {
 
         GoCardDetails details = new GoCardDetails();
         try {
-            String[] issueDates = RegexUtil.findMatches(issueRegex, responseBody, true);
-            String[] expireDates = RegexUtil.findMatches(expireRegex, responseBody, true);
-            String[] balances = RegexUtil.findMatches(balanceRegex, responseBody, true);
-            String[] balanceTimes = RegexUtil.findMatches(balanceTimeRegex, responseBody, true);
-            String[] passengerTypes = RegexUtil.findMatches(passengerTypeRegex, responseBody, true);
+            String[] issueDates = RegexUtil.findMatches(issueRegex, content, true);
+            String[] expireDates = RegexUtil.findMatches(expireRegex, content, true);
+            String[] balances = RegexUtil.findMatches(balanceRegex, content, true);
+            String[] balanceTimes = RegexUtil.findMatches(balanceTimeRegex, content, true);
+            String[] passengerTypes = RegexUtil.findMatches(passengerTypeRegex, content, true);
 
             details.issueDate = issueDates[0].trim();
             details.expiryDate = expireDates[0].trim();
             details.balance = balances[0];
             details.balanceTime = balanceTimes[0].trim();
-            details.passengerType = passengerTypes[0];
+            details.passengerType = passengerTypes[0].trim();
 
             return new AsyncResult<>(details);
         } catch (Exception ex) {
-            Log.error(TAG, "There was an error trying to read the website data.", ex, "HTML", responseBody);
+            Log.error(TAG, "There was an error trying to read the website data.", ex);
             return new AsyncResult<>(ERROR_BAD_PARSING);
         }
     }

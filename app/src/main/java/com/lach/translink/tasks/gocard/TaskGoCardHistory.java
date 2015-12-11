@@ -1,16 +1,14 @@
 package com.lach.translink.tasks.gocard;
 
-import android.text.Html;
-
 import com.lach.common.async.AsyncResult;
 import com.lach.common.async.Task;
 import com.lach.common.data.TaskGenericErrorType;
+import com.lach.common.util.HtmlUtil;
 import com.lach.common.util.RegexUtil;
 import com.lach.translink.data.gocard.GoCardTransaction;
 import com.lach.translink.network.GoCardHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,7 +43,7 @@ public class TaskGoCardHistory implements Task<ArrayList<GoCardTransaction>> {
         return result;
     }
 
-    public AsyncResult<ArrayList<GoCardTransaction>> executeInternal() throws Exception {
+    private AsyncResult<ArrayList<GoCardTransaction>> executeInternal() throws Exception {
         String DATE_FORMAT_NOW = "dd/MM/yyyy";
 
         Calendar cal = Calendar.getInstance();
@@ -57,20 +55,24 @@ public class TaskGoCardHistory implements Task<ArrayList<GoCardTransaction>> {
         cal.add(Calendar.MONTH, -HISTORY_MONTHS);
         String startDateText = serviceDateFormat.format(cal.getTime());
 
-        client.init();
-
         String url = "https://gocard.translink.com.au/webtix/tickets-and-fares/go-card/online/history?startDate=%s&endDate=%s";
-        Request request = new Request.Builder()
-                .url(String.format(url, startDateText, endDateText))
-                .build();
+        GoCardHttpClient.Response response;
 
-        Response response = client.newCall(request).execute();
-        String responseBody = response.body().string();
+        try {
+            response = client.getResponseForUrl(String.format(url, startDateText, endDateText));
+
+        } catch (IOException ex) {
+            return new AsyncResult<>(TaskGoCardDetails.ERROR_CONNECTION_TROUBLE);
+        }
+
+        if (!response.isSuccess) {
+            return new AsyncResult<>(TaskGoCardDetails.ERROR_CONNECTION_TROUBLE);
+        }
 
         String tableRowsRegex = "<tr.*?>(.*?)</tr>";
         String columnsRegex = "<td.*?>(.*?)</td>";
 
-        String[] tableRows = RegexUtil.findMatches(tableRowsRegex, responseBody, true);
+        String[] tableRows = RegexUtil.findMatches(tableRowsRegex, response.content, true);
 
         String currentDate = "";
         boolean newDateHandled = false;
@@ -128,9 +130,9 @@ public class TaskGoCardHistory implements Task<ArrayList<GoCardTransaction>> {
     private String formatValue(String goCardValue) {
         goCardValue = goCardValue.replace("\r\n", "");
 
-        // We handle the space ourselves to prevent the html lib from adding an actual no-breaking space.
+        // We handle the space ourselves to prevent the decoding from adding an actual no-breaking space.
         goCardValue = goCardValue.replace("&nbsp;", " ");
-        goCardValue = Html.fromHtml(goCardValue).toString();
+        goCardValue = HtmlUtil.decode(goCardValue);
 
         return goCardValue.trim();
     }

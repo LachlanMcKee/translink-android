@@ -25,7 +25,7 @@ public class GoCardNetworkModule {
     @Provides
     @Singleton
     public GoCardHttpClient providesGoCardOkHttpClient(List<Interceptor> networkInterceptors, GoCardCredentials goCardCredentials) {
-        GoCardHttpClient client = new GoCardHttpClient(goCardCredentials);
+        GoCardHttpClientImpl client = new GoCardHttpClientImpl(goCardCredentials);
 
         CookieManager cookieManager = new CookieManager();
         cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ORIGINAL_SERVER);

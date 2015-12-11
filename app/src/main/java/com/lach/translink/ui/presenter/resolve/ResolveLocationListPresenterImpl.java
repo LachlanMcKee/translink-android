@@ -234,6 +234,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
 
         view.createTask(TASK_SEARCH_TRANSLINK, taskFindLocationProvider.get())
                 .parameters(currentTranslinkLookupText)
+                .executeImmediately(true)
                 .start((AsyncTaskFragment) view);
     }
 
@@ -286,6 +287,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
             case ADDRESS_LOOKUP:
                 view.createTask(TASK_GET_ADDRESS, getAddressesAsyncTaskProvider.get())
                         .parameters(new LatLng(addressLookupPosition.getLatitude(), addressLookupPosition.getLongitude()))
+                        .executeImmediately(true)
                         .start((AsyncTaskFragment) view);
                 break;
 

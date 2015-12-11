@@ -111,6 +111,7 @@ public abstract class AsyncTaskFragment extends ButterFragment implements AsyncT
         final Task task;
         Object[] parameters;
         String message;
+        boolean executeImmediately = false;
 
         public TaskBuilder(int taskId, Task task) {
             this.taskId = taskId;
@@ -127,8 +128,17 @@ public abstract class AsyncTaskFragment extends ButterFragment implements AsyncT
             return this;
         }
 
+        public TaskBuilder executeImmediately(boolean executeImmediately) {
+            this.executeImmediately = executeImmediately;
+            return this;
+        }
+
         public void start(AsyncTaskFragment fragment) {
             fragment.startTaskInternal(taskId, task, message, parameters);
+
+            if (executeImmediately) {
+                fragment.getFragmentManager().executePendingTransactions();
+            }
         }
     }
 
@@ -173,7 +183,6 @@ public abstract class AsyncTaskFragment extends ButterFragment implements AsyncT
             ft.add((Fragment) taskFragment, TASK_FRAGMENT_TAG);
             ft.commit();
         }
-        getFragmentManager().executePendingTransactions();
     }
 
     public interface TaskFragment {

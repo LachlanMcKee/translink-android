@@ -1,6 +1,7 @@
 package com.lach.translink.ui.impl.resolve;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
@@ -65,16 +66,18 @@ public class ResolveBusStopInfoView extends FrameLayout {
     public void show(BusStop busStop, boolean animate) {
         description.setText(busStop.getDescription());
 
-        if (animate) {
-            container.setTranslationY(containerHeight);
-            ViewCompat.animate(container)
-                    .translationY(0.0f)
-                    .setDuration(150L)
-                    .setInterpolator(new LinearInterpolator())
-                    .withLayer()
-                    .setListener(null).start();
-        } else {
-            container.setTranslationY(0.0f);
+        if (Build.VERSION.SDK_INT >= 14) {
+            if (animate) {
+                container.setTranslationY(containerHeight);
+                ViewCompat.animate(container)
+                        .translationY(0.0f)
+                        .setDuration(150L)
+                        .setInterpolator(new LinearInterpolator())
+                        .withLayer()
+                        .setListener(null).start();
+            } else {
+                container.setTranslationY(0.0f);
+            }
         }
     }
 

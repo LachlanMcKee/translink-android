@@ -1,13 +1,15 @@
 package com.lach.translink.ui.impl.gocard;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.lach.common.ui.adapter.ViewHolderArrayAdapter;
 import com.lach.translink.activities.R;
 import com.lach.translink.data.gocard.GoCardTransaction;
+import com.lach.translink.data.gocard.GoCardTransactionGroup;
+import com.lach.translink.data.gocard.GoCardTransactionJourney;
+import com.lach.translink.data.gocard.GoCardTransactionTopUp;
 
 import java.util.ArrayList;
 
@@ -43,7 +45,7 @@ public class GoCardTransactionArrayAdapter extends ViewHolderArrayAdapter<GoCard
 
         @Override
         public boolean isHolderForData(GoCardTransaction data) {
-            return !TextUtils.isEmpty(data.date);
+            return data instanceof GoCardTransactionGroup;
         }
 
         @Override
@@ -56,7 +58,8 @@ public class GoCardTransactionArrayAdapter extends ViewHolderArrayAdapter<GoCard
 
         @Override
         public void updateViewHolder(TitleViewHolder holder, GoCardTransaction item) {
-            holder.titleText.setText(item.date);
+            GoCardTransactionGroup group = (GoCardTransactionGroup) item;
+            holder.titleText.setText(group.title);
         }
     }
 
@@ -72,7 +75,7 @@ public class GoCardTransactionArrayAdapter extends ViewHolderArrayAdapter<GoCard
 
         @Override
         public boolean isHolderForData(GoCardTransaction data) {
-            return !data.isTopUp;
+            return data instanceof GoCardTransactionJourney;
         }
 
         @Override
@@ -88,10 +91,11 @@ public class GoCardTransactionArrayAdapter extends ViewHolderArrayAdapter<GoCard
 
         @Override
         public void updateViewHolder(JourneyViewHolder holder, GoCardTransaction item) {
-            holder.dateText.setText(item.getTimeString());
-            holder.fromText.setText(item.fromLocation);
-            holder.toText.setText(item.toLocation);
-            holder.costText.setText(item.amount);
+            GoCardTransactionJourney journeyTransaction = (GoCardTransactionJourney) item;
+            holder.dateText.setText(journeyTransaction.getTimeString());
+            holder.fromText.setText(journeyTransaction.fromLocation);
+            holder.toText.setText(journeyTransaction.toLocation);
+            holder.costText.setText(journeyTransaction.amount);
         }
     }
 
@@ -107,7 +111,7 @@ public class GoCardTransactionArrayAdapter extends ViewHolderArrayAdapter<GoCard
 
         @Override
         public boolean isHolderForData(GoCardTransaction data) {
-            return data.isTopUp;
+            return data instanceof GoCardTransactionTopUp;
         }
 
         @Override
@@ -122,9 +126,10 @@ public class GoCardTransactionArrayAdapter extends ViewHolderArrayAdapter<GoCard
 
         @Override
         public void updateViewHolder(TopUpViewHolder holder, GoCardTransaction item) {
-            holder.dateText.setText(item.getTimeString());
-            holder.eventText.setText(item.fromLocation);
-            holder.resultText.setText(item.toLocation + " to " + item.amount);
+            GoCardTransactionTopUp topUpTransaction = (GoCardTransactionTopUp) item;
+            holder.dateText.setText(topUpTransaction.time);
+            holder.eventText.setText(topUpTransaction.description);
+            holder.resultText.setText(topUpTransaction.oldAmount + " to " + topUpTransaction.newAmount);
         }
     }
 

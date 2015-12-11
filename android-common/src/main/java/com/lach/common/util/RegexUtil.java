@@ -5,10 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RegexUtil {
-    @SuppressWarnings("SameParameterValue")
     public static String[] findMatches(String regex, String source, boolean multiLined) {
-        ArrayList<String> regexValues = new ArrayList<>();
-
         Pattern pattern;
         if (multiLined) {
             pattern = Pattern.compile(regex, Pattern.DOTALL);
@@ -16,6 +13,11 @@ public class RegexUtil {
             pattern = Pattern.compile(regex);
         }
 
+        return findMatches(pattern, source);
+    }
+
+    public static String[] findMatches(Pattern pattern, String source) {
+        ArrayList<String> regexValues = new ArrayList<>();
         Matcher matcher = pattern.matcher(source);
 
         while (matcher.find()) {

@@ -6,6 +6,9 @@ import com.lach.common.data.TaskGenericErrorType;
 import com.lach.common.util.HtmlUtil;
 import com.lach.common.util.RegexUtil;
 import com.lach.translink.data.gocard.GoCardTransaction;
+import com.lach.translink.data.gocard.GoCardTransactionGroup;
+import com.lach.translink.data.gocard.GoCardTransactionJourney;
+import com.lach.translink.data.gocard.GoCardTransactionTopUp;
 import com.lach.translink.network.GoCardHttpClient;
 
 import java.io.IOException;
@@ -15,11 +18,26 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
 public class TaskGoCardHistory implements Task<ArrayList<GoCardTransaction>> {
     public static final int HISTORY_MONTHS = 3;
+
+    private static final Pattern PATTERN_TABLE_ROW = Pattern.compile("<tr.*?>(.*?)</tr>", Pattern.DOTALL);
+    private static final Pattern PATTERN_TABLE_COLUMN = Pattern.compile("<td.*?>(.*?)</td>", Pattern.DOTALL);
+
+    private static final int COL_JOURNEY_START_TIME = 0;
+    private static final int COL_JOURNEY_END_TIME = 2;
+    private static final int COL_JOURNEY_FROM_LOCATION = 1;
+    private static final int COL_JOURNEY_TO_LOCATION = 3;
+    private static final int COL_JOURNEY_AMOUNT = 4;
+
+    private static final int COL_TOP_UP_TIME = 0;
+    private static final int COL_TOP_UP_DESCRIPTION = 1;
+    private static final int COL_TOP_UP_OLD_AMOUNT = 3;
+    private static final int COL_TOP_UP_NEW_AMOUNT = 4;
 
     private final GoCardHttpClient client;
     private Date endDate;
@@ -69,10 +87,7 @@ public class TaskGoCardHistory implements Task<ArrayList<GoCardTransaction>> {
             return new AsyncResult<>(TaskGoCardDetails.ERROR_CONNECTION_TROUBLE);
         }
 
-        String tableRowsRegex = "<tr.*?>(.*?)</tr>";
-        String columnsRegex = "<td.*?>(.*?)</td>";
-
-        String[] tableRows = RegexUtil.findMatches(tableRowsRegex, response.content, true);
+        String[] tableRows = RegexUtil.findMatches(PATTERN_TABLE_ROW, response.content);
 
         String currentDate = "";
         boolean newDateHandled = false;
@@ -82,28 +97,30 @@ public class TaskGoCardHistory implements Task<ArrayList<GoCardTransaction>> {
 
         ArrayList<GoCardTransaction> history = new ArrayList<>();
         for (String r : tableRows) {
-            String[] columns = RegexUtil.findMatches(columnsRegex, r, true);
+            String[] columns = RegexUtil.findMatches(PATTERN_TABLE_COLUMN, r);
 
             if (columns.length > 4) {
 
                 if (!newDateHandled) {
                     newDateHandled = true;
-
-                    GoCardTransaction transaction = new GoCardTransaction();
-                    transaction.date = currentDate;
-                    history.add(transaction);
+                    history.add(new GoCardTransactionGroup(currentDate));
                 }
 
-                GoCardTransaction transaction = new GoCardTransaction();
-                transaction.startTime = formatValue(columns[0]);
-                transaction.fromLocation = formatValue(columns[1]);
-                transaction.endTime = formatValue(columns[2]);
-                transaction.toLocation = formatValue(columns[3]);
-                transaction.amount = "$" + formatValue(columns[4]).replace("$", "");
+                if ((r.contains("Top up"))) {
+                    history.add(new GoCardTransactionTopUp(
+                            formatValue(columns[COL_TOP_UP_TIME]),
+                            formatValue(columns[COL_TOP_UP_DESCRIPTION]),
+                            formatValue(columns[COL_TOP_UP_OLD_AMOUNT]),
+                            formatValue(columns[COL_TOP_UP_NEW_AMOUNT])));
+                } else {
+                    history.add(new GoCardTransactionJourney(
+                            formatValue(columns[COL_JOURNEY_START_TIME]),
+                            formatValue(columns[COL_JOURNEY_END_TIME]),
+                            formatValue(columns[COL_JOURNEY_FROM_LOCATION]),
+                            formatValue(columns[COL_JOURNEY_TO_LOCATION]),
+                            formatValue(columns[COL_JOURNEY_AMOUNT])));
+                }
 
-                transaction.isTopUp = (r.contains("Top up"));
-
-                history.add(transaction);
             } else if (columns.length >= 1) {
 
                 String cellData = formatValue(columns[0]);

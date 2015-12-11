@@ -2,6 +2,9 @@ package com.lach.translink.tasks.gocard;
 
 import com.lach.common.async.AsyncResult;
 import com.lach.translink.data.gocard.GoCardTransaction;
+import com.lach.translink.data.gocard.GoCardTransactionGroup;
+import com.lach.translink.data.gocard.GoCardTransactionJourney;
+import com.lach.translink.data.gocard.GoCardTransactionTopUp;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,34 +25,23 @@ public class TaskGoCardHistoryTest extends BaseTaskGoCardTest {
         Assert.assertEquals(item.size(), 3);
 
         // Testing a 'title' element.
-        GoCardTransaction titleTransaction = item.get(0);
-        Assert.assertEquals(titleTransaction.date, "10 July 2015");
-        Assert.assertNull(titleTransaction.startTime);
-        Assert.assertNull(titleTransaction.endTime);
-        Assert.assertNull(titleTransaction.fromLocation);
-        Assert.assertNull(titleTransaction.toLocation);
-        Assert.assertNull(titleTransaction.amount);
-        Assert.assertFalse(titleTransaction.isTopUp);
+        GoCardTransactionGroup titleTransaction = (GoCardTransactionGroup) item.get(0);
+        Assert.assertEquals(titleTransaction.title, "10 July 2015");
 
         // Testing a 'journey' element.
-        GoCardTransaction journeyTransaction = item.get(1);
-        Assert.assertNull(journeyTransaction.date);
+        GoCardTransactionJourney journeyTransaction = (GoCardTransactionJourney) item.get(1);
         Assert.assertEquals(journeyTransaction.startTime, "03:00 PM");
         Assert.assertEquals(journeyTransaction.endTime, "03:50 PM");
         Assert.assertEquals(journeyTransaction.fromLocation, "South Bank 1 ferry terminal");
         Assert.assertEquals(journeyTransaction.toLocation, "Bretts Wharf ferry terminal");
         Assert.assertEquals(journeyTransaction.amount, "$ 3.00");
-        Assert.assertFalse(journeyTransaction.isTopUp);
 
         // Testing a 'top-up' element.
-        GoCardTransaction topUpTransaction = item.get(2);
-        Assert.assertNull(topUpTransaction.date);
-        Assert.assertEquals(topUpTransaction.startTime, "12:00 PM");
-        Assert.assertEquals(topUpTransaction.endTime, "");
-        Assert.assertEquals(topUpTransaction.fromLocation, "Top up/Adjustment  ( North Quay 1 ferry terminal  )");
-        Assert.assertEquals(topUpTransaction.toLocation, "$ 20.00");
-        Assert.assertEquals(topUpTransaction.amount, "$ 23.00");
-        Assert.assertTrue(topUpTransaction.isTopUp);
+        GoCardTransactionTopUp topUpTransaction = (GoCardTransactionTopUp) item.get(2);
+        Assert.assertEquals(topUpTransaction.time, "12:00 PM");
+        Assert.assertEquals(topUpTransaction.description, "Top up/Adjustment  ( North Quay 1 ferry terminal  )");
+        Assert.assertEquals(topUpTransaction.oldAmount, "$ 20.00");
+        Assert.assertEquals(topUpTransaction.newAmount, "$ 23.00");
     }
 
     /**

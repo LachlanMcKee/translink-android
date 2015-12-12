@@ -61,7 +61,7 @@ public class TaskGoCardHistory implements Task<ArrayList<GoCardTransaction>> {
         return result;
     }
 
-    private AsyncResult<ArrayList<GoCardTransaction>> executeInternal() throws Exception {
+    private AsyncResult<ArrayList<GoCardTransaction>> executeInternal() {
         String DATE_FORMAT_NOW = "dd/MM/yyyy";
 
         Calendar cal = Calendar.getInstance();

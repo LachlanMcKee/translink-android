@@ -54,7 +54,7 @@ public class TaskInsertBusStops implements Task<Void> {
         return result;
     }
 
-    public AsyncResult<Void> executeInternal() throws Exception {
+    private AsyncResult<Void> executeInternal() throws Exception {
         AsyncResult<Void> result = new AsyncResult<>(null);
         Context context = contextRef.get();
         if (context == null) {
@@ -102,7 +102,7 @@ public class TaskInsertBusStops implements Task<Void> {
         return result;
     }
 
-    public static void csvSplit(String line, String[] values) {
+    private static void csvSplit(String line, String[] values) {
         boolean withinQuotes = false;
         int start = 0, index = 0, length = line.length();
 

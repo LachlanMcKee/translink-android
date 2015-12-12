@@ -10,12 +10,13 @@ import java.util.Map;
 import java.util.Set;
 
 public class InMemoryPreferences implements Preferences {
-    Map<String, Object> preferenceMap;
+    private final Map<String, Object> preferenceMap;
 
     public InMemoryPreferences() {
         preferenceMap = new HashMap<>();
     }
 
+    @SuppressWarnings("unchecked")
     private <T> T getValue(String key, T defValue) {
         Object value = preferenceMap.get(key);
         return (value != null) ? (T) value : defValue;
@@ -52,8 +53,8 @@ public class InMemoryPreferences implements Preferences {
     }
 
     public class AndroidPreferencesEditor implements Editor {
-        Map<String, Object> tempChanges;
-        List<String> removedKeys;
+        private final Map<String, Object> tempChanges;
+        private final List<String> removedKeys;
 
         @SuppressLint("CommitPrefEdits")
         public AndroidPreferencesEditor() {

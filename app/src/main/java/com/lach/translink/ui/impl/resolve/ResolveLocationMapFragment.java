@@ -101,7 +101,7 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Res
     ResolveBusStopInfoView busStopInfoView;
 
     // Don't data-bind this. We need to reference it after onDestroyView.
-    MapView mapView;
+    private MapView mapView;
 
     public static ResolveLocationMapFragment newInstance(PlaceType placeType) {
         ResolveLocationMapFragment f = new ResolveLocationMapFragment();
@@ -151,7 +151,7 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Res
         } else {
             description = "location";
         }
-        title.setText("Choose " + description);
+        title.setText(getString(R.string.resolve_title, description));
 
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -381,7 +381,7 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Res
     @Override
     public void showBusStopDetails(BusStop busStop, boolean animate) {
         busStopInfoView.setVisibility(View.VISIBLE);
-        busStopInfoView.show(busStop, false);
+        busStopInfoView.show(busStop, animate);
     }
 
     @Override

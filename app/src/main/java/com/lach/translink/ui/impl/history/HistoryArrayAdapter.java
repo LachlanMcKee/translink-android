@@ -19,6 +19,7 @@ public class HistoryArrayAdapter extends ViewHolderArrayAdapter<JourneyCriteriaH
     private final PlaceParser placeParser;
     private final boolean ignoreHistoryTime;
 
+    @SuppressWarnings("unchecked")
     public HistoryArrayAdapter(Context context, PlaceParser placeParser, List<? extends JourneyCriteriaHistory> list, boolean ignoreHistoryTime) {
         super(context, R.layout.l_journey_history, (List<JourneyCriteriaHistory>) list);
 

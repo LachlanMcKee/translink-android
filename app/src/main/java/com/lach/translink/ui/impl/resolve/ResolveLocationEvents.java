@@ -34,26 +34,14 @@ public interface ResolveLocationEvents {
     }
 
     class LocationSelectedEvent {
-        private final PlaceType placeType;
         private final String address;
-        private final boolean favourite;
 
-        public LocationSelectedEvent(PlaceType placeType, String address, boolean favourite) {
-            this.placeType = placeType;
+        public LocationSelectedEvent(String address) {
             this.address = address;
-            this.favourite = favourite;
-        }
-
-        public PlaceType getPlaceType() {
-            return placeType;
         }
 
         public String getAddress() {
             return address;
-        }
-
-        public boolean isFavourite() {
-            return favourite;
         }
     }
 }

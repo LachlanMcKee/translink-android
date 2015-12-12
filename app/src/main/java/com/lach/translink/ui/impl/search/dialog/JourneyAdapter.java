@@ -16,13 +16,12 @@ import java.util.List;
 
 public class JourneyAdapter extends ViewHolderArrayAdapter<JourneyCriteriaFavourite> {
     private final PlaceParser placeParser;
-    private final boolean isCheckable;
 
-    public JourneyAdapter(Context context, PlaceParser placeParser, List<? extends JourneyCriteriaFavourite> favouriteList, boolean isCheckable) {
+    @SuppressWarnings("unchecked")
+    public JourneyAdapter(Context context, PlaceParser placeParser, List<? extends JourneyCriteriaFavourite> favouriteList) {
         super(context, R.layout.l_journey_history, (List<JourneyCriteriaFavourite>) favouriteList);
 
         this.placeParser = placeParser;
-        this.isCheckable = isCheckable;
 
         addViewHolderHelper(new JourneyViewHolderHelper());
     }
@@ -42,7 +41,7 @@ public class JourneyAdapter extends ViewHolderArrayAdapter<JourneyCriteriaFavour
     private class JourneyViewHolderHelper extends ViewHolderHelper<JourneyCriteriaFavourite, JourneyViewHolder> {
 
         public JourneyViewHolderHelper() {
-            super(isCheckable ? R.layout.l_favourite_journey_checkable : R.layout.l_favourite_journey);
+            super(R.layout.l_favourite_journey);
         }
 
         @Override

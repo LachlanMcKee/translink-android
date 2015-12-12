@@ -310,7 +310,7 @@ public class ResolveLocationListFragment extends AsyncTaskFragment implements Re
     }
 
     @Override
-    public void updateUi(@NonNull ResolveLocationListPresenterImpl.UiMode uiMode, ArrayList<String> existingAddressList) {
+    public void updateUi(@NonNull ResolveLocationListPresenterImpl.UiMode uiMode) {
         int normalUiVisibility = (uiMode == ResolveLocationListPresenterImpl.UiMode.NORMAL) ? View.VISIBLE : View.GONE;
         mChooseMapButton.setVisibility(normalUiVisibility);
         mOpenContactsButton.setVisibility(normalUiVisibility);

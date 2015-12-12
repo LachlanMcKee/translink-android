@@ -10,7 +10,7 @@ public class GoCardCredentialsImpl implements GoCardCredentials {
     private static final StringPreference PREF_CARD_NUMBER = new StringPreference("cardNum", "");
     private static final StringPreference PREF_PASSWORD = new StringPreference("cardPass", "");
 
-    private PreferencesProvider preferencesProvider;
+    private final PreferencesProvider preferencesProvider;
 
     @Inject
     public GoCardCredentialsImpl(PreferencesProvider preferencesProvider) {

@@ -20,33 +20,33 @@ import com.lach.translink.util.DataResource;
 public interface DataComponent {
     void inject(ResolveLocationActivity inject);
 
-    void inject(ResolveLocationListFragment resolveLocationListPresenter);
+    void inject(ResolveLocationListFragment inject);
 
-    void inject(ResolveLocationListPresenterImpl resolveLocationListPresenterImpl);
+    void inject(ResolveLocationListPresenterImpl inject);
 
     void inject(FavouriteJourneysActivity inject);
 
     void inject(FavouriteLocationsActivity inject);
 
-    void inject(FavouriteJourneysDialog favouriteJourneysDialog);
+    void inject(FavouriteJourneysDialog inject);
 
-    void inject(HistoryDialog historyDialog);
+    void inject(HistoryDialog inject);
 
-    void inject(SavedLocationsDialog savedLocationsDialog);
+    void inject(SavedLocationsDialog inject);
 
-    void inject(SaveJourneyDialog saveJourneyDialog);
+    void inject(SaveJourneyDialog inject);
 
-    void inject(SearchViewModel searchViewModel);
+    void inject(SearchViewModel inject);
 
-    void inject(SearchPlaceViewModel searchPlaceViewModel);
+    void inject(SearchPlaceViewModel inject);
 
-    void inject(SettingsFragment settingsFragment);
+    void inject(SettingsFragment inject);
 
-    void inject(DataResource dataResource);
+    void inject(DataResource inject);
 
-    void inject(SearchActivity searchActivity);
+    void inject(SearchActivity inject);
 
-    void inject(ResolveLocationMapFragment resolveLocationMapFragment);
+    void inject(ResolveLocationMapFragment inject);
 
-    void inject(BusStopUpdateFragment busStopUpdateFragment);
+    void inject(BusStopUpdateFragment inject);
 }

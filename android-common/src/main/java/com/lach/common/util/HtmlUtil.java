@@ -11,7 +11,7 @@ import java.util.regex.*;
  * @version 1.2 April 9, 2011
  */
 public class HtmlUtil {
-    private static Map<String, Character> map = new LinkedHashMap<>();
+    private static final Map<String, Character> map = new LinkedHashMap<>();
 
     static {
         map.put("&quot;", (char) 34);
@@ -120,7 +120,7 @@ public class HtmlUtil {
      * Find the Html Entity and convert it back to a regular character if the
      * entity exists, otherwise return the same string.
      *
-     * @param str
+     * @param str the html entity string
      * @return Character represented by HTML Entity or the same string if unknown entity.
      */
     private static String fromHtmlEntity(String str) {
@@ -143,7 +143,7 @@ public class HtmlUtil {
         String result = null;
 
         while (i.hasNext() && !found) {
-            if (map.get(key).charValue() == value) {
+            if (map.get(key) == value) {
                 found = true;
                 result = key;
             }
@@ -189,7 +189,7 @@ public class HtmlUtil {
     public static String decode(String decode) {
         StringBuilder str = new StringBuilder(decode);
         Matcher m = Pattern.compile("&[A-Za-z]+;").matcher(str);
-        String replaceStr = null;
+        String replaceStr;
 
         int matchPointer = 0;
         while (m.find(matchPointer)) {

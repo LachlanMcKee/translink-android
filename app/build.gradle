@@ -19,7 +19,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion as String
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 10
         targetSdkVersion rootProject.ext.targetSdkVersion as Integer
         versionName "4.0.5"
         versionCode 1007

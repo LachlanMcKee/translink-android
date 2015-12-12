@@ -6,7 +6,6 @@ import com.lach.common.async.AsyncResult;
 import com.lach.common.async.AsyncTaskFragment;
 import com.lach.common.data.map.MapMarker;
 import com.lach.common.data.map.MapPosition;
-import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.log.Log;
 import com.lach.translink.data.place.bus.BusStop;
 import com.lach.translink.tasks.place.TaskGetBusStops;
@@ -34,8 +33,7 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
     private static final String BUNDLE_CURRENT_MARKER_LONGITUDE = "current_marker_longitude";
     private static final String BUNDLE_SELECTED_BUS_STOP = "selected_bus_stop";
 
-    PreferencesProvider preferencesProvider;
-    Provider<TaskGetBusStops> getBusStopsTaskProvider;
+    private final Provider<TaskGetBusStops> getBusStopsTaskProvider;
 
     private ResolveLocationMapView view;
 
@@ -46,8 +44,7 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
     private Map<String, Long> mMarkerBusStopRelation;
 
     @Inject
-    public ResolveLocationMapPresenterImpl(PreferencesProvider preferencesProvider, Provider<TaskGetBusStops> getBusStopsTaskProvider) {
-        this.preferencesProvider = preferencesProvider;
+    public ResolveLocationMapPresenterImpl(Provider<TaskGetBusStops> getBusStopsTaskProvider) {
         this.getBusStopsTaskProvider = getBusStopsTaskProvider;
     }
 
@@ -111,6 +108,7 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
         //
         Set<Long> existingKeys = new HashSet<>(mVisibleBusStops.keySet());
 
+        //noinspection unchecked
         List<BusStop> busStops = (List<BusStop>) result.getItem();
         for (BusStop stop : busStops) {
             long stopId = stop.getId();

@@ -12,10 +12,10 @@ import dagger.Component;
 @Component(modules = {WebViewModule.class, JourneyDataModule.class, PlaceDataModule.class, CoreModule.class})
 public interface WebViewComponent {
 
-    TranslinkApplication inject(TranslinkApplication inject);
+    void inject(TranslinkApplication inject);
 
-    JourneyResultFragment inject(JourneyResultFragment inject);
+    void inject(JourneyResultFragment inject);
 
-    TaskJourneySearch inject(TaskJourneySearch inject);
+    void inject(TaskJourneySearch inject);
 
 }

@@ -204,7 +204,7 @@ public class GoCardInfoFragment extends AsyncTaskFragment {
     private void loadGoCardDetails(GoCardDetails goCardDetails) {
         if (goCardDetails != null) {
             goCardBalanceText.setText(goCardDetails.balance);
-            goCardBalanceAsOfText.setText("As of " + goCardDetails.balanceTime);
+            goCardBalanceAsOfText.setText(getString(R.string.gocard_info_balance_as_of, goCardDetails.balanceTime));
             goCardTypeText.setText(goCardDetails.passengerType);
             goCardIssueText.setText(goCardDetails.issueDate);
             goCardExpireText.setText(goCardDetails.expiryDate);
@@ -250,7 +250,7 @@ public class GoCardInfoFragment extends AsyncTaskFragment {
     private void updateHistoryDescription() {
         // Update the history description.
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
-        goCardHistoryDescriptionText.setText("(until " + sdf.format(currentEndDate) + ")");
+        goCardHistoryDescriptionText.setText(getString(R.string.gocard_info_history_date_until, sdf.format(currentEndDate)));
     }
 
     @SuppressWarnings("unchecked")

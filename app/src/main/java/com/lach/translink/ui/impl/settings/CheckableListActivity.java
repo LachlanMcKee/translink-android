@@ -111,6 +111,7 @@ public abstract class CheckableListActivity<T> extends BaseActivity implements L
         return false;
     }
 
+    @SuppressWarnings("unchecked")
     protected CheckboxAdapter getAdapter() {
         return (CheckboxAdapter) recyclerView.getAdapter();
     }

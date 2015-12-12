@@ -34,11 +34,12 @@ public class TaskGetBusStops implements Task<List<BusStop>> {
         return result;
     }
 
-    public AsyncResult<List<BusStop>> executeInternal(Object... params) throws Exception {
+    private AsyncResult<List<BusStop>> executeInternal(Object... params) {
         Log.debug(TAG, "executeInternal");
 
         LatLngBounds latLngBounds = (LatLngBounds) params[0];
 
+        //noinspection unchecked
         List<BusStop> busStopList = (List<BusStop>) busStopDao.getBusStopsWithinRegion(latLngBounds);
         return new AsyncResult<>(busStopList);
     }

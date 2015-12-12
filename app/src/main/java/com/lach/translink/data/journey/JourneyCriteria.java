@@ -11,11 +11,11 @@ import java.util.Date;
  */
 public class JourneyCriteria implements Parcelable {
 
-    String fromAddress;
-    String toAddress;
-    JourneyTransport journeyTransport;
-    JourneyTimeCriteria journeyTimeCriteria;
-    Date time;
+    private String fromAddress;
+    private String toAddress;
+    private JourneyTransport journeyTransport;
+    private JourneyTimeCriteria journeyTimeCriteria;
+    private Date time;
 
     @Nullable
     public String getFromAddress() {
@@ -79,7 +79,7 @@ public class JourneyCriteria implements Parcelable {
     public JourneyCriteria() {
     }
 
-    protected JourneyCriteria(Parcel in) {
+    private JourneyCriteria(Parcel in) {
         this.fromAddress = in.readString();
         this.toAddress = in.readString();
         int tmpJourneyTransport = in.readInt();

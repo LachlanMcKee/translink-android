@@ -20,7 +20,7 @@ import javax.inject.Inject;
 /**
  * This class must remain here to ensure that users don't lose their icons.
  */
-public class SearchActivity extends BaseActivity {
+public abstract class SearchActivity extends BaseActivity {
 
     @Inject
     BusStopDao busStopDao;

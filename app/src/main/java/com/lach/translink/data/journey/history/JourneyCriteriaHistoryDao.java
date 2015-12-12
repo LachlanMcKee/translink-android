@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class JourneyCriteriaHistoryDao extends DbFlowDao<JourneyCriteriaHistory, JourneyCriteriaHistoryModel> {
 
-    public static final int MAX_ROWS = 3;
+    private static final int MAX_ROWS = 3;
 
     @Override
     public Class<? extends Model> getModelClass() {

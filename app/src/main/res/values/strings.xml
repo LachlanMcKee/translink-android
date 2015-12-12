@@ -12,7 +12,6 @@
     <string name="activity_title_resolve_location">Resolve Location</string>
     <string name="activity_title_go_card">Go-Card</string>
     <string name="activity_title_install_bus">Update Bus Stops</string>
-    <string name="activity_title_resolve_bus">Confirm Bus Stop</string>
 
     <!-- Preference Screen -->
     <string name="Locations_Preference_Menu">LocationsPreferenceMenu</string>
@@ -54,6 +53,7 @@
     <string name="btn_continue">Continue</string>
 
     <!-- Resolve Location Activity -->
+    <string name="resolve_title">Choose %1$s</string>
     <string name="resolve_map_subtitle_intro">Tap anywhere to place a pin</string>
     <string name="resolve_map_subtitle_continue">Tap button to confirm</string>
     <string name="resolve_choose_on_map">Choose on map</string>
@@ -77,6 +77,9 @@
     <string name="gocard_info_expires">Expires</string>
     <string name="gocard_info_load_history">Load History</string>
     <string name="gocard_info_history_label">History</string>
+    <string name="gocard_info_history_date_until">(until %1$s)</string>
+    <string name="gocard_info_balance_as_of">As of %1$s</string>
+    <string name="gocard_info_amout_range">%1$s to %2$s</string>
 
     <string name="event_label">Event</string>
     <string name="result_label">Result</string>
@@ -88,6 +91,7 @@
     <string name="update_bus_finished_label">Bus stops updated</string>
 
     <!-- Common -->
+    <string name="retry">Retry</string>
     <string name="from_label">Starting Point</string>
     <string name="from_location">Starting Point</string>
     <string name="to_label">Destination</string>

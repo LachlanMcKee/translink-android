@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.preference.Preference;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -40,7 +41,7 @@ public class EnhancedPreferenceHelper {
             if (iconImageView != null) {
                 if (mIconResId != 0 || mIcon != null) {
                     if (mIcon == null) {
-                        mIcon = preference.getContext().getResources().getDrawable(mIconResId);
+                        mIcon = ContextCompat.getDrawable(preference.getContext(), mIconResId);
                     }
                     if (mIcon != null) {
                         iconImageView.setImageDrawable(mIcon);

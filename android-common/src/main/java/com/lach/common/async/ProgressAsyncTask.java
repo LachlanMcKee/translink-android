@@ -9,7 +9,7 @@ public class ProgressAsyncTask extends AsyncTask<Object, Object, AsyncResult> {
 
     private final Task task;
 
-    protected AsyncTaskFragment.TaskFragment mTaskFragment;
+    private AsyncTaskFragment.TaskFragment mTaskFragment;
 
     public ProgressAsyncTask(Task task) {
         this.task = task;

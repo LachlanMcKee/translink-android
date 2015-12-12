@@ -32,7 +32,7 @@ public class TaskFindLocation implements Task<ArrayList<String>> {
         return result;
     }
 
-    public AsyncResult<ArrayList<String>> executeInternal(Object... params) throws Exception {
+    private AsyncResult<ArrayList<String>> executeInternal(Object... params) throws Exception {
         String location = (String) params[0];
 
         Map<String, String> httpParams = new HashMap<>();

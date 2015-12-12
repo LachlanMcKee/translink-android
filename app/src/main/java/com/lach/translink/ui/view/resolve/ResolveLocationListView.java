@@ -18,7 +18,7 @@ public interface ResolveLocationListView extends TaskView {
 
     String getSearchText();
 
-    void updateUi(ResolveLocationListPresenterImpl.UiMode uiMode, ArrayList<String> existingAddressList);
+    void updateUi(ResolveLocationListPresenterImpl.UiMode uiMode);
 
     void updateSearchMode(boolean isEnabled, String hint);
 

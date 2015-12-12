@@ -10,7 +10,7 @@ import java.util.List;
 
 public abstract class BaseViewModel extends BaseObservable {
 
-    final BaseViewModel parent; // A parent may not exist.
+    private final BaseViewModel parent; // A parent may not exist.
     private List<BaseViewModel> childViewModels;
 
     public BaseViewModel() {

@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 public class PlaceParser {
 
-    BusStopDao busStopDao;
+    private final BusStopDao busStopDao;
 
     @Inject
     public PlaceParser(BusStopDao busStopDao) {

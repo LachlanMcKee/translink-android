@@ -60,16 +60,16 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
     private ResolveLocationListView view;
     private PlaceType placeType;
 
-    ArrayList<String> mSearchResults;
-    ArrayList<String> mLocationHistoryList;
+    private ArrayList<String> mSearchResults;
+    private ArrayList<String> mLocationHistoryList;
 
-    TranslinkSearchHandler mTranslinkSearchHandler;
+    private TranslinkSearchHandler mTranslinkSearchHandler;
 
-    PreferencesProvider preferencesProvider;
-    LocationHistoryDao locationHistoryDao;
+    private final PreferencesProvider preferencesProvider;
+    private final LocationHistoryDao locationHistoryDao;
 
-    Provider<TaskFindLocation> taskFindLocationProvider;
-    Provider<TaskGetAddress> getAddressesAsyncTaskProvider;
+    private final Provider<TaskFindLocation> taskFindLocationProvider;
+    private final Provider<TaskGetAddress> getAddressesAsyncTaskProvider;
 
     @Inject
     public ResolveLocationListPresenterImpl(PreferencesProvider preferencesProvider, LocationHistoryDao locationHistoryDao,
@@ -316,7 +316,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
         // Clear the adapter data since no search is occurring.
         updateSearchResults(null);
 
-        view.updateUi(mCurrentUIMode, existingAddressList);
+        view.updateUi(mCurrentUIMode);
 
         if (uiMode.searchType == ResolveLocationListPresenterImpl.SearchType.COORDINATES) {
             view.updateSearchMode(false, addressLookupPosition.latitude + ", " + addressLookupPosition.longitude);
@@ -393,7 +393,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
         }
     }
 
-    void updateSearchResults(ArrayList<String> addressList) {
+    private void updateSearchResults(ArrayList<String> addressList) {
         int size = (addressList != null ? addressList.size() : 0);
         Log.debug(TAG, "updateSearchResults. count: " + size);
 
@@ -404,7 +404,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
     @Override
     public void sendSaveLocationSelectedEvent(String address) {
         if (address != null) {
-            EventBus.getDefault().post(new ResolveLocationEvents.LocationSelectedEvent(placeType, address, false));
+            EventBus.getDefault().post(new ResolveLocationEvents.LocationSelectedEvent(address));
         }
     }
 

@@ -29,7 +29,7 @@ public class ResolveBusStopInfoView extends FrameLayout {
     @InjectView(R.id.resolve_bus_stop_description)
     TextView description;
 
-    int containerHeight;
+    private int containerHeight;
 
     private DismissListener dismissListener;
 

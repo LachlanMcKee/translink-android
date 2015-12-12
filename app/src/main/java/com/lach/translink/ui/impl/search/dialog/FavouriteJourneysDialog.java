@@ -44,7 +44,7 @@ public class FavouriteJourneysDialog extends DialogFragment {
 
         final List<? extends JourneyCriteriaFavourite> favouriteList = journeyCriteriaFavouriteDao.getAllRowsAsItems();
 
-        JourneyAdapter adapter = new JourneyAdapter(getActivity(), placeParser, favouriteList, false);
+        JourneyAdapter adapter = new JourneyAdapter(getActivity(), placeParser, favouriteList);
         b.setAdapter(adapter,
                 new DialogInterface.OnClickListener() {
 

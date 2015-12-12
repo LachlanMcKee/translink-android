@@ -8,10 +8,7 @@ public class BusStopParser {
     }
 
     public static boolean isEncodedBusStop(String text) {
-        if (text == null) {
-            return false;
-        }
-        return text.startsWith(ENCODING_PREFIX);
+        return text != null && text.startsWith(ENCODING_PREFIX);
     }
 
     public static BusStop decodeBusStop(BusStopDao busStopDao, String encodedString) {

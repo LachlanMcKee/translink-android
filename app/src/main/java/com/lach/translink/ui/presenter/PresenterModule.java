@@ -27,9 +27,9 @@ public class PresenterModule {
     }
 
     @Provides
-    ResolveLocationMapPresenter provideResolveLocationMapPresenter(PreferencesProvider preferencesProvider, Provider<TaskGetBusStops> taskGetBusStopsProvider) {
+    ResolveLocationMapPresenter provideResolveLocationMapPresenter(Provider<TaskGetBusStops> taskGetBusStopsProvider) {
 
-        return new ResolveLocationMapPresenterImpl(preferencesProvider, taskGetBusStopsProvider);
+        return new ResolveLocationMapPresenterImpl(taskGetBusStopsProvider);
     }
 
 }

@@ -28,15 +28,15 @@ import android.support.v7.widget.RecyclerView;
  */
 public abstract class CursorRecyclerAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
-    protected boolean mDataValid;
-    protected Cursor mCursor;
-    protected int mRowIDColumn;
+    private boolean mDataValid;
+    private Cursor mCursor;
+    private int mRowIDColumn;
 
     public CursorRecyclerAdapter(Cursor c) {
         init(c);
     }
 
-    void init(Cursor c) {
+    private void init(Cursor c) {
         boolean cursorPresent = c != null;
         mCursor = c;
         mDataValid = cursorPresent;
@@ -107,7 +107,7 @@ public abstract class CursorRecyclerAdapter<VH extends RecyclerView.ViewHolder> 
      * If the given new Cursor is the same instance is the previously set
      * Cursor, null is also returned.
      */
-    public Cursor swapCursor(Cursor newCursor) {
+    private Cursor swapCursor(Cursor newCursor) {
         if (newCursor == mCursor) {
             return null;
         }

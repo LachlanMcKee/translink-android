@@ -129,7 +129,9 @@ public class GoCardTransactionArrayAdapter extends ViewHolderArrayAdapter<GoCard
             GoCardTransactionTopUp topUpTransaction = (GoCardTransactionTopUp) item;
             holder.dateText.setText(topUpTransaction.time);
             holder.eventText.setText(topUpTransaction.description);
-            holder.resultText.setText(topUpTransaction.oldAmount + " to " + topUpTransaction.newAmount);
+
+            holder.resultText.setText(getContext().getString(R.string.gocard_info_amout_range,
+                    topUpTransaction.oldAmount, topUpTransaction.newAmount));
         }
     }
 

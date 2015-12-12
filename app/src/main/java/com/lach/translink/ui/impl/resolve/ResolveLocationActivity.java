@@ -110,6 +110,7 @@ public class ResolveLocationActivity extends BaseActivity {
         setSelectedAddressAndFinish(locationSelectedEvent.getAddress());
     }
 
+    @SuppressWarnings("UnusedParameters")
     public void onEvent(ResolveLocationEvents.ShowMapEvent event) {
         hideKeyboard();
 

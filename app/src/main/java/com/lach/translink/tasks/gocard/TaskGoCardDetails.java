@@ -44,7 +44,7 @@ public class TaskGoCardDetails implements Task<GoCardDetails> {
         return result;
     }
 
-    private AsyncResult<GoCardDetails> executeInternal() throws Exception {
+    private AsyncResult<GoCardDetails> executeInternal() {
         GoCardHttpClient.Response response;
         try {
             response = client.getResponseForUrl("https://gocard.translink.com.au/webtix/tickets-and-fares/go-card/online/summary");

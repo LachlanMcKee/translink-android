@@ -146,12 +146,12 @@ public abstract class AsyncTaskFragment extends ButterFragment implements AsyncT
         return new TaskBuilder(taskId, task);
     }
 
-    public void startTask(int taskSearchForJourney, Task task) {
-        createTask(taskSearchForJourney, task).start(this);
+    public void startTask(int taskId, Task task) {
+        createTask(taskId, task).start(this);
     }
 
-    public void startTask(int taskSearchForJourney, Task task, String message) {
-        createTask(taskSearchForJourney, task).message(message).start(this);
+    public void startTask(int taskId, Task task, String message) {
+        createTask(taskId, task).message(message).start(this);
     }
 
     private void startTaskInternal(int taskId, Task task, String message, Object[] parameters) {
@@ -448,9 +448,7 @@ public abstract class AsyncTaskFragment extends ButterFragment implements AsyncT
             if (mMessage != null) {
                 dialog.setMessage(mMessage);
             }
-            if (mTitle != null) {
-                dialog.setTitle(mTitle);
-            }
+            dialog.setTitle(mTitle);
             dialog.setCancelable(false);
 
             return dialog;

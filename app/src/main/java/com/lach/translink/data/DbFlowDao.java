@@ -28,6 +28,7 @@ public abstract class DbFlowDao<TYPE, MODEL extends Model> implements BaseDao<TY
         return (new Select().count().from(getModelClass())).count();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public TYPE get(long id) {
         return (TYPE) new Select().from(getModelClass()).byIds(id).querySingle();
@@ -38,17 +39,20 @@ public abstract class DbFlowDao<TYPE, MODEL extends Model> implements BaseDao<TY
         return getAllRowsQuery().query();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public TYPE getItemFromCursor(Cursor cursor) {
         // Unfortunately since we cannot define a proper constraint in generics, we must have an unchecked cast.
         return (TYPE) SqlUtils.convertToModel(true, getModelClass(), cursor);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<? extends TYPE> getAllRowsAsItems() {
         return (List<? extends TYPE>) getAllRowsQuery().queryList();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void insertRows(boolean wait, List<TYPE> itemsToAdd) {
         TransactionManager instance = TransactionManager.getInstance();
@@ -63,11 +67,13 @@ public abstract class DbFlowDao<TYPE, MODEL extends Model> implements BaseDao<TY
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void insertRows(boolean wait, TYPE... itemsToAdd) {
         insertRows(wait, Arrays.asList(itemsToAdd));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void deleteRows(boolean wait, List<TYPE> itemsToDelete) {
         TransactionManager instance = TransactionManager.getInstance();
@@ -82,6 +88,7 @@ public abstract class DbFlowDao<TYPE, MODEL extends Model> implements BaseDao<TY
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void deleteRows(boolean wait, TYPE... itemsToDelete) {
         deleteRows(wait, Arrays.asList(itemsToDelete));

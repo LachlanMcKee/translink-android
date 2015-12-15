@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/bus_stop_prompt_height"
         android:layout_gravity="bottom"
-        android:background="@color/background_material_light"
+        android:background="?android:attr/colorBackground"
         android:clickable="true"
         android:minHeight="@dimen/bus_stop_prompt_height"
         android:orientation="vertical"

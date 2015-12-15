@@ -1,8 +1,6 @@
 package com.lach.translink.ui.impl.search;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.databinding.Bindable;
 import android.os.Bundle;
@@ -11,32 +9,33 @@ import android.support.v4.app.FragmentActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.DatePicker;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.fourmob.datetimepicker.date.CalendarDay;
+import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.lach.common.BaseApplication;
 import com.lach.common.data.preference.Preferences;
 import com.lach.common.data.preference.PreferencesProvider;
-import com.lach.common.ui.dialog.MinMaxDatePickerDialog;
 import com.lach.common.ui.view.Debouncer;
 import com.lach.common.util.DateUtil;
 import com.lach.common.util.DialogUtil;
 import com.lach.common.util.NetworkUtil;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.BR;
-import com.lach.translink.ui.impl.UiPreference;
 import com.lach.translink.data.journey.JourneyCriteria;
-import com.lach.translink.data.journey.favourite.JourneyCriteriaFavouriteDao;
-import com.lach.translink.data.journey.history.JourneyCriteriaHistoryDao;
 import com.lach.translink.data.journey.JourneyTimeCriteria;
 import com.lach.translink.data.journey.JourneyTransport;
+import com.lach.translink.data.journey.favourite.JourneyCriteriaFavouriteDao;
+import com.lach.translink.data.journey.history.JourneyCriteriaHistoryDao;
 import com.lach.translink.data.location.PlaceType;
 import com.lach.translink.ui.impl.PrimaryViewModel;
+import com.lach.translink.ui.impl.UiPreference;
 import com.lach.translink.ui.impl.history.HistoryDialog;
 import com.lach.translink.ui.impl.result.JourneyResultActivity;
 import com.lach.translink.ui.impl.result.JourneyResultActivityDark;
 import com.lach.translink.ui.impl.search.dialog.FavouriteJourneysDialog;
+import com.sleepbot.datetimepicker.time.RadialPickerLayout;
+import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -55,6 +54,9 @@ public class SearchViewModel extends PrimaryViewModel {
     private static final String ARRIVE_TYPE_SAVE = "arriveType";
     private static final String TRANSPORT_TYPE_SAVE = "transportType";
     private static final String DATE_SAVE = "date";
+
+    private static final String FRAGMENT_TAG_DATE_PICKER = "date_picker";
+    private static final String FRAGMENT_TAG_TIME_PICKER = "timer_picker";
 
     @Inject
     PreferencesProvider preferencesProvider;
@@ -96,6 +98,17 @@ public class SearchViewModel extends PrimaryViewModel {
 
             // display the current date
             updateDateTime(date);
+
+            // Check if the date picker, or time picker dialogs were recreated. Attach their listeners if required.
+            DatePickerDialog datePicker = (DatePickerDialog) getActivity().getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_DATE_PICKER);
+            if (datePicker != null) {
+                datePicker.setOnDateSetListener(mDateSetListener);
+            }
+
+            TimePickerDialog timePicker = (TimePickerDialog) getActivity().getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_TIME_PICKER);
+            if (timePicker != null) {
+                timePicker.setOnTimeSetListener(mTimeSetListener);
+            }
 
         } else {
             transportType = JourneyTransport.All;
@@ -309,27 +322,36 @@ public class SearchViewModel extends PrimaryViewModel {
         return new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Date currentDate = new Date();
-
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(date);
 
-                MinMaxDatePickerDialog.ConstraintParams constraintParams = new MinMaxDatePickerDialog.ConstraintParams(currentDate, MAX_DAYS_IN_FUTURE);
-                new MinMaxDatePickerDialog(
-                        getContext(),
+                DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
                         mDateSetListener,
                         calendar.get(Calendar.YEAR),
                         calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH),
-                        constraintParams
-                ).show();
+                        calendar.get(Calendar.DAY_OF_MONTH)
+                );
+
+                calendar.setTime(new Date());
+
+                Calendar maxDate = Calendar.getInstance();
+                maxDate.setTime(new Date());
+                maxDate.add(Calendar.DAY_OF_YEAR, MAX_DAYS_IN_FUTURE);
+
+                datePickerDialog.setDateConstraints(new CalendarDay(calendar), new CalendarDay(maxDate));
+
+                datePickerDialog.setVibrate(false);
+                datePickerDialog.setPulseAnimationsEnabled(false);
+                datePickerDialog.show(getActivity().getSupportFragmentManager(), FRAGMENT_TAG_DATE_PICKER);
+
                 return true;
             }
         };
     }
 
     private final DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        @Override
+        public void onDateSet(DatePickerDialog datePickerDialog, int year, int monthOfYear, int dayOfMonth) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
 
@@ -348,13 +370,15 @@ public class SearchViewModel extends PrimaryViewModel {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(date);
 
-                new TimePickerDialog(
-                        getContext(),
+                TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(
                         mTimeSetListener,
                         calendar.get(Calendar.HOUR_OF_DAY),
                         calendar.get(Calendar.MINUTE),
                         android.text.format.DateFormat.is24HourFormat(getContext())
-                ).show();
+                );
+                timePickerDialog.setVibrate(false);
+                timePickerDialog.setPulseAnimationsEnabled(false);
+                timePickerDialog.show(getActivity().getSupportFragmentManager(), FRAGMENT_TAG_TIME_PICKER);
                 return true;
             }
         };
@@ -362,7 +386,8 @@ public class SearchViewModel extends PrimaryViewModel {
     }
 
     private final TimePickerDialog.OnTimeSetListener mTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        @Override
+        public void onTimeSet(RadialPickerLayout radialPickerLayout, int hourOfDay, int minute) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
 

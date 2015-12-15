@@ -133,6 +133,9 @@ final MOCKITO_VERSION = '1.10.19'
 dependencies {
     compile project(':android-common')
 
+    // Date and time picker lib.
+    compile 'com.github.lachlanm:datetimepicker:0.0.6'
+
     // Webview library, allows cross-walk implementation.
     debugCompile "com.github.lachlanm:xwalk-fallback:0.1.0:standardDebug@aar"
     releaseCompile "com.github.lachlanm:xwalk-fallback:0.1.0:standardRelease@aar"

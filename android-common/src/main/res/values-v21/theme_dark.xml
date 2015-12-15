@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <style name="AppThemeDark" parent="Base.AppThemeDark">
-        <item name="android:datePickerDialogTheme">@style/AppThemeDark.DialogTheme</item>
-        <item name="android:timePickerDialogTheme">@style/AppThemeDark.DialogTheme</item>
-    </style>
-
-</resources>

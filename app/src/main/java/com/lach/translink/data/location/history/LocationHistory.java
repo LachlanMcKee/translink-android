@@ -1,5 +1,7 @@
 package com.lach.translink.data.location.history;
 
+import android.os.Parcelable;
+
 import com.lach.translink.data.location.favourite.LocationFavourite;
 
 import java.util.Date;
@@ -7,7 +9,7 @@ import java.util.Date;
 /**
  * Automatically saved locations which trigger when a location is resolved.
  */
-public interface LocationHistory extends LocationFavourite {
+public interface LocationHistory extends LocationFavourite, Parcelable {
 
     /**
      * A timestamp used to determine the last time this particular location was used.

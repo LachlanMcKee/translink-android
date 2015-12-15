@@ -13,7 +13,9 @@ import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.log.Log;
 import com.lach.common.tasks.TaskGetAddress;
 import com.lach.translink.data.location.PlaceType;
+import com.lach.translink.data.location.history.LocationHistory;
 import com.lach.translink.data.location.history.LocationHistoryDao;
+import com.lach.translink.data.place.PlaceParser;
 import com.lach.translink.tasks.resolve.TaskFindLocation;
 import com.lach.translink.ui.impl.UiPreference;
 import com.lach.translink.ui.impl.resolve.ResolveLocationEvents;
@@ -61,10 +63,11 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
     private PlaceType placeType;
 
     private ArrayList<String> mSearchResults;
-    private ArrayList<String> mLocationHistoryList;
+    private ArrayList<LocationHistory> mLocationHistoryList;
 
     private TranslinkSearchHandler mTranslinkSearchHandler;
 
+    private final PlaceParser placeParser;
     private final PreferencesProvider preferencesProvider;
     private final LocationHistoryDao locationHistoryDao;
 
@@ -72,9 +75,10 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
     private final Provider<TaskGetAddress> getAddressesAsyncTaskProvider;
 
     @Inject
-    public ResolveLocationListPresenterImpl(PreferencesProvider preferencesProvider, LocationHistoryDao locationHistoryDao,
+    public ResolveLocationListPresenterImpl(PlaceParser placeParser, PreferencesProvider preferencesProvider, LocationHistoryDao locationHistoryDao,
                                             Provider<TaskFindLocation> taskFindLocationProvider, Provider<TaskGetAddress> getAddressesAsyncTaskProvider) {
 
+        this.placeParser = placeParser;
         this.preferencesProvider = preferencesProvider;
         this.locationHistoryDao = locationHistoryDao;
         this.taskFindLocationProvider = taskFindLocationProvider;
@@ -90,11 +94,11 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
 
         boolean historyReloaded = false;
         if (savedInstanceState != null) {
-            ArrayList<String> savedHistory = savedInstanceState.getStringArrayList(BUNDLE_HISTORY);
+            ArrayList<LocationHistory> savedHistory = savedInstanceState.getParcelableArrayList(BUNDLE_HISTORY);
 
             if (savedHistory != null) {
                 historyReloaded = true;
-                view.updateHistory(savedHistory);
+                onHistoryUpdated(savedHistory);
             }
         }
 
@@ -103,9 +107,8 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
 
             locationHistoryDao.setHistoryLoadListener(new LocationHistoryDao.HistoryLoadListener() {
                 @Override
-                public void onHistoryLoaded(ArrayList<String> locationHistoryList) {
+                public void onHistoryLoaded(List<? extends LocationHistory> locationHistoryList) {
                     locationHistoryDao.removeHistoryLoadListener();
-                    mLocationHistoryList = locationHistoryList;
 
                     boolean isUiReady = view.isUiReady();
                     Log.debug(TAG, "onHistoryLoaded. isUiReady: " + isUiReady);
@@ -116,7 +119,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
                         return;
                     }
 
-                    view.updateHistory(locationHistoryList);
+                    onHistoryUpdated(new ArrayList<>(locationHistoryList));
                 }
             });
             locationHistoryDao.loadHistory();
@@ -176,7 +179,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
         }
 
         outState.putStringArrayList(BUNDLE_SEARCH_RESULTS, mSearchResults);
-        outState.putStringArrayList(BUNDLE_HISTORY, mLocationHistoryList);
+        outState.putParcelableArrayList(BUNDLE_HISTORY, mLocationHistoryList);
 
         // This is important for saving the current searching state.
         if (currentTranslinkLookupText != null) {
@@ -190,6 +193,18 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
 
         outState.putString(BUNDLE_SEARCH_TEXT, view.getSearchText());
         outState.putSerializable(BUNDLE_CURRENT_UI_MODE, mCurrentUIMode);
+    }
+
+    private void onHistoryUpdated(ArrayList<LocationHistory> locationHistory) {
+        mLocationHistoryList = locationHistory;
+
+        ArrayList<ResolveLocationListView.LocationInfo> locationInfoList = new ArrayList<>();
+        for (LocationHistory history : locationHistory) {
+            String address = history.getAddress();
+            locationInfoList.add(new ResolveLocationListView.LocationInfo(address, placeParser.prettyPrintPlace(address)));
+        }
+
+        view.updateHistory(locationInfoList);
     }
 
     @Override
@@ -398,7 +413,17 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
         Log.debug(TAG, "updateSearchResults. count: " + size);
 
         mSearchResults = addressList;
-        view.updateSearchResults(addressList);
+
+        if (size == 0) {
+            view.updateSearchResults(null);
+            return;
+        }
+
+        List<ResolveLocationListView.LocationInfo> locationInfoList = new ArrayList<>();
+        for (String address : addressList) {
+            locationInfoList.add(new ResolveLocationListView.LocationInfo(address, address));
+        }
+        view.updateSearchResults(locationInfoList);
     }
 
     @Override

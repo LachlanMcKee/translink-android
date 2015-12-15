@@ -4,6 +4,8 @@ import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.tasks.TaskGetAddress;
 import com.lach.translink.data.location.LocationDataModule;
 import com.lach.translink.data.location.history.LocationHistoryDao;
+import com.lach.translink.data.place.PlaceDataModule;
+import com.lach.translink.data.place.PlaceParser;
 import com.lach.translink.tasks.place.TaskGetBusStops;
 import com.lach.translink.tasks.resolve.TaskFindLocation;
 import com.lach.translink.ui.presenter.resolve.ResolveLocationListPresenter;
@@ -16,14 +18,14 @@ import javax.inject.Provider;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(includes = {LocationDataModule.class})
+@Module(includes = {LocationDataModule.class, PlaceDataModule.class})
 public class PresenterModule {
 
     @Provides
-    ResolveLocationListPresenter provideResolveLocationListPresenter(PreferencesProvider preferencesProvider, LocationHistoryDao locationHistoryDao,
+    ResolveLocationListPresenter provideResolveLocationListPresenter(PlaceParser placeParser, PreferencesProvider preferencesProvider, LocationHistoryDao locationHistoryDao,
                                                                      Provider<TaskFindLocation> taskFindLocationProvider, Provider<TaskGetAddress> getAddressesAsyncTaskProvider) {
 
-        return new ResolveLocationListPresenterImpl(preferencesProvider, locationHistoryDao, taskFindLocationProvider, getAddressesAsyncTaskProvider);
+        return new ResolveLocationListPresenterImpl(placeParser, preferencesProvider, locationHistoryDao, taskFindLocationProvider, getAddressesAsyncTaskProvider);
     }
 
     @Provides

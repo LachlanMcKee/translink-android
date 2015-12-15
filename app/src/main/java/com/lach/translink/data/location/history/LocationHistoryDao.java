@@ -14,7 +14,6 @@ import com.raizlabs.android.dbflow.sql.language.Update;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.structure.Model;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,11 +24,10 @@ import javax.inject.Inject;
  */
 public class LocationHistoryDao extends DbFlowDao<LocationHistory, LocationHistoryModel> {
     private static final String TAG = LocationHistoryDao.class.getSimpleName();
-    private final PlaceParser placeParser;
 
     @Inject
-    public LocationHistoryDao(PlaceParser placeParser) {
-        this.placeParser = placeParser;
+    public LocationHistoryDao() {
+
     }
 
     @Override
@@ -84,16 +82,7 @@ public class LocationHistoryDao extends DbFlowDao<LocationHistory, LocationHisto
                             Log.warn(TAG, "historyLoadListener is not assigned");
                             return;
                         }
-
-                        // Iterate through the history and create a results location list.
-                        ArrayList<String> locationHistoryList = new ArrayList<>();
-                        if (locationHistories != null) {
-                            for (LocationHistory history : locationHistories) {
-                                locationHistoryList.add(placeParser.prettyPrintPlace(history.getAddress()));
-                            }
-                        }
-
-                        historyLoadListener.onHistoryLoaded(locationHistoryList);
+                        historyLoadListener.onHistoryLoaded(locationHistories);
                     }
                 }));
     }
@@ -140,7 +129,7 @@ public class LocationHistoryDao extends DbFlowDao<LocationHistory, LocationHisto
          *
          * @param locationHistoryList a list of addresses.
          */
-        void onHistoryLoaded(ArrayList<String> locationHistoryList);
+        void onHistoryLoaded(List<? extends LocationHistory> locationHistoryList);
     }
 
 }

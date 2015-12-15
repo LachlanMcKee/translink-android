@@ -7,14 +7,12 @@ import com.lach.common.data.CoreModule;
 import com.lach.common.tasks.TaskGetAddress;
 import com.lach.translink.data.location.favourite.LocationFavouriteDao;
 import com.lach.translink.data.location.history.LocationHistoryDao;
-import com.lach.translink.data.place.PlaceDataModule;
-import com.lach.translink.data.place.PlaceParser;
 import com.lach.translink.tasks.resolve.TaskFindLocation;
 
 import dagger.Module;
 import dagger.Provides;
 
-@Module(includes = {CoreModule.class, PlaceDataModule.class})
+@Module(includes = {CoreModule.class})
 public class LocationDataModule {
 
     @Provides
@@ -23,8 +21,8 @@ public class LocationDataModule {
     }
 
     @Provides
-    LocationHistoryDao provideLocationHistoryDao(PlaceParser placeParser) {
-        return new LocationHistoryDao(placeParser);
+    LocationHistoryDao provideLocationHistoryDao() {
+        return new LocationHistoryDao();
     }
 
     @Provides

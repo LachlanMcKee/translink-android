@@ -139,7 +139,7 @@ public class ResolveLocationListFragment extends AsyncTaskFragment implements Re
         mResultAdapter = new ResultAdapter(new LocationViewHolder.LocationClickListener() {
             @Override
             public void onResultClicked(int position) {
-                mPresenter.sendSaveLocationSelectedEvent(mResultAdapter.getAddressList().get(position));
+                mPresenter.sendSaveLocationSelectedEvent(mResultAdapter.getAddressList().get(position).data);
             }
         });
 
@@ -153,7 +153,7 @@ public class ResolveLocationListFragment extends AsyncTaskFragment implements Re
         mHistoryAdapter = new HistoryAdapter(new LocationViewHolder.LocationClickListener() {
             @Override
             public void onResultClicked(int position) {
-                mPresenter.sendSaveLocationSelectedEvent(mHistoryAdapter.getAddressList().get(position));
+                mPresenter.sendSaveLocationSelectedEvent(mHistoryAdapter.getAddressList().get(position).data);
             }
         });
 
@@ -258,7 +258,7 @@ public class ResolveLocationListFragment extends AsyncTaskFragment implements Re
     }
 
     @Override
-    public void updateHistory(ArrayList<String> history) {
+    public void updateHistory(List<LocationInfo> history) {
         if (mHistoryAdapter == null) {
             return;
         }
@@ -267,7 +267,7 @@ public class ResolveLocationListFragment extends AsyncTaskFragment implements Re
     }
 
     @Override
-    public void updateSearchResults(ArrayList<String> addressList) {
+    public void updateSearchResults(List<LocationInfo> addressList) {
         mResultAdapter.changeData(addressList);
         mResultsContainer.setVisibility(addressList != null ? View.VISIBLE : View.GONE);
     }
@@ -464,7 +464,7 @@ public class ResolveLocationListFragment extends AsyncTaskFragment implements Re
     }
 
     static abstract class LocationAdapter extends RecyclerView.Adapter<LocationViewHolder> {
-        private ArrayList<String> addressList;
+        private List<LocationInfo> addressList;
         private final LocationViewHolder.LocationClickListener clickListener;
 
         public LocationAdapter(LocationViewHolder.LocationClickListener clickListener) {
@@ -479,7 +479,7 @@ public class ResolveLocationListFragment extends AsyncTaskFragment implements Re
 
         @Override
         public void onBindViewHolder(LocationViewHolder holder, int position) {
-            holder.bind(addressList.get(position));
+            holder.bind(addressList.get(position).label);
         }
 
         @Override
@@ -490,12 +490,12 @@ public class ResolveLocationListFragment extends AsyncTaskFragment implements Re
             return addressList.size();
         }
 
-        public void changeData(ArrayList<String> addressList) {
+        public void changeData(List<LocationInfo> addressList) {
             this.addressList = addressList;
             notifyDataSetChanged();
         }
 
-        public ArrayList<String> getAddressList() {
+        public List<LocationInfo> getAddressList() {
             return addressList;
         }
 

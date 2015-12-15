@@ -54,4 +54,7 @@
     <!-- CardView properties -->
     <attr name="card_view_background" format="color"/>
 
+    <!-- Misc -->
+    <attr name="icon_tint_colour" format="color"/>
+
 </resources>

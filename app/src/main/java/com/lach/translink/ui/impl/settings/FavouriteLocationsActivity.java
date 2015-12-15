@@ -25,6 +25,16 @@ public class FavouriteLocationsActivity extends CheckableListActivity<LocationFa
     PlaceParser placeParser;
 
     @Override
+    protected int getNoContentIcon() {
+        return R.drawable.ic_placeholder_favourite_location;
+    }
+
+    @Override
+    protected int getNoContentText() {
+        return R.string.favourite_no_saved_location;
+    }
+
+    @Override
     protected BaseDao<LocationFavourite, ? extends LocationFavourite> getListDao() {
         TranslinkApplication application = (TranslinkApplication) getApplication();
         application.getDataComponent().inject(this);

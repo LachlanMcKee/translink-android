@@ -1,16 +1,22 @@
 package com.lach.translink.ui.impl.settings;
 
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,11 +26,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 import com.lach.common.log.Log;
 import com.lach.common.ui.BaseActivity;
 import com.lach.common.ui.CursorRecyclerAdapter;
 import com.lach.common.ui.view.ScaleAnimator;
+import com.lach.common.util.ThemeUtil;
 import com.lach.translink.activities.R;
 import com.lach.translink.data.BaseDao;
 
@@ -35,6 +43,8 @@ import java.util.List;
 public abstract class CheckableListActivity<T> extends BaseActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private View parent;
     private RecyclerView recyclerView;
+    private TextView noContentLabel;
+
     private final SparseBooleanArray mSelections = new SparseBooleanArray();
 
     private static final int LIST_DATA_LOADER = 0;
@@ -59,6 +69,13 @@ public abstract class CheckableListActivity<T> extends BaseActivity implements L
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(createAdapter());
 
+        noContentLabel = (TextView) findViewById(R.id.no_content_label);
+        noContentLabel.setText(getNoContentText());
+
+        Drawable noContentDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(this, getNoContentIcon()));
+        DrawableCompat.setTint(noContentDrawable, ThemeUtil.getIconTintColour(this));
+        noContentLabel.setCompoundDrawablesWithIntrinsicBounds(null, noContentDrawable, null, null);
+
         FloatingActionButton addButton = (FloatingActionButton) findViewById(R.id.fab_add);
         FloatingActionButton deleteButton = (FloatingActionButton) findViewById(R.id.fab_delete);
 
@@ -82,6 +99,12 @@ public abstract class CheckableListActivity<T> extends BaseActivity implements L
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
+
+    @DrawableRes
+    protected abstract int getNoContentIcon();
+
+    @StringRes
+    protected abstract int getNoContentText();
 
     protected abstract BaseDao<T, ?> getListDao();
 
@@ -130,6 +153,8 @@ public abstract class CheckableListActivity<T> extends BaseActivity implements L
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         Log.debug("ABC", "onLoadFinished");
         getAdapter().changeCursor(cursor);
+
+        noContentLabel.setVisibility(getAdapter().getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override

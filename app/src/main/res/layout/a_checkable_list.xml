@@ -7,6 +7,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/no_content_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:drawablePadding="12dp"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:visibility="gone"
+        tools:drawableTop="@drawable/ic_placeholder_favourite_location"
+        tools:text="No content found"
+        tools:visibility="visible" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"

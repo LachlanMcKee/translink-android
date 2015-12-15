@@ -32,6 +32,9 @@
     <string name="gocard_details_enter_password">Password</string>
     <string name="gocard_details_password_unchanged">Modify existing password</string>
 
+    <string name="favourite_no_saved_journey">No journeys saved</string>
+    <string name="favourite_no_saved_location">No locations saved</string>
+
     <!-- Translink Search Activity -->
     <string name="load_journey">Load Journey</string>
     <string name="menu_add_to_journeys">Add to Journeys</string>

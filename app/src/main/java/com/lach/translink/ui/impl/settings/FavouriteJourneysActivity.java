@@ -33,6 +33,16 @@ public class FavouriteJourneysActivity extends CheckableListActivity<JourneyCrit
     }
 
     @Override
+    protected int getNoContentIcon() {
+        return R.drawable.ic_placeholder_favourite_journey;
+    }
+
+    @Override
+    protected int getNoContentText() {
+        return R.string.favourite_no_saved_journey;
+    }
+
+    @Override
     protected BaseDao<JourneyCriteriaFavourite, ?> getListDao() {
         TranslinkApplication application = (TranslinkApplication) getApplication();
         application.getDataComponent().inject(this);

@@ -46,6 +46,9 @@
         <!-- CardView properties -->
         <item name="card_view_background">@android:color/white</item>
 
+        <!-- Misc -->
+        <item name="icon_tint_colour">#757575</item>
+
         <item name="dialogTheme">@style/AppThemeLight.DialogTheme</item>
         <item name="alertDialogTheme">@style/AppThemeLight.AlertDialogTheme</item>
     </style>

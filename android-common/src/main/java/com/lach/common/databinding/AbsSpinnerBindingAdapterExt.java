@@ -1,6 +1,8 @@
 package com.lach.common.databinding;
 
 import android.databinding.BindingAdapter;
+import android.graphics.Rect;
+import android.os.Build;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -40,6 +42,19 @@ public class AbsSpinnerBindingAdapterExt {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
+                    Rect hitRect = new Rect();
+                    v.getHitRect(hitRect);
+
+                    //
+                    // Ensure the touch release occurs within the view bounds. Gingerbread won't fire the event if the
+                    // position of the event is outside the view.
+                    //
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                        if (!hitRect.contains((int)(event.getX() + v.getX()), (int)(event.getY() + v.getY()))) {
+                            return true;
+                        }
+                    }
+
                     if (getDebouncer().isValidClick()) {
                         listener.onTouch(v, event);
 

@@ -40,7 +40,7 @@ public class ScaleAnimator {
                     .setInterpolator(FAST_OUT_SLOW_IN_INTERPOLATOR).withLayer()
                     .setListener(null).start();
         } else {
-            Animation anim = android.view.animation.AnimationUtils.loadAnimation(view.getContext(),  R.anim.fab_in);
+            Animation anim = android.view.animation.AnimationUtils.loadAnimation(view.getContext(),  R.anim.design_fab_in);
             anim.setDuration(300L);
             anim.setFillAfter(true);
             anim.setInterpolator(FAST_OUT_SLOW_IN_INTERPOLATOR);
@@ -88,7 +88,7 @@ public class ScaleAnimator {
                     }).start();
 
         } else {
-            Animation anim = android.view.animation.AnimationUtils.loadAnimation(view.getContext(), R.anim.fab_out);
+            Animation anim = android.view.animation.AnimationUtils.loadAnimation(view.getContext(), R.anim.design_fab_out);
             anim.setInterpolator(FAST_OUT_SLOW_IN_INTERPOLATOR);
             anim.setDuration(300L);
             anim.setFillAfter(true);

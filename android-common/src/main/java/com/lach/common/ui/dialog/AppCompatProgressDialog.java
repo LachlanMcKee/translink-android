@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.v7.app.AppCompatDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.lach.common.R;
@@ -14,6 +15,7 @@ public class AppCompatProgressDialog extends AppCompatDialog {
 
     public AppCompatProgressDialog(Context context) {
         super(context);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         init();
     }
 

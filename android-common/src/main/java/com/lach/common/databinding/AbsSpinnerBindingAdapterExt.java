@@ -10,6 +10,7 @@ import android.widget.AbsSpinner;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 
+import com.lach.common.R;
 import com.lach.common.ui.view.Debouncer;
 
 public class AbsSpinnerBindingAdapterExt {
@@ -87,7 +88,7 @@ public class AbsSpinnerBindingAdapterExt {
                 ArrayAdapter<Object> adapter =
                         new ArrayAdapter<>(view.getContext(),
                                 android.R.layout.simple_spinner_item, entries);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
                 view.setAdapter(adapter);
             }
         } else {

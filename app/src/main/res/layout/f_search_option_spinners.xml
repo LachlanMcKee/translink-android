@@ -14,9 +14,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="@dimen/padding_small"
-        android:paddingBottom="@dimen/padding_small">
+        android:orientation="horizontal">
 
         <Spinner
             android:id="@+id/arrive_type"
@@ -24,10 +22,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="50"
+            android:paddingBottom="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_small"
             android:prompt="@string/time_type_spinner_title"
             bind:entries="@{viewModel.leaveTypeEntries}"
             bind:onItemSelectedListener="@{viewModel.leaveTypeSelectedListener}"
-            bind:selection="@{viewModel.leaveTypeIndex}"/>
+            bind:selection="@{viewModel.leaveTypeIndex}" />
 
         <Spinner
             android:id="@+id/transport_type"
@@ -35,10 +35,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="50"
+            android:paddingBottom="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_small"
             android:prompt="@string/transport_type_spinner_title"
             bind:entries="@{viewModel.transportTypeEntries}"
             bind:onItemSelectedListener="@{viewModel.transportTypeSelectedListener}"
-            bind:selection="@{viewModel.transportTypeIndex}">
-        </Spinner>
+            bind:selection="@{viewModel.transportTypeIndex}"/>
     </LinearLayout>
 </layout>

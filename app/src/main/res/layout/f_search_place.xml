@@ -25,7 +25,7 @@
 
         <ImageView
             android:id="@+id/place_resolve_button"
-            style="?borderlessButtonStyle"
+            android:background="?selectableItemBackgroundBorderless"
             android:layout_width="75dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -39,6 +39,7 @@
 
         <TextView
             android:id="@+id/place_text"
+            android:background="?selectableItemBackground"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/place_label_header"

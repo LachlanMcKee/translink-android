@@ -6,7 +6,6 @@ import android.databinding.Bindable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Toast;
@@ -165,13 +164,13 @@ public class SearchViewModel extends PrimaryViewModel {
 
     @Bindable
     public String getDate() {
-        DateFormat dateFormat = SimpleDateFormat.getDateInstance(DateFormat.SHORT);
+        DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getContext());
         return dateFormat.format(date);
     }
 
     @Bindable
     public String getTime() {
-        DateFormat timeFormat = SimpleDateFormat.getTimeInstance(DateFormat.SHORT);
+        DateFormat timeFormat = android.text.format.DateFormat.getTimeFormat(getContext());
         return timeFormat.format(date);
     }
 
@@ -318,10 +317,10 @@ public class SearchViewModel extends PrimaryViewModel {
         };
     }
 
-    public View.OnTouchListener getDateTouchListener() {
-        return new View.OnTouchListener() {
+    public View.OnClickListener getDateClickListener() {
+        return new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View v) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(date);
 
@@ -343,8 +342,6 @@ public class SearchViewModel extends PrimaryViewModel {
                 datePickerDialog.setVibrate(false);
                 datePickerDialog.setPulseAnimationsEnabled(false);
                 datePickerDialog.show(getActivity().getSupportFragmentManager(), FRAGMENT_TAG_DATE_PICKER);
-
-                return true;
             }
         };
     }
@@ -363,10 +360,10 @@ public class SearchViewModel extends PrimaryViewModel {
         }
     };
 
-    public View.OnTouchListener getTimeTouchListener() {
-        return new View.OnTouchListener() {
+    public View.OnClickListener getTimeClickListener() {
+        return new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View v) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(date);
 
@@ -379,10 +376,8 @@ public class SearchViewModel extends PrimaryViewModel {
                 timePickerDialog.setVibrate(false);
                 timePickerDialog.setPulseAnimationsEnabled(false);
                 timePickerDialog.show(getActivity().getSupportFragmentManager(), FRAGMENT_TAG_TIME_PICKER);
-                return true;
             }
         };
-
     }
 
     private final TimePickerDialog.OnTimeSetListener mTimeSetListener = new TimePickerDialog.OnTimeSetListener() {

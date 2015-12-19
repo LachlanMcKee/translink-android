@@ -13,27 +13,33 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/padding_small"
-        android:paddingBottom="@dimen/padding_small">
+        android:layout_height="wrap_content">
 
-        <Spinner
-            tools:id="@+id/spinner_date"
+        <TextView
+            style="@style/Widget.AppCompat.TextView.SpinnerItem"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="50"
+            android:background="?selectableItemBackground"
+            android:paddingBottom="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_small"
+            bind:debouncer="@{viewModel.debouncer}"
+            bind:onClickListener="@{viewModel.dateClickListener}"
             bind:text="@{viewModel.date}"
-            bind:onTouchListener="@{viewModel.dateTouchListener}"
-            bind:debouncer="@{viewModel.debouncer}"/>
+            tools:text="19/12/2015" />
 
-        <Spinner
-            tools:id="@+id/spinner_time"
+        <TextView
+            style="@style/Widget.AppCompat.TextView.SpinnerItem"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="50"
+            android:background="?selectableItemBackground"
+            android:paddingBottom="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_small"
+            bind:debouncer="@{viewModel.debouncer}"
+            bind:onClickListener="@{viewModel.timeClickListener}"
             bind:text="@{viewModel.time}"
-            bind:onTouchListener="@{viewModel.timeTouchListener}"
-            bind:debouncer="@{viewModel.debouncer}"/>
+            tools:text="12:30PM" />
 
     </LinearLayout>
 </layout>

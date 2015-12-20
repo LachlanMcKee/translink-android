@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
-import com.lach.common.util.IntentUtil;
+import com.lach.common.util.WebUtil;
 
 public class WebsiteLinksDialog extends DialogFragment {
 
@@ -36,7 +36,7 @@ public class WebsiteLinksDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 WebSiteInfo selectedItem = webSitesList.get(item);
-                IntentUtil.openUrl(getActivity(), selectedItem.getUri());
+                WebUtil.openUrl(getActivity(), selectedItem.getUri());
             }
         });
 

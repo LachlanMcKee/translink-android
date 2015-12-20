@@ -1,3 +1,7 @@
-<manifest package="com.lach.common">
+<manifest
+    package="com.lach.common"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-sdk tools:overrideLibrary="android.support.customtabs"/>
 
 </manifest>

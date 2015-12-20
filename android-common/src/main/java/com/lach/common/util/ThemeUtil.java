@@ -12,6 +12,10 @@ public class ThemeUtil {
         return getColorAttribute(context, R.attr.icon_tint_colour);
     }
 
+    public static int getColourPrimary(Context context) {
+        return getColorAttribute(context, R.attr.colorPrimary);
+    }
+
     public static int getColorAttribute(Context context, int attribute) {
         TypedValue typedValue = new TypedValue();
 

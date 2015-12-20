@@ -21,11 +21,19 @@ public class ScaleAnimator {
     }
 
     public void show() {
+        show(true);
+    }
+
+    public void show(boolean animate) {
         if (view.getVisibility() == View.VISIBLE) {
             return;
         }
 
         view.setVisibility(View.VISIBLE);
+        if (!animate) {
+            return;
+        }
+
         if (Build.VERSION.SDK_INT >= 14) {
             // Ensure the initial values are set correctly.
             view.setScaleX(0.0F);
@@ -52,9 +60,9 @@ public class ScaleAnimator {
         hide(true);
     }
 
-    public void hide(boolean forceAnimation) {
+    public void hide(boolean animate) {
         // Earlier devices have troubles animating under heavy UI interactions.
-        if (!forceAnimation && Build.VERSION.SDK_INT < 14) {
+        if (!animate || Build.VERSION.SDK_INT < 14) {
             view.setVisibility(View.INVISIBLE);
             return;
         }

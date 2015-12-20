@@ -72,7 +72,7 @@ public class FavouriteLocationsActivity extends CheckableListActivity<LocationFa
 
     @Override
     protected int getRowLayoutId() {
-        return R.layout.l_saved_journey;
+        return R.layout.l_saved_location;
     }
 
     @Override

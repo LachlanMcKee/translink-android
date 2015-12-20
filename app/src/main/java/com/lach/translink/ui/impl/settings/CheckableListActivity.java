@@ -1,7 +1,6 @@
 package com.lach.translink.ui.impl.settings;
 
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,7 +19,6 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +30,7 @@ import com.lach.common.log.Log;
 import com.lach.common.ui.BaseActivity;
 import com.lach.common.ui.CursorRecyclerAdapter;
 import com.lach.common.ui.view.ScaleAnimator;
+import com.lach.common.util.ParcelableSparseBooleanArray;
 import com.lach.common.util.ThemeUtil;
 import com.lach.translink.activities.R;
 import com.lach.translink.data.BaseDao;
@@ -41,11 +40,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CheckableListActivity<T> extends BaseActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+    private static final String PARCEL_SELECITONS = "selections";
+
     private View parent;
     private RecyclerView recyclerView;
     private TextView noContentLabel;
 
-    private final SparseBooleanArray mSelections = new SparseBooleanArray();
+    private ParcelableSparseBooleanArray mSelections;
 
     private static final int LIST_DATA_LOADER = 0;
 
@@ -62,6 +63,12 @@ public abstract class CheckableListActivity<T> extends BaseActivity implements L
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_checkable_list);
+
+        if (savedInstanceState != null) {
+            mSelections = savedInstanceState.getParcelable(PARCEL_SELECITONS);
+        } else {
+            mSelections = new ParcelableSparseBooleanArray();
+        }
 
         parent = findViewById(R.id.main_content);
 
@@ -98,6 +105,14 @@ public abstract class CheckableListActivity<T> extends BaseActivity implements L
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        updateDeleteButtonVisibility(false);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(PARCEL_SELECITONS, mSelections);
+        super.onSaveInstanceState(outState);
     }
 
     @DrawableRes
@@ -162,7 +177,7 @@ public abstract class CheckableListActivity<T> extends BaseActivity implements L
         getAdapter().changeCursor(null);
     }
 
-    private void updateDeleteButtonVisibility() {
+    private void updateDeleteButtonVisibility(boolean animate) {
         boolean shouldBeVisible = false;
 
         for (int i = 0; i < mSelections.size(); i++) {
@@ -173,9 +188,9 @@ public abstract class CheckableListActivity<T> extends BaseActivity implements L
         }
 
         if (shouldBeVisible) {
-            deleteScaler.show();
+            deleteScaler.show(animate);
         } else {
-            deleteScaler.hide();
+            deleteScaler.hide(animate);
         }
     }
 
@@ -212,7 +227,7 @@ public abstract class CheckableListActivity<T> extends BaseActivity implements L
 
         // All the selected items have been deleted.
         mSelections.clear();
-        updateDeleteButtonVisibility();
+        updateDeleteButtonVisibility(true);
 
         if (Build.VERSION.SDK_INT >= 14) {
             showDeletedSnackbar();
@@ -296,7 +311,6 @@ public abstract class CheckableListActivity<T> extends BaseActivity implements L
             String text = getCheckboxText(item);
             holder.mCheckbox.setText(text);
             holder.mCheckbox.setChecked(mSelections.get(cursor.getPosition()));
-            Log.debug("ABC", "Binding");
         }
 
         @Override
@@ -321,7 +335,7 @@ public abstract class CheckableListActivity<T> extends BaseActivity implements L
             mCheckbox.setChecked(checked);
             mSelections.put(getAdapterPosition(), checked);
 
-            updateDeleteButtonVisibility();
+            updateDeleteButtonVisibility(true);
         }
     }
 

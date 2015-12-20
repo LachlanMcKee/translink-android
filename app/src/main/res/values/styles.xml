@@ -17,7 +17,7 @@
     </style>
 
     <style name="list_item_label_text" parent="list_item_text">
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body2</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:layout_marginRight">@dimen/padding_small</item>
     </style>
 

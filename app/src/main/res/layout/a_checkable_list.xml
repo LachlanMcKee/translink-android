@@ -30,7 +30,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginRight="@dimen/fab_margin">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_delete"
@@ -49,7 +50,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/fab_margin"
-            android:layout_marginRight="@dimen/fab_margin"
             android:layout_marginLeft="@dimen/fab_margin_small"
             android:clickable="true"
             android:src="?fab_add"

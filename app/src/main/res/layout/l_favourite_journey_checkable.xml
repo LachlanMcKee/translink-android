@@ -8,7 +8,7 @@
     android:paddingBottom="@dimen/padding_medium">
 
     <CheckBox
-        android:id="@+id/journey_check_box"
+        android:id="@id/journey_check_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="false"
@@ -18,7 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/padding_small"
-        android:layout_toRightOf="@+id/journey_check_box">
+        android:layout_marginRight="@dimen/padding_small"
+        android:layout_toRightOf="@id/journey_check_box">
 
         <include
             layout="@layout/l_favourite_journey_shared"

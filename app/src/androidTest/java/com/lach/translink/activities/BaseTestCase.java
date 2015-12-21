@@ -1,4 +1,4 @@
-package com.lach.translink.activities.location;
+package com.lach.translink.activities;
 
 import android.app.Activity;
 import android.support.annotation.StringRes;
@@ -6,6 +6,10 @@ import android.support.test.espresso.IdlingResource;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
 
+import com.lach.common.data.CoreModule;
+import com.lach.common.data.preference.InMemoryPreferences;
+import com.lach.common.data.preference.Preferences;
+import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.translink.TranslinkApplication;
 
 import org.hamcrest.Matcher;
@@ -16,21 +20,26 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.lach.translink.activities.espressso.matcher.ViewMatchersExt.invertMatcher;
 
-
 public abstract class BaseTestCase<T extends Activity> extends ActivityInstrumentationTestCase2<T> {
+    // CoreModule
+    protected InMemoryPreferences inMemoryPreferences;
+
     public BaseTestCase(Class<T> activityClass) {
         super(activityClass);
     }
 
-    TranslinkApplication getApplication() {
+    public TranslinkApplication getApplication() {
         return (TranslinkApplication) getInstrumentation().getTargetContext().getApplicationContext();
     }
 
-    void init() {
+    public void init() {
         init(true);
     }
 
-    void init(boolean initActivity) {
+    public void init(boolean initActivity) {
+        // CoreModule
+        inMemoryPreferences = new InMemoryPreferences();
+
         postInit();
 
         if (initActivity) {
@@ -38,29 +47,43 @@ public abstract class BaseTestCase<T extends Activity> extends ActivityInstrumen
         }
     }
 
-    void postInit() {
+    public void postInit() {
 
     }
 
-    void findViewWithText(@StringRes int stringResId) {
+    public void findViewWithText(@StringRes int stringResId) {
         findViewWithText(stringResId, true);
     }
 
-    void findViewWithText(String text) {
+    public void findViewWithText(String text) {
         findViewWithText(text, true);
     }
 
-    void findViewWithText(@StringRes int stringResId, boolean expectVisible) {
+    public void findViewWithText(@StringRes int stringResId, boolean expectVisible) {
         Matcher<View> visibilityMatcher = invertMatcher(isDisplayed(), !expectVisible);
         onView(withText(stringResId)).check(matches(visibilityMatcher));
     }
 
-    void findViewWithText(String text, boolean expectVisible) {
+    public void findViewWithText(String text, boolean expectVisible) {
         Matcher<View> visibilityMatcher = invertMatcher(isDisplayed(), !expectVisible);
         onView(withText(text)).check(matches(visibilityMatcher));
     }
 
-    class ElapsedTimeIdlingResource implements IdlingResource {
+    public CoreModule createCoreModule() {
+        return new CoreModule(getApplication()) {
+            @Override
+            public PreferencesProvider providesPreferencesProvider() {
+                return new PreferencesProvider() {
+                    @Override
+                    public Preferences getPreferences() {
+                        return inMemoryPreferences;
+                    }
+                };
+            }
+        };
+    }
+
+    public class ElapsedTimeIdlingResource implements IdlingResource {
         private final long startTime;
         private final long waitingTime;
         private ResourceCallback resourceCallback;

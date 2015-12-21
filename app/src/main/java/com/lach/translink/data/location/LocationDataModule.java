@@ -16,22 +16,22 @@ import dagger.Provides;
 public class LocationDataModule {
 
     @Provides
-    LocationFavouriteDao provideLocationFavouriteDao() {
+    public LocationFavouriteDao provideLocationFavouriteDao() {
         return new LocationFavouriteDao();
     }
 
     @Provides
-    LocationHistoryDao provideLocationHistoryDao() {
+    public LocationHistoryDao provideLocationHistoryDao() {
         return new LocationHistoryDao();
     }
 
     @Provides
-    TaskGetAddress provideTaskGetAddress(@ApplicationContext Context context) {
+    public TaskGetAddress provideTaskGetAddress(@ApplicationContext Context context) {
         return new TaskGetAddress(context);
     }
 
     @Provides
-    TaskFindLocation provideTaskFindLocation() {
+    public TaskFindLocation provideTaskFindLocation() {
         return new TaskFindLocation();
     }
 

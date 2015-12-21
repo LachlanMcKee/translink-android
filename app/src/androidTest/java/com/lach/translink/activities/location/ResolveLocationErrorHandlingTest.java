@@ -13,7 +13,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 @LargeTest
-public class ResolveLocationErrorHandlingTest extends ResolveLocationTestCase {
+public class ResolveLocationErrorHandlingTest extends BaseResolveLocationTestCase {
     private static final String TAG = ResolveLocationErrorHandlingTest.class.getSimpleName();
 
     // Unfortunately due to the autocomplete message handler, we must add a delay.

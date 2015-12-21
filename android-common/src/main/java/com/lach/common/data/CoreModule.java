@@ -21,12 +21,12 @@ public class CoreModule {
 
     @Provides
     @ApplicationContext
-    Context providesApplicationContext() {
+    public Context providesApplicationContext() {
         return application;
     }
 
     @Provides
-    PreferencesProvider providesPreferencesProvider() {
+    public PreferencesProvider providesPreferencesProvider() {
         return new PreferencesProvider() {
             @Override
             public Preferences getPreferences() {

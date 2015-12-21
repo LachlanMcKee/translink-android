@@ -29,7 +29,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 @LargeTest
-public class ResolveLocationUiTest extends ResolveLocationTestCase {
+public class ResolveLocationUiTest extends BaseResolveLocationTestCase {
 
     private static final String DUMMY_ADDRESS = "Dummy address";
 

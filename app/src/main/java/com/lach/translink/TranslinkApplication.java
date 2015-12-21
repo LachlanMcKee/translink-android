@@ -6,10 +6,10 @@ import com.lach.common.BaseApplication;
 import com.lach.common.data.CoreModule;
 import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.log.Instrumentation;
-import com.lach.translink.data.DaggerDataComponentImpl;
+import com.lach.translink.data.DaggerDataComponent;
 import com.lach.translink.data.DataComponent;
 import com.lach.translink.app.AppInit;
-import com.lach.translink.network.DaggerGoCardNetworkComponentImpl;
+import com.lach.translink.network.DaggerGoCardNetworkComponent;
 import com.lach.translink.network.GoCardNetworkComponent;
 import com.lach.translink.webview.DaggerWebViewComponent;
 import com.lach.translink.webview.WebViewComponent;
@@ -57,7 +57,7 @@ public class TranslinkApplication extends BaseApplication {
         goCardNetworkComponentProvider = new Provider<GoCardNetworkComponent>() {
             @Override
             public GoCardNetworkComponent get() {
-                return DaggerGoCardNetworkComponentImpl.builder()
+                return DaggerGoCardNetworkComponent.builder()
                         .coreModule(getCoreModule())
                         .build();
             }
@@ -73,7 +73,7 @@ public class TranslinkApplication extends BaseApplication {
 
     public synchronized DataComponent getDataComponent() {
         if (dataComponent == null) {
-            dataComponent = DaggerDataComponentImpl.builder()
+            dataComponent = DaggerDataComponent.builder()
                     .coreModule(getCoreModule())
                     .build();
         }

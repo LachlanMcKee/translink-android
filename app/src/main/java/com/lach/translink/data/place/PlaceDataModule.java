@@ -9,12 +9,12 @@ import dagger.Provides;
 public class PlaceDataModule {
 
     @Provides
-    BusStopDao provideBusStopDao() {
+    public BusStopDao provideBusStopDao() {
         return new BusStopDao();
     }
 
     @Provides
-    PlaceParser providePlaceParser(BusStopDao busStopDao) {
+    public PlaceParser providePlaceParser(BusStopDao busStopDao) {
         return new PlaceParser(busStopDao);
     }
 

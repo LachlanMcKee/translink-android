@@ -7,7 +7,7 @@ import dagger.Provides;
 public class ProviderHelperModule {
 
     @Provides
-    ContactAddressExtractor provideContactAddressExtractor() {
+    public ContactAddressExtractor provideContactAddressExtractor() {
         return new ContactAddressExtractor();
     }
 

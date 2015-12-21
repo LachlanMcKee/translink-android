@@ -10,12 +10,12 @@ import dagger.Provides;
 public class JourneyDataModule {
 
     @Provides
-    JourneyCriteriaFavouriteDao provideJourneyCriteriaFavouriteDao() {
+    public JourneyCriteriaFavouriteDao provideJourneyCriteriaFavouriteDao() {
         return new JourneyCriteriaFavouriteDao();
     }
 
     @Provides
-    JourneyCriteriaHistoryDao provideJourneyCriteriaHistoryDao() {
+    public JourneyCriteriaHistoryDao provideJourneyCriteriaHistoryDao() {
         return new JourneyCriteriaHistoryDao();
     }
 

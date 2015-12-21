@@ -1,22 +1,18 @@
 package com.lach.translink.activities.location;
 
+import android.support.annotation.CallSuper;
 import android.support.test.espresso.action.ViewActions;
 import android.view.View;
 import android.widget.EditText;
 
-import com.lach.common.data.provider.ContactAddressExtractor;
-import com.lach.common.tasks.TaskGetAddress;
 import com.lach.common.log.Log;
+import com.lach.translink.activities.BaseDataComponentTestCase;
+import com.lach.translink.activities.BaseTestCase;
 import com.lach.translink.activities.R;
-import com.lach.translink.ui.impl.resolve.ResolveLocationActivity;
-import com.lach.translink.activities.data.DaggerMockDataComponent;
-import com.lach.translink.activities.data.MockDataComponent;
 import com.lach.translink.data.location.PlaceType;
-import com.lach.translink.tasks.resolve.TaskFindLocation;
+import com.lach.translink.ui.impl.resolve.ResolveLocationActivity;
 
 import org.hamcrest.Matcher;
-
-import javax.inject.Inject;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -27,31 +23,18 @@ import static android.support.test.espresso.matcher.ViewMatchers.withContentDesc
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.lach.translink.activities.espressso.matcher.ViewMatchersExt.withSafeContentDescription;
 
-public abstract class ResolveLocationTestCase extends BaseTestCase<ResolveLocationActivity> {
-    private static final String TAG = ResolveLocationTestCase.class.getSimpleName();
+public abstract class BaseResolveLocationTestCase extends BaseDataComponentTestCase<ResolveLocationActivity> {
+    private static final String TAG = BaseResolveLocationTestCase.class.getSimpleName();
 
-    @Inject
-    TaskFindLocation taskFindLocation;
-
-    @Inject
-    TaskGetAddress taskGetAddress;
-
-    @Inject
-    ContactAddressExtractor contactAddressExtractor;
-
-    public ResolveLocationTestCase() {
+    public BaseResolveLocationTestCase() {
         super(ResolveLocationActivity.class);
     }
 
+    @CallSuper
     @Override
-    void postInit() {
+    public void postInit() {
+        super.postInit();
         setActivityIntent(ResolveLocationActivity.createIntent(getApplication(), PlaceType.FROM));
-
-        MockDataComponent locationDataComponent = DaggerMockDataComponent.create();
-        locationDataComponent.inject(this);
-
-        // Inject the new task find location into the app being tested.
-        getApplication().setDataComponent(locationDataComponent);
     }
 
     static void changeCriteria(BaseTestCase testCase, String text, boolean expectValid) {

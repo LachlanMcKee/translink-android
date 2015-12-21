@@ -22,14 +22,14 @@ import dagger.Provides;
 public class PresenterModule {
 
     @Provides
-    ResolveLocationListPresenter provideResolveLocationListPresenter(PlaceParser placeParser, PreferencesProvider preferencesProvider, LocationHistoryDao locationHistoryDao,
+    public ResolveLocationListPresenter provideResolveLocationListPresenter(PlaceParser placeParser, PreferencesProvider preferencesProvider, LocationHistoryDao locationHistoryDao,
                                                                      Provider<TaskFindLocation> taskFindLocationProvider, Provider<TaskGetAddress> getAddressesAsyncTaskProvider) {
 
         return new ResolveLocationListPresenterImpl(placeParser, preferencesProvider, locationHistoryDao, taskFindLocationProvider, getAddressesAsyncTaskProvider);
     }
 
     @Provides
-    ResolveLocationMapPresenter provideResolveLocationMapPresenter(Provider<TaskGetBusStops> taskGetBusStopsProvider) {
+    public ResolveLocationMapPresenter provideResolveLocationMapPresenter(Provider<TaskGetBusStops> taskGetBusStopsProvider) {
 
         return new ResolveLocationMapPresenterImpl(taskGetBusStopsProvider);
     }

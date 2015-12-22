@@ -229,7 +229,8 @@ public class GoCardInfoFragment extends AsyncTaskFragment {
     private void obtainGoCardData() {
         if (!goCardCredentials.credentialsExist()) {
             AlertDialog showDialog = DialogUtil.showAlertDialog(getActivity(),
-                    "You have not set your Go-Card details, please update these within the settings screen.", "Go-Card details missing");
+                    getString(R.string.gocard_info_bad_credentials_message), getString(R.string.gocard_info_bad_credentials_title));
+
             showDialog.setOnDismissListener(new OnDismissListener() {
 
                 @Override

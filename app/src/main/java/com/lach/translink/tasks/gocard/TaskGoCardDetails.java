@@ -23,7 +23,6 @@ public class TaskGoCardDetails implements Task<GoCardDetails> {
 
     private final GoCardHttpClient client;
 
-    @Inject
     public TaskGoCardDetails(GoCardHttpClient client) {
         this.client = client;
     }

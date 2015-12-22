@@ -2,6 +2,8 @@ package com.lach.translink.network;
 
 import com.lach.common.data.CoreModule;
 import com.lach.common.data.preference.PreferencesProvider;
+import com.lach.translink.tasks.gocard.TaskGoCardDetails;
+import com.lach.translink.tasks.gocard.TaskGoCardHistory;
 import com.squareup.okhttp.Interceptor;
 
 import java.net.CookieManager;
@@ -38,6 +40,16 @@ public class GoCardNetworkModule {
         client.networkInterceptors().addAll(networkInterceptors);
 
         return client;
+    }
+
+    @Provides
+    public TaskGoCardDetails providesTaskGoCardDetails(GoCardHttpClient goCardHttpClient) {
+        return new TaskGoCardDetails(goCardHttpClient);
+    }
+
+    @Provides
+    public TaskGoCardHistory providesTaskGoCardHistory(GoCardHttpClient goCardHttpClient) {
+        return new TaskGoCardHistory(goCardHttpClient);
     }
 
 }

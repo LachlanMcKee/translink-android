@@ -42,7 +42,6 @@ public class TaskGoCardHistory implements Task<ArrayList<GoCardTransaction>> {
     private final GoCardHttpClient client;
     private Date endDate;
 
-    @Inject
     public TaskGoCardHistory(GoCardHttpClient client) {
         this.client = client;
     }

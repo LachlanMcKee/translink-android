@@ -73,6 +73,8 @@
     <string name="resolve_no_internet">Unable to connect to the Internet</string>
 
     <!-- Go-Card Details Activity -->
+    <string name="gocard_info_bad_credentials_title">Go-Card details missing</string>
+    <string name="gocard_info_bad_credentials_message">You have not set your Go-Card details, please update these within the settings screen.</string>
     <string name="gocard_info_balance">Card Balance</string>
     <string name="gocard_info_date_title">As of</string>
     <string name="gocard_info_card_type">Card Type</string>

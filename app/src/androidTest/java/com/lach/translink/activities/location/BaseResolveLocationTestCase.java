@@ -1,6 +1,5 @@
 package com.lach.translink.activities.location;
 
-import android.support.annotation.CallSuper;
 import android.support.test.espresso.action.ViewActions;
 import android.view.View;
 import android.widget.EditText;
@@ -26,15 +25,9 @@ import static com.lach.translink.activities.espressso.matcher.ViewMatchersExt.wi
 public abstract class BaseResolveLocationTestCase extends BaseDataComponentTestCase<ResolveLocationActivity> {
     private static final String TAG = BaseResolveLocationTestCase.class.getSimpleName();
 
-    public BaseResolveLocationTestCase() {
-        super(ResolveLocationActivity.class);
-    }
-
-    @CallSuper
     @Override
-    public void postInit() {
-        super.postInit();
-        setActivityIntent(ResolveLocationActivity.createIntent(getApplication(), PlaceType.FROM));
+    public ResolveLocationActivity getActivity() {
+        return getActivity(ResolveLocationActivity.createIntent(getApplication(), PlaceType.FROM));
     }
 
     static void changeCriteria(BaseTestCase testCase, String text, boolean expectValid) {

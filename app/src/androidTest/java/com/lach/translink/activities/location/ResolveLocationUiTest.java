@@ -9,13 +9,16 @@ import android.support.test.espresso.ViewAssertion;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.espresso.intent.matcher.IntentMatchers;
 import android.support.test.espresso.matcher.ViewMatchers;
-import android.test.suitebuilder.annotation.LargeTest;
+import android.support.test.runner.AndroidJUnit4;
 import android.widget.EditText;
 
 import com.lach.common.async.AsyncResult;
 import com.lach.translink.activities.R;
 import com.lach.translink.activities.espressso.action.ViewActionsExt;
+import com.lach.translink.ui.impl.resolve.ResolveLocationActivity;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
@@ -28,11 +31,12 @@ import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFro
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
-@LargeTest
+@RunWith(AndroidJUnit4.class)
 public class ResolveLocationUiTest extends BaseResolveLocationTestCase {
 
     private static final String DUMMY_ADDRESS = "Dummy address";
 
+    @Test
     public void testSearchCriteriaValidation() {
         init();
 
@@ -55,6 +59,7 @@ public class ResolveLocationUiTest extends BaseResolveLocationTestCase {
         changeCriteria("0012345", false);
     }
 
+    @Test
     public void testSearchCriteriaPersistence() {
         init();
 
@@ -71,6 +76,7 @@ public class ResolveLocationUiTest extends BaseResolveLocationTestCase {
         onView(isAssignableFrom(EditText.class)).check(textMatcher);
     }
 
+    @Test
     public void testContacts() {
         init(false);
 
@@ -94,6 +100,7 @@ public class ResolveLocationUiTest extends BaseResolveLocationTestCase {
         onView(isAssignableFrom(EditText.class)).check(matches(withText(DUMMY_ADDRESS)));
     }
 
+    @Test
     public void testMapIntegration() throws InterruptedException {
         init(false);
 
@@ -110,4 +117,8 @@ public class ResolveLocationUiTest extends BaseResolveLocationTestCase {
         selectMapPin(true);
     }
 
+    @Override
+    public Class<ResolveLocationActivity> getTestActivityType() {
+        return ResolveLocationActivity.class;
+    }
 }

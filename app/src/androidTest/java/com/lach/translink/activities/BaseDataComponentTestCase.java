@@ -42,10 +42,6 @@ public abstract class BaseDataComponentTestCase<T extends Activity> extends Base
     protected TaskGetAddress taskGetAddress;
     protected TaskFindLocation taskFindLocation;
 
-    public BaseDataComponentTestCase(Class<T> activityClass) {
-        super(activityClass);
-    }
-
     @CallSuper
     @Override
     public void postInit() {
@@ -71,7 +67,7 @@ public abstract class BaseDataComponentTestCase<T extends Activity> extends Base
                 .locationDataModule(createLocationDataModule())
                 .journeyDataModule(createJourneyDataModule())
                 .placeDataModule(createPlaceDataModule())
-                .coreModule(createCoreModule())
+                .coreModule(getCoreModule())
                 .presenterModule(createPresenterModule())
                 .providerHelperModule(createProviderHelperModule())
                 .build();

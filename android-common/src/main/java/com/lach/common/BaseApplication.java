@@ -3,10 +3,35 @@ package com.lach.common;
 import android.app.Activity;
 import android.app.Application;
 
+import com.lach.common.data.CoreComponent;
+import com.lach.common.data.CoreModule;
+import com.lach.common.data.DaggerCoreComponent;
 import com.lach.common.data.common.CommonPreference;
 import com.lach.common.data.preference.PreferencesProvider;
 
 public abstract class BaseApplication extends Application {
+    private CoreComponent coreComponent;
+    private CoreModule coreModule;
+
+    public synchronized CoreModule getCoreModule() {
+        if (coreModule == null) {
+            coreModule = new CoreModule(this);
+        }
+        return coreModule;
+    }
+
+    public synchronized CoreComponent getCoreComponent() {
+        if (coreComponent == null) {
+            coreComponent = DaggerCoreComponent.builder()
+                    .coreModule(getCoreModule())
+                    .build();
+        }
+        return coreComponent;
+    }
+
+    public void setCoreComponent(CoreComponent coreComponent) {
+        this.coreComponent = coreComponent;
+    }
 
     public void applyTheme(Activity activity, ThemeType themeType) {
         if (themeType == ThemeType.NONE) {

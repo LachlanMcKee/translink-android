@@ -21,7 +21,6 @@ import javax.inject.Provider;
 
 public class TranslinkApplication extends BaseApplication {
 
-    private CoreModule coreModule;
     private DataComponent dataComponent;
     private Provider<GoCardNetworkComponent> goCardNetworkComponentProvider;
 
@@ -62,13 +61,6 @@ public class TranslinkApplication extends BaseApplication {
                         .build();
             }
         };
-    }
-
-    public synchronized CoreModule getCoreModule() {
-        if (coreModule == null) {
-            coreModule = new CoreModule(this);
-        }
-        return coreModule;
     }
 
     public synchronized DataComponent getDataComponent() {

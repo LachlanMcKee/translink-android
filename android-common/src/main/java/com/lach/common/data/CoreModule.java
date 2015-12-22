@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.preference.PreferenceManager;
 
+import com.lach.common.async.AsyncTaskRunner;
 import com.lach.common.data.preference.AndroidPreferences;
 import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.data.preference.Preferences;
@@ -33,5 +34,10 @@ public class CoreModule {
                 return new AndroidPreferences(PreferenceManager.getDefaultSharedPreferences(application));
             }
         };
+    }
+
+    @Provides
+    public AsyncTaskRunner providesAsyncTaskRunner() {
+        return new AsyncTaskRunner();
     }
 }

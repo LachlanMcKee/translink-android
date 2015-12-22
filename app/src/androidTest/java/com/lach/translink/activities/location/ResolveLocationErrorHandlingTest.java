@@ -2,23 +2,27 @@ package com.lach.translink.activities.location;
 
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.contrib.CountingIdlingResource;
-import android.test.suitebuilder.annotation.LargeTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.lach.common.async.AsyncResult;
 import com.lach.common.data.TaskGenericErrorType;
 import com.lach.translink.activities.R;
+import com.lach.translink.ui.impl.resolve.ResolveLocationActivity;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-@LargeTest
+@RunWith(AndroidJUnit4.class)
 public class ResolveLocationErrorHandlingTest extends BaseResolveLocationTestCase {
     private static final String TAG = ResolveLocationErrorHandlingTest.class.getSimpleName();
 
     // Unfortunately due to the autocomplete message handler, we must add a delay.
     CountingIdlingResource countingIdlingResource;
 
+    @Test
     public void testFindLocationFailureHandling() throws Exception {
         init(false);
 
@@ -49,6 +53,7 @@ public class ResolveLocationErrorHandlingTest extends BaseResolveLocationTestCas
         Espresso.unregisterIdlingResources(countingIdlingResource);
     }
 
+    @Test
     public void testGetAddressFailureHandling() throws InterruptedException {
         init(false);
 
@@ -64,4 +69,8 @@ public class ResolveLocationErrorHandlingTest extends BaseResolveLocationTestCas
         findViewWithText(R.string.resolve_generic_error);
     }
 
+    @Override
+    public Class<ResolveLocationActivity> getTestActivityType() {
+        return ResolveLocationActivity.class;
+    }
 }

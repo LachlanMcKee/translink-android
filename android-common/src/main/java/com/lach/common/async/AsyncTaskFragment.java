@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 
+import com.lach.common.BaseApplication;
 import com.lach.common.ui.BaseActivity;
 import com.lach.common.data.TaskGenericErrorType;
 import com.lach.common.ui.dialog.AppCompatProgressDialog;
@@ -19,6 +20,8 @@ import com.lach.common.log.Log;
 import com.lach.common.util.DialogUtil;
 
 import java.lang.ref.WeakReference;
+
+import javax.inject.Inject;
 
 public abstract class AsyncTaskFragment extends ButterFragment implements AsyncTaskUi {
     private static final String TAG = "AsyncTaskFragment";
@@ -239,18 +242,24 @@ public abstract class AsyncTaskFragment extends ButterFragment implements AsyncT
             asyncTask.setTaskFragment(getTaskFragment());
         }
 
-        public void executeTask() {
+        public boolean shouldExecuteTask() {
             Log.debug(TAG, "executeTask");
             if (mTaskRef == null) {
-                return;
+                return false;
             }
 
             ProgressAsyncTask task = mTaskRef.get();
             Log.debug(TAG, "executeTask. task exists: " + (task != null));
 
-            if (task != null) {
-                //noinspection unchecked
-                task.execute(parameters);
+            return (task != null);
+        }
+
+        public void executeTask(AsyncTaskRunner asyncTaskRunner) {
+            if (shouldExecuteTask()) {
+                ProgressAsyncTask task = mTaskRef.get();
+                if (task != null) {
+                    asyncTaskRunner.execute(task, parameters);
+                }
             }
         }
 
@@ -343,6 +352,10 @@ public abstract class AsyncTaskFragment extends ButterFragment implements AsyncT
     }
 
     public static class HiddenTaskFragment extends Fragment implements TaskFragment {
+
+        @Inject
+        AsyncTaskRunner asyncTaskRunner;
+
         private final TaskFragmentDelegate delegate = new TaskFragmentDelegate<HiddenTaskFragment>() {
             @Override
             public HiddenTaskFragment getTaskFragment() {
@@ -363,7 +376,10 @@ public abstract class AsyncTaskFragment extends ButterFragment implements AsyncT
             super.onCreate(savedInstanceState);
             setRetainInstance(true);
 
-            delegate.executeTask();
+            if (delegate.shouldExecuteTask()) {
+                ((BaseApplication)getActivity().getApplication()).getCoreComponent().inject(this);
+                delegate.executeTask(asyncTaskRunner);
+            }
         }
 
         @Override
@@ -409,6 +425,10 @@ public abstract class AsyncTaskFragment extends ButterFragment implements AsyncT
     }
 
     public static class DialogTaskFragment extends DialogFragment implements TaskFragment {
+
+        @Inject
+        AsyncTaskRunner asyncTaskRunner;
+
         private String mMessage = "Running background process.";
         private final String mTitle = "Please wait...";
         private final TaskFragmentDelegate delegate = new TaskFragmentDelegate<DialogTaskFragment>() {
@@ -438,7 +458,10 @@ public abstract class AsyncTaskFragment extends ButterFragment implements AsyncT
             super.onCreate(savedInstanceState);
             setRetainInstance(true);
 
-            delegate.executeTask();
+            if (delegate.shouldExecuteTask()) {
+                ((BaseApplication)getActivity().getApplication()).getCoreComponent().inject(this);
+                delegate.executeTask(asyncTaskRunner);
+            }
         }
 
         @NonNull

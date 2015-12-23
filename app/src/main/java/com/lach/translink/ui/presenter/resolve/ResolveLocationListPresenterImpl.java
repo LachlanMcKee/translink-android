@@ -248,7 +248,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
         Log.debug(TAG, "executeSearch. Text: " + currentTranslinkLookupText);
 
         view.createTask(TASK_SEARCH_TRANSLINK, taskFindLocationProvider.get())
-                .parameters(currentTranslinkLookupText)
+                .parameters(TaskFindLocation.createParams(currentTranslinkLookupText))
                 .executeImmediately(true)
                 .start((AsyncTaskFragment) view);
     }

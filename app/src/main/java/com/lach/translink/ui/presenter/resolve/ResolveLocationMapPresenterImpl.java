@@ -321,7 +321,7 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
         }
 
         view.createTask(TASK_GET_BUS_STOPS, getBusStopsTaskProvider.get())
-                .parameters(view.getMapBounds())
+                .parameters(TaskGetBusStops.createParams(view.getMapBounds()))
                 .start((AsyncTaskFragment) view);
     }
 

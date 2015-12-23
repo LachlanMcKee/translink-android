@@ -18,6 +18,12 @@ public class TaskGetBusStops implements Task<List<BusStop>> {
         this.busStopDao = busStopDao;
     }
 
+    public static Object[] createParams(MapBounds bounds) {
+        Object[] params = new Object[1];
+        params[0] = bounds;
+        return params;
+    }
+
     @Override
     public AsyncResult<List<BusStop>> execute(Object... params) {
         MapBounds bounds = (MapBounds) params[0];

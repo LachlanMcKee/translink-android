@@ -12,6 +12,7 @@ import com.lach.translink.data.place.bus.BusStopDao;
 import com.lach.translink.data.place.bus.BusStopModel;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class TaskInsertBusStops implements Task<Void> {
         return result;
     }
 
-    private AsyncResult<Void> executeInternal() throws Exception {
+    private AsyncResult<Void> executeInternal() throws IOException {
         AsyncResult<Void> result = new AsyncResult<>(null);
         Context context = contextRef.get();
         if (context == null) {

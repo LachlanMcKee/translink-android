@@ -81,7 +81,7 @@ public abstract class AsyncTaskFragment extends ButterFragment implements AsyncT
         String title = null;
         String message;
         switch (errorId) {
-            case TaskGenericErrorType.NETWORK_FAILURE:
+            case TaskGenericErrorType.IO_FAILURE:
                 title = "Connectivity problem";
                 message = "A network error has occurred. Please check your Internet connection.";
                 break;

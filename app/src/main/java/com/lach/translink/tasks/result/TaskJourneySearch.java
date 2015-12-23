@@ -61,6 +61,14 @@ public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse
         this.cookieManager = cookieManager;
     }
 
+    public static Object[] createParams(JourneyCriteria journeyCriteria, Date date, String userAgent) {
+        Object[] params = new Object[3];
+        params[0] = journeyCriteria;
+        params[1] = date;
+        params[2] = userAgent;
+        return params;
+    }
+
     @Override
     public AsyncResult<JourneyResponse> execute(Object... params) {
         AsyncResult<JourneyResponse> result;

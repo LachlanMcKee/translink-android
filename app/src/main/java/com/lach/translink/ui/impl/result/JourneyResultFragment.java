@@ -149,7 +149,7 @@ public class JourneyResultFragment extends AsyncTaskFragment {
             Date date = (Date) getArguments().getSerializable(BUNDLE_JOURNEY_DATE);
 
             createTask(TASK_SEARCH_FOR_JOURNEY, taskJourneySearchProvider.get())
-                    .parameters(journeyCriteria, date, webViewFacade.getUserAgent())
+                    .parameters(TaskJourneySearch.createParams(journeyCriteria, date, webViewFacade.getUserAgent()))
                     .start(this);
         } else {
             boolean hasContentLoaded = savedInstanceState.getBoolean(CONTENT_LOADED_KEY);

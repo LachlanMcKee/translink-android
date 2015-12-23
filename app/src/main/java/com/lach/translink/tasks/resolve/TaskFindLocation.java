@@ -25,6 +25,12 @@ public class TaskFindLocation implements Task<ArrayList<String>> {
     private static final String TAG = "TaskFindLocation";
     private static final String FIND_LOCATION_URL = "http://mobile.jp.translink.com.au/travel-information/journey-planner/find-location";
 
+    public static Object[] createParams(String location) {
+        Object[] params = new Object[1];
+        params[0] = location;
+        return params;
+    }
+
     private OkHttpClient okHttpClient;
 
     @Inject

@@ -1,6 +1,6 @@
 package com.lach.common.data;
 
-import com.lach.common.http.UnexpectedResponseException;
+import com.lach.common.network.UnexpectedResponseException;
 
 import java.io.IOException;
 

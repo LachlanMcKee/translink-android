@@ -7,12 +7,14 @@ import com.lach.common.data.CoreModule;
 import com.lach.common.tasks.TaskGetAddress;
 import com.lach.translink.data.location.favourite.LocationFavouriteDao;
 import com.lach.translink.data.location.history.LocationHistoryDao;
+import com.lach.translink.network.NetworkModule;
 import com.lach.translink.tasks.resolve.TaskFindLocation;
+import com.squareup.okhttp.OkHttpClient;
 
 import dagger.Module;
 import dagger.Provides;
 
-@Module(includes = {CoreModule.class})
+@Module(includes = {NetworkModule.class, CoreModule.class})
 public class LocationDataModule {
 
     @Provides
@@ -31,8 +33,8 @@ public class LocationDataModule {
     }
 
     @Provides
-    public TaskFindLocation provideTaskFindLocation() {
-        return new TaskFindLocation();
+    public TaskFindLocation provideTaskFindLocation(OkHttpClient okHttpClient) {
+        return new TaskFindLocation(okHttpClient);
     }
 
 }

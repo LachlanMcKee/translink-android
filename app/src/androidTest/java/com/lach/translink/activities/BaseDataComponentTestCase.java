@@ -21,6 +21,7 @@ import com.lach.translink.data.place.PlaceParser;
 import com.lach.translink.data.place.bus.BusStopDao;
 import com.lach.translink.tasks.resolve.TaskFindLocation;
 import com.lach.translink.ui.presenter.PresenterModule;
+import com.squareup.okhttp.OkHttpClient;
 
 import org.mockito.Mockito;
 
@@ -61,7 +62,7 @@ public abstract class BaseDataComponentTestCase<T extends Activity> extends Base
 
         // LocationDataModule
         taskGetAddress = Mockito.spy(new TaskGetAddress(null));
-        taskFindLocation = Mockito.spy(new TaskFindLocation());
+        taskFindLocation = Mockito.spy(new TaskFindLocation(null));
 
         DataComponent locationDataComponent = DaggerDataComponent.builder()
                 .locationDataModule(createLocationDataModule())
@@ -135,7 +136,7 @@ public abstract class BaseDataComponentTestCase<T extends Activity> extends Base
             }
 
             @Override
-            public TaskFindLocation provideTaskFindLocation() {
+            public TaskFindLocation provideTaskFindLocation(OkHttpClient okHttpClient) {
                 return taskFindLocation;
             }
         };

@@ -1,4 +1,4 @@
-package com.lach.common.http;
+package com.lach.common.network;
 
 public class UnexpectedResponseException extends Exception {
     public UnexpectedResponseException(String detailMessage) {

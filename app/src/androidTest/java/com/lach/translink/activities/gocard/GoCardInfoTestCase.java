@@ -20,6 +20,7 @@ import com.lach.translink.tasks.gocard.TaskGoCardDetails;
 import com.lach.translink.tasks.gocard.TaskGoCardHistory;
 import com.lach.translink.ui.impl.gocard.GoCardInfoActivity;
 import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.OkHttpClient;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -156,7 +157,7 @@ public class GoCardInfoTestCase extends BaseTestCase<GoCardInfoActivity> {
                     }
 
                     @Override
-                    public GoCardHttpClient providesGoCardOkHttpClient(List<Interceptor> networkInterceptors, GoCardCredentials goCardCredentials) {
+                    public GoCardHttpClient providesGoCardOkHttpClient(OkHttpClient okHttpClient, GoCardCredentials goCardCredentials) {
                         return new GoCardHttpClient() {
                             @Override
                             public Response getResponseForUrl(String url) throws IOException {

@@ -28,7 +28,6 @@ import java.net.CookiePolicy;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
@@ -47,14 +46,16 @@ public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse
     private static final Pattern PATTERN_INVALID_DATE = Pattern.compile("date is invalid", Pattern.CASE_INSENSITIVE);
 
     private final Context context;
+    private final OkHttpClient client;
     private final PreferencesProvider preferencesProvider;
     private final PlaceParser placeParser;
     private final CookieManagerFacade cookieManager;
 
     @Inject
-    public TaskJourneySearch(@ApplicationContext Context context, PreferencesProvider preferencesProvider,
+    public TaskJourneySearch(@ApplicationContext Context context, OkHttpClient okHttpClient, PreferencesProvider preferencesProvider,
                              PlaceParser placeParser, CookieManagerFacade cookieManager) {
         this.context = context;
+        this.client = okHttpClient;
         this.preferencesProvider = preferencesProvider;
         this.placeParser = placeParser;
         this.cookieManager = cookieManager;
@@ -76,27 +77,20 @@ public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse
         Date date = (Date) params[1];
         String userAgent = (String) params[2];
 
-        return executeSearch(journeyCriteria, date, userAgent, null, null);
+        cookieManager.init(context);
+        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ORIGINAL_SERVER);
+        client.setCookieHandler(cookieManager);
+
+        client.networkInterceptors().add(new UserAgentInterceptor(userAgent));
+
+        // Prevent redirects, we will handle this manually.
+        client.setFollowRedirects(false);
+
+        return executeSearch(journeyCriteria, date, userAgent, null);
     }
 
     private AsyncResult<JourneyResponse> executeSearch(JourneyCriteria journeyCriteria, Date date, String userAgent,
-                                                       OkHttpClient client, RecoverableSearchErrors previousRecoverableErrors) throws Exception {
-
-        // If the client doesn't exist. This is the first execution.
-        if (client == null) {
-            client = new OkHttpClient();
-
-            cookieManager.init(context);
-            cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ORIGINAL_SERVER);
-            client.setCookieHandler(cookieManager);
-
-            client.setConnectTimeout(10, TimeUnit.SECONDS);
-            client.setReadTimeout(10, TimeUnit.SECONDS);
-            client.networkInterceptors().add(new UserAgentInterceptor(userAgent));
-
-            // Prevent redirects, we will handle this manually.
-            client.setFollowRedirects(false);
-        }
+                                                       RecoverableSearchErrors previousRecoverableErrors) throws Exception {
 
         FormEncodingBuilder formData = new FormEncodingBuilder();
 
@@ -212,7 +206,7 @@ public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse
 
                 // Run a new search to hopefully fix the issue.
                 if (recoverableErrors != null) {
-                    return executeSearch(journeyCriteria, date, userAgent, client, recoverableErrors);
+                    return executeSearch(journeyCriteria, date, userAgent, recoverableErrors);
                 }
             }
         }

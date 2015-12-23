@@ -9,17 +9,28 @@ import com.google.gson.stream.MalformedJsonException;
 import com.lach.common.async.AsyncResult;
 import com.lach.common.async.Task;
 import com.lach.common.data.TaskGenericErrorType;
-import com.lach.common.http.HttpHelper;
 import com.lach.common.log.Log;
+import com.lach.common.network.UnexpectedResponseException;
+import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
+import javax.inject.Inject;
 
 public class TaskFindLocation implements Task<ArrayList<String>> {
     private static final String TAG = "TaskFindLocation";
-
     private static final String FIND_LOCATION_URL = "http://mobile.jp.translink.com.au/travel-information/journey-planner/find-location";
+
+    private OkHttpClient okHttpClient;
+
+    @Inject
+    public TaskFindLocation(OkHttpClient okHttpClient) {
+        this.okHttpClient = okHttpClient;
+    }
 
     public AsyncResult<ArrayList<String>> execute(Object... params) {
         AsyncResult<ArrayList<String>> result;
@@ -35,11 +46,8 @@ public class TaskFindLocation implements Task<ArrayList<String>> {
     private AsyncResult<ArrayList<String>> executeInternal(Object... params) throws Exception {
         String location = (String) params[0];
 
-        Map<String, String> httpParams = new HashMap<>();
-        httpParams.put("location", location);
-
         Log.debug(TAG, "Starting download");
-        String responseBody = HttpHelper.post(FIND_LOCATION_URL, httpParams);
+        String responseBody = getLocationResponse(location);
 
         Log.debug(TAG, "Finished downloading content");
 
@@ -69,4 +77,31 @@ public class TaskFindLocation implements Task<ArrayList<String>> {
 
         return new AsyncResult<>(addressList);
     }
+
+    private String getLocationResponse(String location) throws IOException, UnexpectedResponseException {
+        FormEncodingBuilder formData = new FormEncodingBuilder();
+        formData.add("location", location);
+
+        // Send data
+        Request request = new Request.Builder()
+                .url(FIND_LOCATION_URL)
+                .post(formData.build())
+                .build();
+
+        Response response = okHttpClient.newCall(request).execute();
+        if (response != null && response.code() == 200) {
+            return response.body().string();
+        }
+
+        String message;
+        if (response == null) {
+            message = "response is null";
+        } else {
+            message = response.toString();
+        }
+
+        // The server returned an invalid response.
+        throw new UnexpectedResponseException(message);
+    }
+
 }

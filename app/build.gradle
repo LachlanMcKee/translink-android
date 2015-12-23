@@ -143,6 +143,8 @@ dependencies {
 
     compile 'com.google.code.gson:gson:2.3'
 
+    // Interceptors.
+    compile 'com.squareup.okhttp:logging-interceptor:2.7.0'
     debugCompile('com.facebook.stetho:stetho:1.2.0') {
         exclude(group: 'com.google.code.findbugs', module: 'jsr305')
     }

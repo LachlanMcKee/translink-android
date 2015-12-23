@@ -9,13 +9,15 @@ import java.net.URLEncoder;
 
 import javax.inject.Inject;
 
-public class GoCardHttpClientImpl extends OkHttpClient implements GoCardHttpClient {
+public class GoCardHttpClientImpl implements GoCardHttpClient {
+    private final OkHttpClient okHttpClient;
     private final GoCardCredentials goCardCredentials;
 
     private boolean hasInitialised = false;
 
     @Inject
-    public GoCardHttpClientImpl(GoCardCredentials goCardCredentials) {
+    public GoCardHttpClientImpl(OkHttpClient okHttpClient, GoCardCredentials goCardCredentials) {
+        this.okHttpClient = okHttpClient;
         this.goCardCredentials = goCardCredentials;
     }
 
@@ -39,7 +41,7 @@ public class GoCardHttpClientImpl extends OkHttpClient implements GoCardHttpClie
         com.squareup.okhttp.Response response;
         String responseBody;
         try {
-            response = newCall(request).execute();
+            response = okHttpClient.newCall(request).execute();
             responseBody = response.body().string();
         } catch (Exception ignored) {
             return false;
@@ -62,7 +64,7 @@ public class GoCardHttpClientImpl extends OkHttpClient implements GoCardHttpClie
                 .url(url)
                 .build();
 
-        com.squareup.okhttp.Response response = newCall(request).execute();
+        com.squareup.okhttp.Response response = okHttpClient.newCall(request).execute();
 
         String content = null;
         boolean isSuccessful = response.isSuccessful();

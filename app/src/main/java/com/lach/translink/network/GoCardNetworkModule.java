@@ -4,12 +4,10 @@ import com.lach.common.data.CoreModule;
 import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.translink.tasks.gocard.TaskGoCardDetails;
 import com.lach.translink.tasks.gocard.TaskGoCardHistory;
-import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.OkHttpClient;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
@@ -26,19 +24,14 @@ public class GoCardNetworkModule {
 
     @Provides
     @Singleton
-    public GoCardHttpClient providesGoCardOkHttpClient(List<Interceptor> networkInterceptors, GoCardCredentials goCardCredentials) {
-        GoCardHttpClientImpl client = new GoCardHttpClientImpl(goCardCredentials);
+    public GoCardHttpClient providesGoCardOkHttpClient(OkHttpClient okHttpClient, GoCardCredentials goCardCredentials) {
+        GoCardHttpClientImpl client = new GoCardHttpClientImpl(okHttpClient, goCardCredentials);
 
         CookieManager cookieManager = new CookieManager();
         cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ORIGINAL_SERVER);
-        client.setCookieHandler(cookieManager);
+        okHttpClient.setCookieHandler(cookieManager);
 
-        client.setConnectTimeout(5, TimeUnit.SECONDS);
-        client.setReadTimeout(5, TimeUnit.SECONDS);
-
-        client.networkInterceptors().add(new UserAgentInterceptor("Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36"));
-        client.networkInterceptors().addAll(networkInterceptors);
-
+        okHttpClient.networkInterceptors().add(new UserAgentInterceptor("Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36"));
         return client;
     }
 

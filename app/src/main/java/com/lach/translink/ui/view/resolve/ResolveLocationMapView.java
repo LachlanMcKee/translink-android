@@ -1,9 +1,9 @@
 package com.lach.translink.ui.view.resolve;
 
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.lach.translink.data.place.bus.BusStop;
+import com.lach.common.data.map.MapBounds;
 import com.lach.common.data.map.MapMarker;
 import com.lach.common.data.map.MapPosition;
+import com.lach.translink.data.place.bus.BusStop;
 import com.lach.translink.ui.presenter.resolve.ResolveLocationMapPresenterImpl;
 import com.lach.translink.ui.view.TaskView;
 
@@ -12,7 +12,7 @@ public interface ResolveLocationMapView<MARKER_TYPE> extends TaskView {
 
     float getMapZoomLevel();
 
-    LatLngBounds getMapBounds();
+    MapBounds getMapBounds();
 
     void showContinueButton(boolean animate);
 

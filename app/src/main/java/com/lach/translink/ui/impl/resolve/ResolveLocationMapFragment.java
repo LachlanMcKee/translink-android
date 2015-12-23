@@ -26,6 +26,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.lach.common.async.AsyncResult;
 import com.lach.common.async.AsyncTaskFragment;
+import com.lach.common.data.map.MapBounds;
 import com.lach.common.data.preference.BooleanPreference;
 import com.lach.common.data.preference.DoublePreference;
 import com.lach.common.data.preference.FloatPreference;
@@ -482,8 +483,14 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Res
     }
 
     @Override
-    public LatLngBounds getMapBounds() {
-        return mMap.getProjection().getVisibleRegion().latLngBounds;
+    public MapBounds getMapBounds() {
+        LatLngBounds googleMapBounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+
+        // Convert this into a Java POJO, removing the maps library dependency.
+        return new MapBounds(
+                convertLatLngToMapPosition(googleMapBounds.southwest),
+                convertLatLngToMapPosition(googleMapBounds.northeast)
+        );
     }
 
     private LatLng convertMapPositionToLatLng(@NonNull MapPosition mapPosition) {

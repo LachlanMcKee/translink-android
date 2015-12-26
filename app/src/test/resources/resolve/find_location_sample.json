@@ -1,0 +1,27 @@
+[
+  {
+    "LocationId": "LM:Wynnum Ambulance (Ambulance Stations)",
+    "Description": "Wynnum Ambulance",
+    "Type": "Landmark"
+  },
+  {
+    "LocationId": "LM:Wynnum Anchor Motel (Hotels \u0026 Motels)",
+    "Description": "Wynnum Anchor Motel",
+    "Type": "Landmark"
+  },
+  {
+    "LocationId": "LM:Wynnum Australian Rules Football Field (Sporting Venues)",
+    "Description": "Wynnum Australian Rules Football Field",
+    "Type": "Landmark"
+  },
+  {
+    "LocationId": "LM:Wynnum Bandstand Park (Parks \u0026 Reserves)",
+    "Description": "Wynnum Bandstand Park",
+    "Type": "Landmark"
+  },
+  {
+    "LocationId": "LM:Wynnum Baptist Church (Churches \u0026 Other Places Of Worship)",
+    "Description": "Wynnum Baptist Church",
+    "Type": "Landmark"
+  }
+]

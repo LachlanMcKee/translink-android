@@ -5,7 +5,7 @@ import com.lach.translink.network.GoCardHttpClient;
 
 import java.io.IOException;
 
-public class BaseTaskGoCardTest extends BaseTest {
+public abstract class BaseTaskGoCardTest extends BaseTest {
 
     /**
      * Creates a mocked go-card http client with a hard-coded html response which is extracted from

@@ -16,9 +16,16 @@ import java.io.IOException;
 @PrepareForTest(value = {Response.class, ResponseBody.class})
 public abstract class BaseHttpTest extends BaseTest {
 
-    public OkHttpClient mockHttpClient(Answer<Response> response) throws IOException {
+    public OkHttpClient mockHttpClient(final HttpResponseHandler responseHandler) throws IOException {
         OkHttpClient client = Mockito.mock(OkHttpClient.class, Mockito.RETURNS_DEEP_STUBS);
-        Mockito.when(client.newCall(Mockito.any(Request.class)).execute()).thenAnswer(response);
+        Mockito.when(client.newCall(Mockito.any(Request.class)).execute()).thenAnswer(new Answer<Response>() {
+            int responseCount = 0;
+
+            @Override
+            public Response answer(InvocationOnMock invocation) throws Throwable {
+                return responseHandler.getResponse(responseCount++);
+            }
+        });
         return client;
     }
 
@@ -38,12 +45,16 @@ public abstract class BaseHttpTest extends BaseTest {
     }
 
     public OkHttpClient mockHttpResponse(final String content, final int responseCode) throws IOException {
-        return mockHttpClient(new Answer<Response>() {
+        return mockHttpClient(new HttpResponseHandler() {
             @Override
-            public Response answer(InvocationOnMock invocation) throws Throwable {
+            public Response getResponse(int responseIndex) throws IOException {
                 return createMockedResponse(content, responseCode);
             }
         });
+    }
+
+    public interface HttpResponseHandler {
+        Response getResponse(int responseIndex) throws IOException;
     }
 
 }

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en-au">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="author" content="TransLink Division, Department of Transport and Main Roads" />
+    <meta name="google-site-verification" content="nNhS0Na_38DlBjVO22yfHnekgn6xyusSgs0wqs4yDQ8" />
+    <meta name="keywords" content="TransLink,public,transport,information,bus,train,ferry,timetables,maps,events,service updates,announcements,go card,fares,tickets" >
+    <meta name="description" content="TransLink is your one stop for public transport information, and coordinates and integrates public transport services in South East Queensland." >
+    <meta name="viewport" content="user-scalable=1, width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="apple-itunes-app" content="app-id=927289966, app-argument=http://translink.com.au/about-translink/connect-with-translink/mytranslink">
+    <title>Journey planner | TransLink</title>
+
+    <link rel="stylesheet" href="/utilities/css/mobile-v3.5.379.4125" type="text/css" />
+    <script src="/utilities/common-javascript-v3.5.379.4125" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+            window.journeyPlannerHref = "/travel-information/journey-planner";
+            window.myLinksHref = "/my-links";
+            window.timetablesHref = "/travel-information/network-information/timetables";
+            window.serviceStatusHref = "http://mobile.translink.com.au/travel-information/service-notices";
+            window.goCardHref = "http://mobile.translink.com.au/tickets-and-fares/go-card/locations";
+
+            window.stopsAndStationsHref = "/travel-information/network-information/stops-and-stations";
+            window.mainSiteHref = "http://mobile.translink.com.au/";
+        </script>
+</head>
+<body>
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-53Q79H" height="0" width="0" style="display: none; visibility: hidden"></iframe></noscript>
+<script> (function(w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({
+                'gtm.start':
+                    new Date().getTime(),
+                event: 'gtm.js'
+            });
+            var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src =
+                '//www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-53Q79H'); </script>
+<!-- End Google Tag Manager -->
+
+<div id="header">
+    <div class="column-2">
+        <a href="http://mobile.translink.com.au/" title="Translink - Mobile Homepage" id="translink-logo">
+            <img src="/Content/Images/translink-logo-reversed.png" alt="TransLink" style="width: 153px; height: 29px;" id="logo-image" />
+        </a>
+    </div>
+    <div class="column-2 right-align" id="navBarIcons">
+        <a href="#" id="site-search-button"><img src="/Content/images/mobile/search-icon.png" style="width: 32px; height: 32px;" alt="Home" /></a>
+        <a href="#" id="SiteNavButton"><img src="/Content/images/mobile/menu-icon.png" style="width: 32px; height: 32px;" alt="Site menu - show below" /></a>
+    </div>
+    <div id="funnelback-search">
+        <form action="http://mobile.translink.com.au/" method="post" id="funnelback-search-block-form" accept-charset="UTF-8">
+            <div>
+                <div class="form-item form-type-textfield form-item-funnelback-search-field">
+                    <label class="access" for="edit-funnelback-search-field">Search</label>
+                    <input placeholder="Seach site ..." title="Enter the terms you wish to search for." type="text" id="edit-funnelback-search-field" name="funnelback_search_field" value="" size="15" maxlength="128" class="form-text" />
+                </div>
+                <input class="action-button form-submit" type="submit" id="edit-funnelback-search-submit" name="op" value="Search" /><input type="hidden" name="form_build_id" value="form-JW-Y7KZK-iW0QclRL34YBVtRPkAq_bN-n7Nx9hms_6M" />
+                <input type="hidden" name="form_id" value="funnelback_search_block_form" />
+            </div>
+        </form>
+    </div>
+</div>
+<div class="content heading-bar">
+    <h1>Journey planner</h1>
+    <div class="underline">&nbsp;</div>
+</div>
+
+
+
+
+
+
+
+
+<div class="validation-summary-errors"><span>There were errors in the information entered:</span>
+    <ul><li>We didn’t find anything that matched your start location - please enter an address, landmark, stop name or stop ID.</li>
+    </ul></div>
+
+
+<form action="/travel-information/journey-planner" method="post">    <p class="icon_info">Please note that all fields marked with a <span class="required" title="This field is required">red star<span class="access">Required field</span></span> are mandatory.</p>
+    <fieldset id="start-fields">
+        <legend>Start<span class="required">*</span></legend>
+        <label class="access" for="Start">Start - address / landmark / stop name / stop ID</label>
+        <input aria_required="True" autocomplete="off" id="Start" name="Start" placeholder="address / landmark / stop name / stop ID" title="Start" type="text" value="000088" />
+        <div class="column-2"></div>
+        <div class="column-2 right-align"><input type="checkbox" name="saveFromLocation" id="SaveFromLocation" value="true" /> <label for="SaveFromLocation">Save this location</label></div>
+    </fieldset>
+    <fieldset id="end-fields">
+        <legend>End<span class="required">*</span></legend>
+        <label class="access" for="End">End - address / landmark / stop name / stop ID</label>
+        <input aria_required="True" autocomplete="off" id="End" name="End" placeholder="address / landmark / stop name / stop ID" title="End" type="text" value="000163" /><br />
+        <div class="column-2"></div>
+        <div class="column-2 right-align"><input type="checkbox" name="saveToLocation" id="SaveToLocation" value="true" /> <label for="SaveToLocation">Save this location</label></div>
+    </fieldset>
+    <fieldset>
+        <legend>Travel day and time</legend>
+        <div>
+            <label class="access" for="SearchDate">Date</label>
+            <select id="SearchDate" name="SearchDate"><option value="28/12/2015 12:00:00 AM">Today (Mon)</option>
+                <option selected="selected" value="29/12/2015 12:00:00 AM">Tue 29 Dec</option>
+                <option value="30/12/2015 12:00:00 AM">Wed 30 Dec</option>
+                <option value="31/12/2015 12:00:00 AM">Thu 31 Dec</option>
+                <option value="1/01/2016 12:00:00 AM">Fri 1 Jan</option>
+                <option value="2/01/2016 12:00:00 AM">Sat 2 Jan</option>
+                <option value="3/01/2016 12:00:00 AM">Sun 3 Jan</option>
+                <option value="4/01/2016 12:00:00 AM">Mon 4 Jan</option>
+                <option value="5/01/2016 12:00:00 AM">Tue 5 Jan</option>
+                <option value="6/01/2016 12:00:00 AM">Wed 6 Jan</option>
+                <option value="7/01/2016 12:00:00 AM">Thu 7 Jan</option>
+                <option value="8/01/2016 12:00:00 AM">Fri 8 Jan</option>
+                <option value="9/01/2016 12:00:00 AM">Sat 9 Jan</option>
+                <option value="10/01/2016 12:00:00 AM">Sun 10 Jan</option>
+                <option value="11/01/2016 12:00:00 AM">Mon 11 Jan</option>
+                <option value="12/01/2016 12:00:00 AM">Tue 12 Jan</option>
+                <option value="13/01/2016 12:00:00 AM">Wed 13 Jan</option>
+                <option value="14/01/2016 12:00:00 AM">Thu 14 Jan</option>
+                <option value="15/01/2016 12:00:00 AM">Fri 15 Jan</option>
+                <option value="16/01/2016 12:00:00 AM">Sat 16 Jan</option>
+                <option value="17/01/2016 12:00:00 AM">Sun 17 Jan</option>
+                <option value="18/01/2016 12:00:00 AM">Mon 18 Jan</option>
+                <option value="19/01/2016 12:00:00 AM">Tue 19 Jan</option>
+                <option value="20/01/2016 12:00:00 AM">Wed 20 Jan</option>
+                <option value="21/01/2016 12:00:00 AM">Thu 21 Jan</option>
+                <option value="22/01/2016 12:00:00 AM">Fri 22 Jan</option>
+                <option value="23/01/2016 12:00:00 AM">Sat 23 Jan</option>
+                <option value="24/01/2016 12:00:00 AM">Sun 24 Jan</option>
+                <option value="25/01/2016 12:00:00 AM">Mon 25 Jan</option>
+                <option value="26/01/2016 12:00:00 AM">Tue 26 Jan</option>
+            </select>
+        </div>
+        <div>
+
+            <label class="access">Time search mode</label>
+            <div class="column-2">
+                <input checked="checked" id="rdo_LeaveAfter" name="TimeSearchMode" type="radio" value="LeaveAfter" />                    <label for="rdo_LeaveAfter">Leave after <span class="access">(Specify time below)</span></label>
+                <br />
+                <input id="rdo_ArriveBefore" name="TimeSearchMode" type="radio" value="ArriveBefore" />                    <label for="rdo_ArriveBefore">Arrive before <span class="access">(Specify time below)</span></label>
+                <br />
+            </div>
+            <div class="column-2">
+                <input id="rdo_FirstServices" name="TimeSearchMode" type="radio" value="FirstServices" />                    <label for="rdo_FirstServices">Earliest services</label>
+                <br />
+                <input id="rdo_LastServices" name="TimeSearchMode" type="radio" value="LastServices" />                    <label for="rdo_LastServices">Last services</label>
+                <br />
+            </div>
+        </div>
+        <div id="TimeInput">
+
+<span id="TimeInputSection">
+    <label class="access" for="SearchHour">Hour</label>
+    <select id="SearchHour" name="SearchHour"><option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option selected="selected" value="12">12</option>
+    </select>
+    <label class="access" for="SearchMinute">Minute</label>
+    <select id="SearchMinute" name="SearchMinute"><option value="0">00</option>
+        <option value="5">05</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="25">25</option>
+        <option value="30">30</option>
+        <option value="35">35</option>
+        <option value="40">40</option>
+        <option value="45">45</option>
+        <option value="50">50</option>
+        <option value="55">55</option>
+    </select>
+    <label class="access" for="TimeMeridiem">AM/PM</label>
+    <select id="TimeMeridiem" name="TimeMeridiem"><option value="AM">am</option>
+        <option selected="selected" value="PM">pm</option>
+    </select>
+</span>
+        </div>
+    </fieldset>
+    <fieldset class="fieldset checkbox-list banded-input advanced-option">
+        <legend>Modes of transport</legend>
+        <label class="access">Transport modes</label>
+        <input checked="checked" id="TransportModeBus" name="TransportModes" tabindex="0" type="checkbox" value="Bus" /> <label for="TransportModeBus">Bus</label>
+        <input checked="checked" id="TransportModeTrain" name="TransportModes" tabindex="0" type="checkbox" value="Train" /> <label for="TransportModeTrain">Train</label>
+        <input checked="checked" id="TransportModeFerry" name="TransportModes" tabindex="0" type="checkbox" value="Ferry" /> <label for="TransportModeFerry">Ferry </label>
+        <input checked="checked" id="TransportModeTram" name="TransportModes" tabindex="0" type="checkbox" value="Tram" /> <label for="TransportModeTram">Tram</label>
+    </fieldset>
+    <fieldset class="banded-input advanced-option">
+        <legend>Walking options</legend>
+        <div class="two-column">
+            <label for="MaximumWalkingDistance">Max<span class="access"> walk distance</span></label>
+            <select id="MaximumWalkingDistance" name="MaximumWalkingDistance"><option selected="selected" value="100">100m</option>
+                <option value="250">250m</option>
+                <option value="500">500m</option>
+                <option value="1000">1km</option>
+                <option value="1500">1.5km</option>
+                <option value="2000">2km</option>
+                <option value="4000">4km</option>
+            </select>
+        </div>
+        <label for="WalkingSpeed">Speed</label>
+        <select id="WalkingSpeed" name="WalkingSpeed"><option value="Slow">Slow</option>
+            <option selected="selected" value="Normal">Normal</option>
+            <option value="Fast">Fast</option>
+        </select>
+    </fieldset>
+    <fieldset class="checkbox-list banded-input advanced-option">
+        <legend>Service types</legend>
+        <label class="access" for="ServiceTypes">Service types</label>
+        <input checked="checked" id="ServiceModeRegular" name="ServiceTypes" tabindex="0" type="checkbox" value="Regular" /> <label for="ServiceModeRegular">Regular</label>
+        <input checked="checked" id="ServiceModeExpress" name="ServiceTypes" tabindex="0" type="checkbox" value="Express" /> <label for="ServiceModeExpress">Express</label>
+        <input checked="checked" id="ServiceModeNightLink" name="ServiceTypes" tabindex="0" type="checkbox" value="NightLink" /> <label for="ServiceModeNightLink">NightLink</label>
+        <input id="ServiceModeSchool" name="ServiceTypes" tabindex="0" type="checkbox" value="School" /> <label for="ServiceModeSchool">School</label>
+    </fieldset>
+    <fieldset class="checkbox-list banded-input advanced-option">
+        <legend>Fare types</legend>
+        <label class="access">Fare types</label>
+        <input checked="checked" id="FareTypeFree" name="FareTypes" tabindex="0" type="checkbox" value="Free" /> <label for="FareTypeFree">Free</label>
+        <input checked="checked" id="FareTypeStandard" name="FareTypes" tabindex="0" type="checkbox" value="Standard" /> <label for="FareTypeStandard">Standard</label>
+        <input checked="checked" id="FareTypePrepaid" name="FareTypes" tabindex="0" type="checkbox" value="Prepaid" /> <label for="FareTypePrepaid">Prepaid</label>
+    </fieldset>
+    <div class="content" id="ActionButtonArea">
+        <input type="submit" value="Find journey" class="action-button full-width" id="FindJourneyButton" /><br />
+        <a class="my-links-button full-width" href="/my-links">My Links / saved locations</a>
+    </div>
+</form>
+
+
+<div id="footer">
+    <p><a href="http://mobile.translink.com.au/utils/goto/context/desktop">View standard site</a></p>
+    <p>&copy; State of Queensland 2015</p>
+    <p><a href="http://mobile.translink.com.au/site-information/languages">Languages</a> | <a href="http://mobile.translink.com.au/site-information/legal">Legal stuff</a></p>
+    <a href="http://www.qld.gov.au/" id="qglogo"><img src="/Content/Images/qld-gov-logo-inline.png" alt="Queensland Government" /></a>
+    <p style="color: #999;">v3.5.379.4125</p>
+</div>
+
+<script type="text/javascript" src="/utilities/javascript/storage-v3.5.379.4125"></script>
+<script type="text/javascript" src="/utilities/javascript/autocomplete-v3.5.379.4125"></script>
+<script type="text/javascript" src="/utilities/javascript/savedlocations-v3.5.379.4125"></script>
+<script type="text/javascript">
+        $(document).ready(function() {
+            $("#rdo_FirstServices, #rdo_LastServices").click(function() { $("#TimeInput").hide(); });
+            $("#rdo_LeaveAfter, #rdo_ArriveBefore").click(function() { $("#TimeInput").show(); });
+            $("input[name='TimeSearchMode']:checked").click();
+            if ($.hasLocation()) {
+                var container = $("#SaveFromLocation, #SaveToLocation").parent().prev("div");
+                container.append("<a class=\"use-current-location\" href=\"#\">Use current location</a>");
+                container.append("<a class=\"stop-use-current-location\" href=\"#\">Stop using current location</a>");
+                container.find('.stop-use-current-location').hide();
+
+                $("#start-fields a.use-current-location").click(function(event) {
+                    $(this).hide().siblings(".stop-use-current-location").show();
+                    startGeoFromSearch(event);
+                });
+                $("#start-fields a.stop-use-current-location").click(function(event) {
+                    $(this).hide().siblings(".use-current-location").show();
+                    stopGeoFromSearch(event);
+                });
+
+                $("#end-fields a.use-current-location").click(function(event) {
+                    $(this).hide().siblings(".stop-use-current-location").show();
+                    startGeoToSearch(event);
+                });
+                $("#end-fields a.stop-use-current-location").click(function(event) {
+                    $(this).hide().siblings(".use-current-location").show();
+                    stopGeoToSearch(event);
+                });
+            }
+            if (canStore()) {
+                $("#Start, #End").autocomplete("/travel-information/journey-planner/find-location", "location", autocompleteDataSuccess);
+            }
+            $("#FindJourneyButton").before($("<a />").text("Show more search options").attr("class", "default-button").attr("href", "#").clickToggle(function() {
+                $(".advanced-option").show();
+                $(this).text("Hide search options");
+            }, function() {
+                $(".advanced-option").hide();
+                $(this).text("Show more search options");
+            }));
+            $("#FindJourneyButton").before($("<br/>"));
+            $(".advanced-option").hide();
+
+
+            // only busses support express/school/nighlink. although express trains exist, hastus train setup doesn't contain them
+            var $serviceTypes = $("#ServiceModeRegular,#ServiceModeSchool,#ServiceModeExpress,#ServiceModeNightLink");
+            var updateAllowedServiceTypes = function() {
+                var busSelected = $("#TransportModeBus").attr("checked") == "checked";
+
+                if (!busSelected) {
+                    $serviceTypes.attr("checked", "true");
+                    $serviceTypes.attr("disabled", "disabled");
+                } else {
+                    $serviceTypes.removeAttr("disabled");
+                }
+            };
+
+            $("form").submit(function(e) {
+                $serviceTypes.removeAttr("disabled");
+            });
+
+            $("#TransportModeBus").click(updateAllowedServiceTypes);
+            updateAllowedServiceTypes();
+        });
+    </script>
+
+
+<script type="text/javascript" src="/utilities/javascript/jp_jquery_plugins-v3.5.379.4125"></script>
+
+
+
+</body>
+</html>

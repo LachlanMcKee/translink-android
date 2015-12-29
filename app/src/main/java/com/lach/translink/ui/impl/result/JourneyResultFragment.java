@@ -150,7 +150,7 @@ public class JourneyResultFragment extends AsyncTaskFragment {
 
             createTask(TASK_SEARCH_FOR_JOURNEY, taskJourneySearchProvider.get())
                     .parameters(TaskJourneySearch.createParams(journeyCriteria, date, webViewFacade.getUserAgent()))
-                    .start(this);
+                    .start();
         } else {
             boolean hasContentLoaded = savedInstanceState.getBoolean(CONTENT_LOADED_KEY);
             Log.debug(TAG, "restoreState. hasContentLoaded: " + hasContentLoaded);

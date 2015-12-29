@@ -3,7 +3,6 @@ package com.lach.translink.ui.presenter.resolve;
 import android.os.Bundle;
 
 import com.lach.common.async.AsyncResult;
-import com.lach.common.async.AsyncTaskFragment;
 import com.lach.common.data.map.MapMarker;
 import com.lach.common.data.map.MapPosition;
 import com.lach.common.log.Log;
@@ -314,7 +313,7 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
 
         mView.createTask(TASK_GET_BUS_STOPS, getBusStopsTaskProvider.get())
                 .parameters(TaskGetBusStops.createParams(mView.getMapBounds()))
-                .start((AsyncTaskFragment) mView);
+                .start();
     }
 
     private static class BusStopContent {

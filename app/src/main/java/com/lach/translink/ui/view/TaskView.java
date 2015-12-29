@@ -1,10 +1,10 @@
 package com.lach.translink.ui.view;
 
-import com.lach.common.async.AsyncTaskFragment;
 import com.lach.common.async.Task;
+import com.lach.common.async.TaskBuilder;
 
 public interface TaskView extends BaseView {
-    AsyncTaskFragment.TaskBuilder createTask(int taskSearchTranslink, Task task);
+    TaskBuilder createTask(int taskId, Task task);
 
     void cancelCurrentTask(boolean notify);
 

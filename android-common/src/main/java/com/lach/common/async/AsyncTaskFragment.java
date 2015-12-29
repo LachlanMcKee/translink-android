@@ -109,52 +109,32 @@ public abstract class AsyncTaskFragment extends ButterFragment implements AsyncT
         builder.show();
     }
 
-    public static class TaskBuilder {
-        final int taskId;
-        final Task task;
-        Object[] parameters;
-        String message;
-        boolean executeImmediately = false;
+    public class FragmentTaskBuilder extends TaskBuilder {
 
-        public TaskBuilder(int taskId, Task task) {
-            this.taskId = taskId;
-            this.task = task;
+        public FragmentTaskBuilder(int taskId, Task task) {
+            super(taskId, task);
         }
 
-        public TaskBuilder parameters(Object... parameters) {
-            this.parameters = parameters;
-            return this;
-        }
-
-        public TaskBuilder message(String message) {
-            this.message = message;
-            return this;
-        }
-
-        public TaskBuilder executeImmediately(boolean executeImmediately) {
-            this.executeImmediately = executeImmediately;
-            return this;
-        }
-
-        public void start(AsyncTaskFragment fragment) {
-            fragment.startTaskInternal(taskId, task, message, parameters);
+        @Override
+        public void start() {
+            startTaskInternal(taskId, task, message, parameters);
 
             if (executeImmediately) {
-                fragment.getFragmentManager().executePendingTransactions();
+                getFragmentManager().executePendingTransactions();
             }
         }
     }
 
     public TaskBuilder createTask(int taskId, Task task) {
-        return new TaskBuilder(taskId, task);
+        return new FragmentTaskBuilder(taskId, task);
     }
 
     public void startTask(int taskId, Task task) {
-        createTask(taskId, task).start(this);
+        createTask(taskId, task).start();
     }
 
     public void startTask(int taskId, Task task, String message) {
-        createTask(taskId, task).message(message).start(this);
+        createTask(taskId, task).message(message).start();
     }
 
     private void startTaskInternal(int taskId, Task task, String message, Object[] parameters) {

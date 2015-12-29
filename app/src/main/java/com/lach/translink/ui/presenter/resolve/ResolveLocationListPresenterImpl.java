@@ -6,7 +6,6 @@ import android.os.Message;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.lach.common.async.AsyncResult;
-import com.lach.common.async.AsyncTaskFragment;
 import com.lach.common.data.map.MapPosition;
 import com.lach.common.data.preference.Preferences;
 import com.lach.common.data.preference.PreferencesProvider;
@@ -242,7 +241,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
         mView.createTask(TASK_SEARCH_TRANSLINK, taskFindLocationProvider.get())
                 .parameters(TaskFindLocation.createParams(currentTranslinkLookupText))
                 .executeImmediately(true)
-                .start((AsyncTaskFragment) mView);
+                .start();
     }
 
     @Override
@@ -295,7 +294,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
                 mView.createTask(TASK_GET_ADDRESS, getAddressesAsyncTaskProvider.get())
                         .parameters(new LatLng(addressLookupPosition.getLatitude(), addressLookupPosition.getLongitude()))
                         .executeImmediately(true)
-                        .start((AsyncTaskFragment) mView);
+                        .start();
                 break;
 
             case TRANSLINK_LOOKUP:

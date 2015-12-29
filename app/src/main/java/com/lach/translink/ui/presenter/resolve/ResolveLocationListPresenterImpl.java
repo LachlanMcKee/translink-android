@@ -59,7 +59,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
 
     private ResolveLocationListPresenterImpl.UiMode mCurrentUIMode;
 
-    private ResolveLocationListView view;
+    private ResolveLocationListView mView;
     private PlaceType placeType;
 
     private ArrayList<String> mSearchResults;
@@ -86,7 +86,9 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(ResolveLocationListView view, Bundle savedInstanceState) {
+        mView = view;
+
         mTranslinkSearchHandler = new TranslinkSearchHandler(this);
 
         Preferences preferences = preferencesProvider.getPreferences();
@@ -110,7 +112,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
                 public void onHistoryLoaded(List<? extends LocationHistory> locationHistoryList) {
                     locationHistoryDao.removeHistoryLoadListener();
 
-                    boolean isUiReady = view.isUiReady();
+                    boolean isUiReady = mView.isUiReady();
                     Log.debug(TAG, "onHistoryLoaded. isUiReady: " + isUiReady);
 
                     // UI may have been destroyed before the history is loaded.
@@ -191,7 +193,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
         }
         outState.putString(BUNDLE_PREVIOUS_SEARCH_TEXT, previousSearchText);
 
-        outState.putString(BUNDLE_SEARCH_TEXT, view.getSearchText());
+        outState.putString(BUNDLE_SEARCH_TEXT, mView.getSearchText());
         outState.putSerializable(BUNDLE_CURRENT_UI_MODE, mCurrentUIMode);
     }
 
@@ -204,22 +206,12 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
             locationInfoList.add(new ResolveLocationListView.LocationInfo(address, placeParser.prettyPrintPlace(address)));
         }
 
-        view.updateHistory(locationInfoList);
+        mView.updateHistory(locationInfoList);
     }
 
     @Override
     public void setPlaceType(PlaceType placeType) {
         this.placeType = placeType;
-    }
-
-    @Override
-    public void setView(ResolveLocationListView view) {
-        this.view = view;
-    }
-
-    @Override
-    public void removeView() {
-        this.view = null;
     }
 
     @Override
@@ -234,7 +226,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
 
     @Override
     public void executeSearch() {
-        if (!view.isUiVisible()) {
+        if (!mView.isUiVisible()) {
             Log.warn(TAG, "executeSearch. ui not visible");
             return;
         }
@@ -244,13 +236,13 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
             return;
         }
 
-        currentTranslinkLookupText = view.getSearchText();
+        currentTranslinkLookupText = mView.getSearchText();
         Log.debug(TAG, "executeSearch. Text: " + currentTranslinkLookupText);
 
-        view.createTask(TASK_SEARCH_TRANSLINK, taskFindLocationProvider.get())
+        mView.createTask(TASK_SEARCH_TRANSLINK, taskFindLocationProvider.get())
                 .parameters(TaskFindLocation.createParams(currentTranslinkLookupText))
                 .executeImmediately(true)
-                .start((AsyncTaskFragment) view);
+                .start((AsyncTaskFragment) mView);
     }
 
     @Override
@@ -258,17 +250,17 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
         Log.debug(TAG, "- executeNewSearch. searchType: " + searchType);
 
         // Cancel any outstanding search tasks.
-        view.cancelCurrentTask(true);
+        mView.cancelCurrentTask(true);
 
         // This may be fired while transitioning to the map ui.
-        if (!view.isUiVisible()) {
+        if (!mView.isUiVisible()) {
             Log.warn(TAG, "executeNewSearch. ui not visible");
             return;
         }
 
         UiMode newUIMode = UiMode.NORMAL;
         if (searchType == SearchType.TRANSLINK) {
-            String searchText = view.getSearchText();
+            String searchText = mView.getSearchText();
 
             // Check that the input is valid.
             boolean isValid = searchText.length() >= 3;
@@ -300,10 +292,10 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
         // Execute the respective search.
         switch (newUIMode) {
             case ADDRESS_LOOKUP:
-                view.createTask(TASK_GET_ADDRESS, getAddressesAsyncTaskProvider.get())
+                mView.createTask(TASK_GET_ADDRESS, getAddressesAsyncTaskProvider.get())
                         .parameters(new LatLng(addressLookupPosition.getLatitude(), addressLookupPosition.getLongitude()))
                         .executeImmediately(true)
-                        .start((AsyncTaskFragment) view);
+                        .start((AsyncTaskFragment) mView);
                 break;
 
             case TRANSLINK_LOOKUP:
@@ -331,13 +323,13 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
         // Clear the adapter data since no search is occurring.
         updateSearchResults(null);
 
-        view.updateUi(mCurrentUIMode);
+        mView.updateUi(mCurrentUIMode);
 
         if (uiMode.searchType == ResolveLocationListPresenterImpl.SearchType.COORDINATES) {
-            view.updateSearchMode(false, addressLookupPosition.latitude + ", " + addressLookupPosition.longitude);
+            mView.updateSearchMode(false, addressLookupPosition.latitude + ", " + addressLookupPosition.longitude);
 
         } else {
-            view.updateSearchMode(true, getSearchHint());
+            mView.updateSearchMode(true, getSearchHint());
         }
 
         if (uiMode == UiMode.SHOW_RESULTS) {
@@ -379,9 +371,9 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
     }
 
     private void updateSearchText(String newText, boolean executeSearch) {
-        view.toggleSearchListener(false);
-        view.updateSearchText(newText);
-        view.toggleSearchListener(true);
+        mView.toggleSearchListener(false);
+        mView.updateSearchText(newText);
+        mView.toggleSearchListener(true);
 
         if (executeSearch) {
             updateSearch(SearchType.TRANSLINK);
@@ -393,7 +385,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
         addressLookupPosition = point;
 
         // If the UI hasn't been inflated yet, this will be updated later.
-        if (!view.isUiReady()) {
+        if (!mView.isUiReady()) {
             return;
         }
         updateLookupAddressInternal(addressLookupPosition);
@@ -415,7 +407,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
         mSearchResults = addressList;
 
         if (size == 0) {
-            view.updateSearchResults(null);
+            mView.updateSearchResults(null);
             return;
         }
 
@@ -423,7 +415,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
         for (String address : addressList) {
             locationInfoList.add(new ResolveLocationListView.LocationInfo(address, address));
         }
-        view.updateSearchResults(locationInfoList);
+        mView.updateSearchResults(locationInfoList);
     }
 
     @Override
@@ -436,7 +428,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
     @SuppressWarnings("unchecked")
     @Override
     public void onTaskFinished(int taskId, AsyncResult result) {
-        if (!view.isUiVisible()) {
+        if (!mView.isUiVisible()) {
             Log.warn(TAG, "onTaskFinished. ui not visible");
             return;
         }
@@ -449,7 +441,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
                 if (addresses.size() > 0) {
                     updateStreet(addresses.get(0));
                 } else {
-                    view.showNotification("No results found.");
+                    mView.showNotification("No results found.");
                 }
                 break;
 
@@ -465,7 +457,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
     public void onTaskCancelled(int taskId) {
         Log.debug(TAG, "onTaskCancelled: " + taskId);
 
-        if (!view.isUiVisible()) {
+        if (!mView.isUiVisible()) {
             Log.warn(TAG, "onTaskCancelled. ui not visible");
             return;
         }
@@ -483,7 +475,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
 
     @Override
     public boolean onTaskError(int taskId, int errorId) {
-        if (!view.isUiVisible()) {
+        if (!mView.isUiVisible()) {
             Log.warn(TAG, "onTaskError. ui not visible");
             return true;
         }

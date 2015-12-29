@@ -126,8 +126,7 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Res
 
         ButterKnife.inject(this, view);
 
-        mPresenter.setView(this);
-        mPresenter.onCreate(savedInstanceState);
+        mPresenter.onCreate(this, savedInstanceState);
 
         // Reload the current marker position if it exists.
         if (savedInstanceState != null) {

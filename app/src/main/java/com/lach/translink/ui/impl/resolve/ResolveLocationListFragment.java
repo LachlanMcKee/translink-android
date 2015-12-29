@@ -209,9 +209,8 @@ public class ResolveLocationListFragment extends AsyncTaskFragment implements Re
             }
         };
 
-        mPresenter.setView(this);
         mPresenter.setPlaceType((PlaceType) getArguments().getSerializable(PLACE_TYPE));
-        mPresenter.onCreate(savedInstanceState);
+        mPresenter.onCreate(this, savedInstanceState);
     }
 
     @Override

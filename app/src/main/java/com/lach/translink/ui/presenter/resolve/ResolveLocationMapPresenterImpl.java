@@ -35,7 +35,7 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
 
     private final Provider<TaskGetBusStops> getBusStopsTaskProvider;
 
-    private ResolveLocationMapView view;
+    private ResolveLocationMapView mView;
 
     private MapPosition mAddressMarkerPosition;
     private MapMarker mAddressMarker;
@@ -49,17 +49,9 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
     }
 
     @Override
-    public void setView(ResolveLocationMapView view) {
-        this.view = view;
-    }
+    public void onCreate(ResolveLocationMapView view, Bundle savedInstanceState) {
+        mView = view;
 
-    @Override
-    public void removeView() {
-        this.view = null;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
         mVisibleBusStops = new HashMap<>();
         mMarkerBusStopRelation = new HashMap<>();
 
@@ -99,7 +91,7 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
 
     @Override
     public void onTaskFinished(int taskId, AsyncResult result) {
-        if (!view.isMapReady()) {
+        if (!mView.isMapReady()) {
             return;
         }
 
@@ -124,7 +116,7 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
 
             // We may be re-adding the currently selected bus stop's marker.
             boolean isMarkerSelected = mSelectedBusStop != null && mSelectedBusStop.getId() == stopId;
-            MapMarker marker = view.addBusStopMarker(new MapPosition(stop.getLatitude(), stop.getLongitude()), isMarkerSelected);
+            MapMarker marker = mView.addBusStopMarker(new MapPosition(stop.getLatitude(), stop.getLongitude()), isMarkerSelected);
 
             // Add the marker for later reference.
             mVisibleBusStops.put(stopId, new BusStopContent(stop, marker));
@@ -137,7 +129,7 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
 
             if (content != null) {
                 mMarkerBusStopRelation.remove(content.marker.getId());
-                view.removeMapMarker(content.marker);
+                mView.removeMapMarker(content.marker);
             }
 
             mVisibleBusStops.remove(oldBusStopId);
@@ -174,11 +166,11 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
         clearAddressMarker();
 
         mAddressMarkerPosition = latLng;
-        mAddressMarker = view.addMarker(latLng);
+        mAddressMarker = mView.addMarker(latLng);
     }
 
     private void showContinueButton() {
-        view.showContinueButton(mAddressMarker == null && mSelectedBusStop == null);
+        mView.showContinueButton(mAddressMarker == null && mSelectedBusStop == null);
     }
 
     private void clearSelectedBusStop() {
@@ -191,7 +183,7 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
 
     @Override
     public void onBusStopDismissed() {
-        view.hideContinueButton();
+        mView.hideContinueButton();
         clearSelectedBusStop();
         updateBusStopMarkers();
     }
@@ -208,14 +200,14 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
         }
 
         MapMarker oldMarker = busStopContent.marker;
-        MapMarker newMarker = view.addBusStopMarker(oldMarker.getMapPosition(), isSelected);
+        MapMarker newMarker = mView.addBusStopMarker(oldMarker.getMapPosition(), isSelected);
 
         mMarkerBusStopRelation.remove(oldMarker.getId());
         mMarkerBusStopRelation.put(newMarker.getId(), busStopId);
 
         busStopContent.marker = newMarker;
 
-        view.removeMapMarker(oldMarker);
+        mView.removeMapMarker(oldMarker);
 
         return newMarker;
     }
@@ -223,7 +215,7 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
     @Override
     public MapPosition getPersistedMapPosition() {
         if (mSelectedBusStop != null) {
-            return new MapPosition(mSelectedBusStop.getLatitude() - view.calculateBusStopLatitudeOffset(), mSelectedBusStop.getLongitude());
+            return new MapPosition(mSelectedBusStop.getLatitude() - mView.calculateBusStopLatitudeOffset(), mSelectedBusStop.getLongitude());
         }
         return null;
     }
@@ -259,7 +251,7 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
             return;
         }
 
-        view.bringMarkerToFront(newMarker);
+        mView.bringMarkerToFront(newMarker);
 
         boolean isBusStopAlreadySelected = (mSelectedBusStop != null);
         showContinueButton();
@@ -268,7 +260,7 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
         mSelectedBusStop = busStopContent.busStop;
 
         if (isBusStopAlreadySelected) {
-            view.showBusStopDetails(mSelectedBusStop, false);
+            mView.showBusStopDetails(mSelectedBusStop, false);
         }
 
         if (!moveCamera) {
@@ -287,7 +279,7 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
             moveCameraListener = new MoveCameraListener() {
                 @Override
                 public void onFinish() {
-                    view.showBusStopDetails(mSelectedBusStop, true);
+                    mView.showBusStopDetails(mSelectedBusStop, true);
                 }
 
                 @Override
@@ -297,32 +289,32 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
             };
         }
 
-        view.moveCameraToBusStop(mSelectedBusStop, animateCamera, moveCameraListener);
+        mView.moveCameraToBusStop(mSelectedBusStop, animateCamera, moveCameraListener);
     }
 
     private void clearAddressMarker() {
         if (mAddressMarker != null) {
-            view.removeMapMarker(mAddressMarker);
+            mView.removeMapMarker(mAddressMarker);
             mAddressMarker = null;
             mAddressMarkerPosition = null;
         }
     }
 
     private void updateBusStopMarkers() {
-        if (!view.isMapReady() || view.getMapZoomLevel() < BUS_STOP_MIN_ZOOM) {
+        if (!mView.isMapReady() || mView.getMapZoomLevel() < BUS_STOP_MIN_ZOOM) {
             return;
         }
 
-        boolean taskRunning = view.isTaskRunning();
+        boolean taskRunning = mView.isTaskRunning();
         Log.debug(TAG, "onCameraChange. Zoom valid. Task running: " + taskRunning);
 
         if (taskRunning) {
-            view.cancelCurrentTask(false);
+            mView.cancelCurrentTask(false);
         }
 
-        view.createTask(TASK_GET_BUS_STOPS, getBusStopsTaskProvider.get())
-                .parameters(TaskGetBusStops.createParams(view.getMapBounds()))
-                .start((AsyncTaskFragment) view);
+        mView.createTask(TASK_GET_BUS_STOPS, getBusStopsTaskProvider.get())
+                .parameters(TaskGetBusStops.createParams(mView.getMapBounds()))
+                .start((AsyncTaskFragment) mView);
     }
 
     private static class BusStopContent {

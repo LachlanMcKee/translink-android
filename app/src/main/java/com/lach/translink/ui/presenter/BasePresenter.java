@@ -5,11 +5,7 @@ import android.os.Bundle;
 import com.lach.translink.ui.view.BaseView;
 
 public interface BasePresenter<VIEW extends BaseView> {
-    void setView(VIEW view);
-
-    void removeView();
-
-    void onCreate(Bundle savedInstanceState);
+    void onCreate(VIEW view, Bundle savedInstanceState);
 
     void onDestroy();
 

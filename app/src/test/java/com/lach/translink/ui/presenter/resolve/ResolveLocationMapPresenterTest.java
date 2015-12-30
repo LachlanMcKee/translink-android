@@ -1,9 +1,9 @@
 package com.lach.translink.ui.presenter.resolve;
 
 import com.lach.common.async.AsyncResult;
-import com.lach.common.async.UnitTestingTaskBuilder;
 import com.lach.common.async.Task;
 import com.lach.common.async.TaskBuilder;
+import com.lach.common.async.UnitTestingTaskBuilder;
 import com.lach.common.data.map.MapBounds;
 import com.lach.common.data.map.MapMarker;
 import com.lach.common.data.map.MapPosition;
@@ -11,6 +11,8 @@ import com.lach.translink.BaseTest;
 import com.lach.translink.data.place.bus.BusStop;
 import com.lach.translink.data.place.bus.BusStopImpl;
 import com.lach.translink.tasks.place.TaskGetBusStops;
+import com.lach.translink.ui.presenter.InMemoryViewState;
+import com.lach.translink.ui.presenter.ViewState;
 import com.lach.translink.ui.view.resolve.ResolveLocationMapView;
 
 import org.junit.Assert;
@@ -102,10 +104,11 @@ public class ResolveLocationMapPresenterTest extends BaseTest {
                 };
             }
         });
+
+        presenter.onCreate(view, null);
     }
 
     private void mapInit() {
-        presenter.onCreate(view, null);
         presenter.onMapInit();
 
         Mockito.when(view.isMapReady()).thenReturn(true);
@@ -128,16 +131,11 @@ public class ResolveLocationMapPresenterTest extends BaseTest {
         presenter.onMapClick(MAP_POSITION_1);
         presenter.onMapClick(MAP_POSITION_2);
 
-        // We don't want the button to animate the second time.
-        ArgumentCaptor<Boolean> animationCaptor = ArgumentCaptor.forClass(Boolean.class);
-        ArgumentCaptor<MapPosition> mapPositionCaptor = ArgumentCaptor.forClass(MapPosition.class);
-
-        Mockito.verify(view, times(2)).showContinueButton(animationCaptor.capture());
-        Mockito.verify(view, times(2)).addMarker(mapPositionCaptor.capture());
+        MapClickVerify mapClickVerify = new MapClickVerify(view, 2);
 
         // Ensure the second call does not animate, and we use the second map position.
-        Assert.assertEquals(animationCaptor.getAllValues().get(1), false);
-        Assert.assertEquals(mapPositionCaptor.getAllValues().get(1), MAP_POSITION_2);
+        mapClickVerify.isContinueAnimated(1, false);
+        mapClickVerify.isMarkerPositionEqualTo(1, MAP_POSITION_2.latitude, MAP_POSITION_2.longitude);
     }
 
     @Test
@@ -198,6 +196,47 @@ public class ResolveLocationMapPresenterTest extends BaseTest {
         Assert.assertEquals(mapPositionCaptor.getValue().latitude, MAP_POSITION_1.getLatitude(), 0);
         Assert.assertEquals(mapPositionCaptor.getValue().longitude, MAP_POSITION_1.getLongitude(), 0);
         Assert.assertFalse(isSelectedCaptor.getValue());
+    }
+
+    @Test
+    public void testAddressMarkerRecreated() {
+        mapInit();
+        presenter.onMapClick(MAP_POSITION_1);
+
+        // The life cycle should persist the selected marker, yet not animate the continue button on recreate.
+        ViewState viewState = new InMemoryViewState();
+        presenter.saveState(viewState);
+        presenter.onDestroy();
+        presenter.onCreate(view, viewState);
+        mapInit();
+
+        MapClickVerify mapClickVerify = new MapClickVerify(view, 2);
+        mapClickVerify.isContinueAnimated(1, false);
+        mapClickVerify.isMarkerPositionEqualTo(1, MAP_POSITION_1);
+    }
+
+    private static class MapClickVerify {
+        ArgumentCaptor<Boolean> animationCaptor = ArgumentCaptor.forClass(Boolean.class);
+        ArgumentCaptor<MapPosition> mapPositionCaptor = ArgumentCaptor.forClass(MapPosition.class);
+
+        public MapClickVerify(ResolveLocationMapView view, int timesExpected) {
+            Mockito.verify(view, times(timesExpected)).showContinueButton(animationCaptor.capture());
+            Mockito.verify(view, times(timesExpected)).addMarker(mapPositionCaptor.capture());
+        }
+
+        public void isContinueAnimated(int index, boolean expectedValue) {
+            Assert.assertEquals(animationCaptor.getAllValues().get(index), expectedValue);
+        }
+
+        public void isMarkerPositionEqualTo(int index, MapPosition mapPosition) {
+            isMarkerPositionEqualTo(index, mapPosition.latitude, mapPosition.longitude);
+        }
+
+        public void isMarkerPositionEqualTo(int index, double latitude, double longitude) {
+            MapPosition mapPosition = mapPositionCaptor.getAllValues().get(index);
+            Assert.assertEquals(mapPosition.latitude, latitude, 0);
+            Assert.assertEquals(mapPosition.longitude, longitude, 0);
+        }
     }
 
 }

@@ -1,6 +1,5 @@
 package com.lach.translink.ui.presenter.resolve;
 
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
@@ -18,6 +17,7 @@ import com.lach.translink.data.place.PlaceParser;
 import com.lach.translink.tasks.resolve.TaskFindLocation;
 import com.lach.translink.ui.impl.UiPreference;
 import com.lach.translink.ui.impl.resolve.ResolveLocationEvents;
+import com.lach.translink.ui.presenter.ViewState;
 import com.lach.translink.ui.view.resolve.ResolveLocationListView;
 
 import java.lang.ref.WeakReference;
@@ -85,7 +85,7 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
     }
 
     @Override
-    public void onCreate(ResolveLocationListView view, Bundle savedInstanceState) {
+    public void onCreate(ResolveLocationListView view, ViewState viewState) {
         mView = view;
 
         mTranslinkSearchHandler = new TranslinkSearchHandler(this);
@@ -94,8 +94,8 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
         view.toggleKeyboard(UiPreference.AUTOMATIC_KEYBOARD.get(preferences));
 
         boolean historyReloaded = false;
-        if (savedInstanceState != null) {
-            ArrayList<LocationHistory> savedHistory = savedInstanceState.getParcelableArrayList(BUNDLE_HISTORY);
+        if (viewState != null) {
+            ArrayList<LocationHistory> savedHistory = viewState.getParcelableArrayList(BUNDLE_HISTORY);
 
             if (savedHistory != null) {
                 historyReloaded = true;
@@ -136,16 +136,16 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
             ArrayList<String> existingAddressList = null;
             mCurrentUIMode = UiMode.NORMAL;
 
-            if (savedInstanceState != null) {
-                mCurrentUIMode = (UiMode) savedInstanceState.getSerializable(BUNDLE_CURRENT_UI_MODE);
+            if (viewState != null) {
+                mCurrentUIMode = (UiMode) viewState.getSerializable(BUNDLE_CURRENT_UI_MODE);
 
-                double addressLookupLatitude = savedInstanceState.getDouble(BUNDLE_COORDINATES_SEARCH_LATITUDE, -1);
-                double addressLookupLongitude = savedInstanceState.getDouble(BUNDLE_COORDINATES_SEARCH_LONGITUDE, -1);
+                double addressLookupLatitude = viewState.getDouble(BUNDLE_COORDINATES_SEARCH_LATITUDE, -1);
+                double addressLookupLongitude = viewState.getDouble(BUNDLE_COORDINATES_SEARCH_LONGITUDE, -1);
                 if (addressLookupLatitude != -1 && addressLookupLongitude != -1) {
                     addressLookupPosition = new MapPosition(addressLookupLatitude, addressLookupLongitude);
                 }
 
-                currentTranslinkLookupText = savedInstanceState.getString(BUNDLE_TRANSLINK_SEARCH_TERM);
+                currentTranslinkLookupText = viewState.getString(BUNDLE_TRANSLINK_SEARCH_TERM);
 
                 // Ensure that the UI mode is not invalid. Perhaps a thread was cancelled, and the UI mode was not properly reset.
                 if (mCurrentUIMode == null ||
@@ -155,10 +155,10 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
                     mCurrentUIMode = UiMode.NORMAL;
                 }
 
-                previousSearchText = savedInstanceState.getString(BUNDLE_PREVIOUS_SEARCH_TEXT);
-                view.updateSearchText(savedInstanceState.getString(BUNDLE_SEARCH_TEXT));
+                previousSearchText = viewState.getString(BUNDLE_PREVIOUS_SEARCH_TEXT);
+                view.updateSearchText(viewState.getString(BUNDLE_SEARCH_TEXT));
 
-                existingAddressList = savedInstanceState.getStringArrayList(BUNDLE_SEARCH_RESULTS);
+                existingAddressList = viewState.getStringArrayList(BUNDLE_SEARCH_RESULTS);
             }
 
             updateUi(mCurrentUIMode, existingAddressList);
@@ -174,26 +174,26 @@ public class ResolveLocationListPresenterImpl implements ResolveLocationListPres
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void saveState(ViewState viewState) {
         if (mTranslinkSearchHandler != null) {
             mTranslinkSearchHandler.removeCallbacksAndMessages(null);
         }
 
-        outState.putStringArrayList(BUNDLE_SEARCH_RESULTS, mSearchResults);
-        outState.putParcelableArrayList(BUNDLE_HISTORY, mLocationHistoryList);
+        viewState.putStringArrayList(BUNDLE_SEARCH_RESULTS, mSearchResults);
+        viewState.putParcelableArrayList(BUNDLE_HISTORY, mLocationHistoryList);
 
         // This is important for saving the current searching state.
         if (currentTranslinkLookupText != null) {
-            outState.putString(BUNDLE_TRANSLINK_SEARCH_TERM, currentTranslinkLookupText);
+            viewState.putString(BUNDLE_TRANSLINK_SEARCH_TERM, currentTranslinkLookupText);
         }
         if (addressLookupPosition != null) {
-            outState.putDouble(BUNDLE_COORDINATES_SEARCH_LATITUDE, addressLookupPosition.getLatitude());
-            outState.putDouble(BUNDLE_COORDINATES_SEARCH_LONGITUDE, addressLookupPosition.getLongitude());
+            viewState.putDouble(BUNDLE_COORDINATES_SEARCH_LATITUDE, addressLookupPosition.getLatitude());
+            viewState.putDouble(BUNDLE_COORDINATES_SEARCH_LONGITUDE, addressLookupPosition.getLongitude());
         }
-        outState.putString(BUNDLE_PREVIOUS_SEARCH_TEXT, previousSearchText);
+        viewState.putString(BUNDLE_PREVIOUS_SEARCH_TEXT, previousSearchText);
 
-        outState.putString(BUNDLE_SEARCH_TEXT, mView.getSearchText());
-        outState.putSerializable(BUNDLE_CURRENT_UI_MODE, mCurrentUIMode);
+        viewState.putString(BUNDLE_SEARCH_TEXT, mView.getSearchText());
+        viewState.putSerializable(BUNDLE_CURRENT_UI_MODE, mCurrentUIMode);
     }
 
     private void onHistoryUpdated(ArrayList<LocationHistory> locationHistory) {

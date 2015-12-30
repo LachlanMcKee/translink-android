@@ -1,13 +1,11 @@
 package com.lach.translink.ui.presenter;
 
-import android.os.Bundle;
-
 import com.lach.translink.ui.view.BaseView;
 
 public interface BasePresenter<VIEW extends BaseView> {
-    void onCreate(VIEW view, Bundle savedInstanceState);
+    void onCreate(VIEW view, ViewState viewState);
 
     void onDestroy();
 
-    void onSaveInstanceState(Bundle outState);
+    void saveState(ViewState viewState);
 }

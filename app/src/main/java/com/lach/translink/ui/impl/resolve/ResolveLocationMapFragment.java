@@ -41,6 +41,7 @@ import com.lach.translink.data.location.PlaceType;
 import com.lach.translink.data.place.bus.BusStop;
 import com.lach.common.data.map.MapMarker;
 import com.lach.common.data.map.MapPosition;
+import com.lach.translink.ui.presenter.BundleViewState;
 import com.lach.translink.ui.presenter.resolve.ResolveLocationMapPresenter;
 import com.lach.translink.ui.presenter.resolve.ResolveLocationMapPresenterImpl;
 import com.lach.translink.ui.view.resolve.ResolveLocationMapView;
@@ -126,7 +127,7 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Res
 
         ButterKnife.inject(this, view);
 
-        mPresenter.onCreate(this, savedInstanceState);
+        mPresenter.onCreate(this, BundleViewState.wrapBundle(savedInstanceState));
 
         // Reload the current marker position if it exists.
         if (savedInstanceState != null) {
@@ -201,7 +202,7 @@ public class ResolveLocationMapFragment extends AsyncTaskFragment implements Res
     @Override
     public void onSaveInstanceState(Bundle outState) {
         mapView.onSaveInstanceState(outState);
-        mPresenter.onSaveInstanceState(outState);
+        mPresenter.saveState(BundleViewState.wrapBundle(outState));
 
         outState.putDouble(BUNDLE_LATITUDE_LENGTH_FOR_PIXEL, latitudeLengthForPixel);
         outState.putFloat(BUNDLE_LATITUDE_LENGTH_ZOOM, latitudeLengthZoomLevel);

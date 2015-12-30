@@ -1,7 +1,5 @@
 package com.lach.translink.ui.presenter.resolve;
 
-import android.os.Bundle;
-
 import com.lach.common.async.AsyncResult;
 import com.lach.common.data.map.MapMarker;
 import com.lach.common.data.map.MapPosition;
@@ -9,6 +7,7 @@ import com.lach.common.log.Log;
 import com.lach.translink.data.place.bus.BusStop;
 import com.lach.translink.tasks.place.TaskGetBusStops;
 import com.lach.translink.ui.impl.resolve.ResolveLocationEvents;
+import com.lach.translink.ui.presenter.ViewState;
 import com.lach.translink.ui.view.resolve.ResolveLocationMapView;
 
 import java.util.HashMap;
@@ -48,23 +47,23 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
     }
 
     @Override
-    public void onCreate(ResolveLocationMapView view, Bundle savedInstanceState) {
+    public void onCreate(ResolveLocationMapView view, ViewState viewState) {
         mView = view;
 
         mVisibleBusStops = new HashMap<>();
         mMarkerBusStopRelation = new HashMap<>();
 
-        if (savedInstanceState != null) {
-            double addressLookupLatitude = savedInstanceState.getDouble(BUNDLE_CURRENT_MARKER_LATITUDE, -1);
-            double addressLookupLongitude = savedInstanceState.getDouble(BUNDLE_CURRENT_MARKER_LONGITUDE, -1);
+        if (viewState != null) {
+            double addressLookupLatitude = viewState.getDouble(BUNDLE_CURRENT_MARKER_LATITUDE, -1);
+            double addressLookupLongitude = viewState.getDouble(BUNDLE_CURRENT_MARKER_LONGITUDE, -1);
             if (addressLookupLatitude != -1 && addressLookupLongitude != -1) {
                 mAddressMarkerPosition = new MapPosition(addressLookupLatitude, addressLookupLongitude);
             }
 
-            mSelectedBusStop = savedInstanceState.getParcelable(BUNDLE_SELECTED_BUS_STOP);
+            mSelectedBusStop = viewState.getParcelable(BUNDLE_SELECTED_BUS_STOP);
 
             // Remove the property, as un-marshalling this seems to cause issues with the map view onCreate.
-            savedInstanceState.remove(BUNDLE_SELECTED_BUS_STOP);
+            viewState.remove(BUNDLE_SELECTED_BUS_STOP);
         }
 
         view.hideContinueButton();
@@ -80,12 +79,12 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void saveState(ViewState viewState) {
         if (mAddressMarkerPosition != null) {
-            outState.putDouble(BUNDLE_CURRENT_MARKER_LATITUDE, mAddressMarkerPosition.getLatitude());
-            outState.putDouble(BUNDLE_CURRENT_MARKER_LONGITUDE, mAddressMarkerPosition.getLongitude());
+            viewState.putDouble(BUNDLE_CURRENT_MARKER_LATITUDE, mAddressMarkerPosition.getLatitude());
+            viewState.putDouble(BUNDLE_CURRENT_MARKER_LONGITUDE, mAddressMarkerPosition.getLongitude());
         }
-        outState.putParcelable(BUNDLE_SELECTED_BUS_STOP, mSelectedBusStop);
+        viewState.putParcelable(BUNDLE_SELECTED_BUS_STOP, mSelectedBusStop);
     }
 
     @Override
@@ -169,7 +168,7 @@ public class ResolveLocationMapPresenterImpl implements ResolveLocationMapPresen
     }
 
     private void showContinueButton() {
-        mView.showContinueButton(mAddressMarker == null && mSelectedBusStop == null);
+        mView.showContinueButton(mAddressMarkerPosition == null && mSelectedBusStop == null);
     }
 
     private void clearSelectedBusStop() {

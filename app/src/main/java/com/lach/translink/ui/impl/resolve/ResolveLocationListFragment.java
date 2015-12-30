@@ -31,6 +31,7 @@ import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
 import com.lach.translink.data.location.PlaceType;
 import com.lach.common.data.map.MapPosition;
+import com.lach.translink.ui.presenter.BundleViewState;
 import com.lach.translink.ui.presenter.resolve.ResolveLocationListPresenter;
 import com.lach.translink.ui.presenter.resolve.ResolveLocationListPresenterImpl;
 import com.lach.translink.ui.view.resolve.ResolveLocationListView;
@@ -210,7 +211,7 @@ public class ResolveLocationListFragment extends AsyncTaskFragment implements Re
         };
 
         mPresenter.setPlaceType((PlaceType) getArguments().getSerializable(PLACE_TYPE));
-        mPresenter.onCreate(this, savedInstanceState);
+        mPresenter.onCreate(this, BundleViewState.wrapBundle(savedInstanceState));
     }
 
     @Override
@@ -218,7 +219,7 @@ public class ResolveLocationListFragment extends AsyncTaskFragment implements Re
         Log.debug(TAG, "onSaveInstanceState");
 
         if (mPresenter != null) {
-            mPresenter.onSaveInstanceState(outState);
+            mPresenter.saveState(BundleViewState.wrapBundle(outState));
         }
 
         super.onSaveInstanceState(outState);

@@ -20,8 +20,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-import javax.inject.Inject;
-
 public class TaskGoCardHistory implements Task<ArrayList<GoCardTransaction>> {
     public static final int HISTORY_MONTHS = 3;
 

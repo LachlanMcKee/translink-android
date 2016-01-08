@@ -2,10 +2,8 @@ package com.lach.translink;
 
 import com.lach.common.log.Instrumentation;
 import com.lach.common.log.Log;
-import com.lach.translink.ui.impl.resolve.ResolveLocationEvents;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;

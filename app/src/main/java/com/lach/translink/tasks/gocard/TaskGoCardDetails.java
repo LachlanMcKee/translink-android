@@ -12,8 +12,6 @@ import com.lach.translink.network.GoCardHttpClient;
 
 import java.io.IOException;
 
-import javax.inject.Inject;
-
 public class TaskGoCardDetails implements Task<GoCardDetails> {
     private static final String TAG = "TaskGoCardDetails";
 

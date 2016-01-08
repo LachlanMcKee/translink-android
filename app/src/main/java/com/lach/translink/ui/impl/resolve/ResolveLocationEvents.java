@@ -1,8 +1,7 @@
 package com.lach.translink.ui.impl.resolve;
 
-import com.lach.translink.data.location.PlaceType;
-import com.lach.translink.data.place.bus.BusStop;
 import com.lach.common.data.map.MapPosition;
+import com.lach.translink.data.place.bus.BusStop;
 
 public interface ResolveLocationEvents {
 

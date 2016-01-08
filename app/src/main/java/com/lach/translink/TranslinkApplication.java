@@ -3,7 +3,6 @@ package com.lach.translink;
 import android.app.Activity;
 
 import com.lach.common.BaseApplication;
-import com.lach.common.data.CoreModule;
 import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.log.Instrumentation;
 import com.lach.translink.data.DaggerDataComponent;

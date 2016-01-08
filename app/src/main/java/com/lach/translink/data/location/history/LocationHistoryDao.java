@@ -2,7 +2,6 @@ package com.lach.translink.data.location.history;
 
 import com.lach.common.log.Log;
 import com.lach.translink.data.DbFlowDao;
-import com.lach.translink.data.place.PlaceParser;
 import com.raizlabs.android.dbflow.runtime.TransactionManager;
 import com.raizlabs.android.dbflow.runtime.transaction.SelectListTransaction;
 import com.raizlabs.android.dbflow.runtime.transaction.TransactionListenerAdapter;

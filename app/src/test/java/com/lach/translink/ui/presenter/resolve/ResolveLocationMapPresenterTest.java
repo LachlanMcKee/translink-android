@@ -1,27 +1,21 @@
 package com.lach.translink.ui.presenter.resolve;
 
 import com.lach.common.async.AsyncResult;
-import com.lach.common.async.Task;
-import com.lach.common.async.TaskBuilder;
-import com.lach.common.async.UnitTestingTaskBuilder;
 import com.lach.common.data.map.MapBounds;
 import com.lach.common.data.map.MapMarker;
 import com.lach.common.data.map.MapPosition;
-import com.lach.translink.BaseTest;
 import com.lach.translink.data.place.bus.BusStop;
 import com.lach.translink.data.place.bus.BusStopImpl;
 import com.lach.translink.tasks.place.TaskGetBusStops;
+import com.lach.translink.ui.impl.resolve.ResolveLocationEvents;
+import com.lach.translink.ui.presenter.BasePresenterTest;
 import com.lach.translink.ui.presenter.InMemoryViewState;
 import com.lach.translink.ui.presenter.ViewState;
 import com.lach.translink.ui.view.resolve.ResolveLocationMapView;
 
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -30,58 +24,176 @@ import java.util.List;
 
 import javax.inject.Provider;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-public class ResolveLocationMapPresenterTest extends BaseTest {
+public class ResolveLocationMapPresenterTest extends BasePresenterTest<ResolveLocationMapPresenter, ResolveLocationMapView> {
 
     private static final MapPosition MAP_POSITION_1 = new MapPosition(-27.4679400, 153.0280900);
     private static final MapPosition MAP_POSITION_2 = new MapPosition(-27.4679401, 153.0280901);
+
+    private static final BusStopMarker BUS_STOP_1;
+    private static final BusStopMarker BUS_STOP_2;
+
+    static {
+        BUS_STOP_1 = new BusStopMarker();
+        BUS_STOP_1.id = "1";
+        BUS_STOP_1.busStop = new BusStopImpl(1);
+        BUS_STOP_1.busStop.setLatitude(MAP_POSITION_1.getLatitude());
+        BUS_STOP_1.busStop.setLongitude(MAP_POSITION_1.getLongitude());
+
+        BUS_STOP_2 = new BusStopMarker();
+        BUS_STOP_2.id = "2";
+        BUS_STOP_2.busStop = new BusStopImpl(2);
+        BUS_STOP_2.busStop.setLatitude(MAP_POSITION_2.getLatitude());
+        BUS_STOP_2.busStop.setLongitude(MAP_POSITION_2.getLongitude());
+    }
 
     private static final MapBounds MAP_BOUNDS_1 = new MapBounds(
             new MapPosition(-27.45, 153.02),
             new MapPosition(-27.46, 153.03)
     );
 
-    @Mock
     TaskGetBusStops taskGetBusStops;
 
-    @Mock
-    ResolveLocationMapView view;
+    @Test
+    public void testMapClick() {
+        presenter.onMapClick(MAP_POSITION_1);
+        presenter.onMapClick(MAP_POSITION_2);
 
-    ResolveLocationMapPresenter presenter;
+        MapClickVerify mapClickVerify = new MapClickVerify(view, 2);
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
+        // We want the button to animate the first time.
+        mapClickVerify.isContinueAnimated(0, true);
+        mapClickVerify.isMarkerPositionEqualTo(0, MAP_POSITION_1.latitude, MAP_POSITION_1.longitude);
 
-        presenter = new ResolveLocationMapPresenterImpl(new Provider<TaskGetBusStops>() {
+        // Ensure the second call does not animate, and we use the second map position.
+        mapClickVerify.isContinueAnimated(1, false);
+        mapClickVerify.isMarkerPositionEqualTo(1, MAP_POSITION_2.latitude, MAP_POSITION_2.longitude);
+    }
+
+    @Test
+    public void testConfirmMapAddressMarker() {
+        presenter.onMapClick(MAP_POSITION_1);
+
+        setMockedEventBusAnswer(new EventBusAnswer() {
+            @Override
+            public void test(Object event) {
+                assertEquals(event.getClass(), ResolveLocationEvents.MapAddressSelectedEvent.class);
+
+                ResolveLocationEvents.MapAddressSelectedEvent castedEvent = (ResolveLocationEvents.MapAddressSelectedEvent) event;
+                assertEquals(castedEvent.getPoint(), MAP_POSITION_1);
+            }
+        });
+
+        presenter.onConfirmed();
+    }
+
+    @Test
+    public void testInitialCameraChange() {
+        cameraChanged(BUS_STOP_1);
+
+        // Verify that the new bus stop marker is added to the view.
+        ArgumentCaptor<MapPosition> mapPositionCaptor = ArgumentCaptor.forClass(MapPosition.class);
+        ArgumentCaptor<Boolean> isSelectedCaptor = ArgumentCaptor.forClass(Boolean.class);
+
+        verify(view, times(1)).addBusStopMarker(mapPositionCaptor.capture(), isSelectedCaptor.capture());
+
+        assertEquals(mapPositionCaptor.getValue().latitude, BUS_STOP_1.getLatitude(), 0);
+        assertEquals(mapPositionCaptor.getValue().longitude, BUS_STOP_1.getLongitude(), 0);
+        assertFalse(isSelectedCaptor.getValue());
+    }
+
+    @Test
+    public void testBusStopMarkerClicked() {
+        cameraChanged(BUS_STOP_1);
+        presenter.onMarkerClick(BUS_STOP_1.getId());
+
+        verify(view, times(1)).bringMarkerToFront(any(MapMarker.class));
+        verify(view, times(1)).moveCameraToBusStop(any(BusStop.class), anyBoolean(), any(ResolveLocationMapPresenterImpl.MoveCameraListener.class));
+        verify(view, times(1)).showBusStopDetails(BUS_STOP_1.busStop, true);
+    }
+
+    @Test
+    public void testBusStopMarkerConfirmed() {
+        cameraChanged(BUS_STOP_1);
+        presenter.onMarkerClick(BUS_STOP_1.getId());
+
+        setMockedEventBusAnswer(new EventBusAnswer() {
+            @Override
+            public void test(Object event) {
+                assertEquals(event.getClass(), ResolveLocationEvents.MapBusStopSelectedEvent.class);
+
+                ResolveLocationEvents.MapBusStopSelectedEvent castedEvent = (ResolveLocationEvents.MapBusStopSelectedEvent) event;
+                assertEquals(castedEvent.getBusStop(), BUS_STOP_1.busStop);
+            }
+        });
+
+        presenter.onConfirmed();
+    }
+
+    @Test
+    public void testAddressMarkerRecreated() {
+        presenter.onMapClick(MAP_POSITION_1);
+
+        // The life cycle should persist the selected marker, yet not animate the continue button on recreate.
+        recreate();
+
+        MapClickVerify mapClickVerify = new MapClickVerify(view, 2);
+        mapClickVerify.isContinueAnimated(1, false);
+        mapClickVerify.isMarkerPositionEqualTo(1, MAP_POSITION_1);
+    }
+
+    @Test
+    public void testPersistedMapPosition() {
+        assertEquals(presenter.getPersistedMapPosition(), null);
+
+        // Map position should be created once a marker is clicked.
+        cameraChanged(BUS_STOP_1);
+        presenter.onMarkerClick(BUS_STOP_1.getId());
+
+        MapPosition mapPosition = presenter.getPersistedMapPosition();
+        assertEquals(mapPosition.latitude, BUS_STOP_1.getLatitude(), 0);
+        assertEquals(mapPosition.longitude, BUS_STOP_1.getLongitude(), 0);
+
+        // The map position should be removed during the destroy stage.
+        ViewState viewState = new InMemoryViewState();
+        presenter.saveState(viewState);
+        presenter.onDestroy();
+
+        assertEquals(presenter.getPersistedMapPosition(), null);
+
+        // Map position should be retrieved from the save state.
+        presenter.onCreate(view, viewState);
+        mapPosition = presenter.getPersistedMapPosition();
+        assertEquals(mapPosition.latitude, BUS_STOP_1.getLatitude(), 0);
+        assertEquals(mapPosition.longitude, BUS_STOP_1.getLongitude(), 0);
+    }
+
+    @Override
+    public ResolveLocationMapPresenter createPresenter() {
+        taskGetBusStops = Mockito.mock(TaskGetBusStops.class);
+
+        return new ResolveLocationMapPresenterImpl(new Provider<TaskGetBusStops>() {
             @Override
             public TaskGetBusStops get() {
                 return taskGetBusStops;
             }
         });
+    }
 
-        // Add task handling to prevent need for Android fragments.
-        Mockito.when(view.createTask(Mockito.anyInt(), Mockito.any(Task.class))).thenAnswer(new Answer<TaskBuilder>() {
-            @Override
-            public TaskBuilder answer(InvocationOnMock invocation) throws Throwable {
-                Object[] arguments = invocation.getArguments();
-                return new UnitTestingTaskBuilder((int) arguments[0], (Task) arguments[1], new UnitTestingTaskBuilder.PostExecuteListener() {
-                    @Override
-                    public void onTaskExecuted(int taskId, AsyncResult result) {
-                        int errorId = result.getErrorId();
+    @Override
+    public Class<ResolveLocationMapView> getViewClass() {
+        return ResolveLocationMapView.class;
+    }
 
-                        if (!result.hasError()) {
-                            presenter.onTaskFinished(taskId, result);
-                        } else {
-                            presenter.onTaskError(taskId, errorId);
-                        }
-                    }
-                });
-            }
-        });
-
-        Mockito.when(view.addMarker(Mockito.any(MapPosition.class))).thenAnswer(new Answer<MapMarker>() {
+    @Override
+    public void postSetup() {
+        Mockito.when(view.addMarker(any(MapPosition.class))).thenAnswer(new Answer<MapMarker>() {
             @Override
             public MapMarker answer(InvocationOnMock invocation) throws Throwable {
                 final MapPosition mapPosition = (MapPosition) invocation.getArguments()[0];
@@ -105,70 +217,62 @@ public class ResolveLocationMapPresenterTest extends BaseTest {
             }
         });
 
-        presenter.onCreate(view, null);
-    }
-
-    private void mapInit() {
-        presenter.onMapInit();
-
         Mockito.when(view.isMapReady()).thenReturn(true);
         Mockito.when(view.getMapZoomLevel()).thenReturn(15.0f);
+
+        // Ensure the listener always fires when the method fires.
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                ResolveLocationMapPresenterImpl.MoveCameraListener listener =
+                        (ResolveLocationMapPresenterImpl.MoveCameraListener) invocation.getArguments()[2];
+
+                listener.onFinish();
+                return null;
+            }
+        }).when(view).moveCameraToBusStop(any(BusStop.class), anyBoolean(), any(ResolveLocationMapPresenterImpl.MoveCameraListener.class));
     }
 
-    @Test
-    public void testInitialMapClick() {
-        mapInit();
-        presenter.onMapClick(MAP_POSITION_1);
-
-        // We want the button to animate the first time.
-        Mockito.verify(view, times(1)).showContinueButton(true);
-        Mockito.verify(view, times(1)).addMarker(MAP_POSITION_1);
+    @Override
+    public void postCreate() {
+        // The map init will always be called after onCreate.
+        presenter.onMapInit();
     }
 
-    @Test
-    public void testSecondaryMapClick() {
-        mapInit();
-        presenter.onMapClick(MAP_POSITION_1);
-        presenter.onMapClick(MAP_POSITION_2);
-
-        MapClickVerify mapClickVerify = new MapClickVerify(view, 2);
-
-        // Ensure the second call does not animate, and we use the second map position.
-        mapClickVerify.isContinueAnimated(1, false);
-        mapClickVerify.isMarkerPositionEqualTo(1, MAP_POSITION_2.latitude, MAP_POSITION_2.longitude);
-    }
-
-    @Test
-    public void testInitialCameraChange() {
-        mapInit();
-
+    private void cameraChanged(final BusStopMarker... busStopMarkers) {
         // Avoid checking the map bounds and return a single bus stop result.
         Mockito.when(taskGetBusStops.execute(Mockito.anyVararg())).thenAnswer(new Answer<AsyncResult<List<BusStop>>>() {
             @Override
             public AsyncResult<List<BusStop>> answer(InvocationOnMock invocation) throws Throwable {
-                List<BusStop> results = new ArrayList<>();
-
-                BusStopImpl busStop = new BusStopImpl(1);
-                busStop.setLatitude(MAP_POSITION_1.getLatitude());
-                busStop.setLongitude(MAP_POSITION_1.getLongitude());
-                results.add(busStop);
-
-                return new AsyncResult<>(results);
+                List<BusStop> busStopList = new ArrayList<>(busStopMarkers.length);
+                for (BusStopMarker stopMarker : busStopMarkers) {
+                    busStopList.add(stopMarker.busStop);
+                }
+                return new AsyncResult<>(busStopList);
             }
         });
 
         Mockito.when(view.getMapBounds()).thenReturn(MAP_BOUNDS_1);
 
         // Adding the bus stop marker must be mocked, as the result is cached.
-        Mockito.when(view.addBusStopMarker(Mockito.any(MapPosition.class), Mockito.anyBoolean())).thenAnswer(new Answer<MapMarker>() {
+        Mockito.when(view.addBusStopMarker(any(MapPosition.class), anyBoolean())).thenAnswer(new Answer<MapMarker>() {
             @Override
             public MapMarker answer(InvocationOnMock invocation) throws Throwable {
                 final MapPosition mapPosition = (MapPosition) invocation.getArguments()[0];
+                String markerId = null;
+
+                // Find the bus stop which has the matching lat/long
+                for (BusStopMarker stopMarker : busStopMarkers) {
+                    if (stopMarker.getLatitude() == mapPosition.getLatitude() && stopMarker.getLongitude() == mapPosition.getLongitude()) {
+                        markerId = stopMarker.id;
+                    }
+                }
+                final String finalMarkerId = markerId;
 
                 return new MapMarker() {
                     @Override
                     public String getId() {
-                        return "1";
+                        return finalMarkerId;
                     }
 
                     @Override
@@ -186,33 +290,23 @@ public class ResolveLocationMapPresenterTest extends BaseTest {
 
         // Prompt a change in map camera which will result in the bus stop task being executed.
         presenter.onCameraChange();
-
-        // Verify that the new bus stop marker is added to the view.
-        ArgumentCaptor<MapPosition> mapPositionCaptor = ArgumentCaptor.forClass(MapPosition.class);
-        ArgumentCaptor<Boolean> isSelectedCaptor = ArgumentCaptor.forClass(Boolean.class);
-
-        Mockito.verify(view, times(1)).addBusStopMarker(mapPositionCaptor.capture(), isSelectedCaptor.capture());
-
-        Assert.assertEquals(mapPositionCaptor.getValue().latitude, MAP_POSITION_1.getLatitude(), 0);
-        Assert.assertEquals(mapPositionCaptor.getValue().longitude, MAP_POSITION_1.getLongitude(), 0);
-        Assert.assertFalse(isSelectedCaptor.getValue());
     }
 
-    @Test
-    public void testAddressMarkerRecreated() {
-        mapInit();
-        presenter.onMapClick(MAP_POSITION_1);
+    private static class BusStopMarker {
+        String id;
+        BusStop busStop;
 
-        // The life cycle should persist the selected marker, yet not animate the continue button on recreate.
-        ViewState viewState = new InMemoryViewState();
-        presenter.saveState(viewState);
-        presenter.onDestroy();
-        presenter.onCreate(view, viewState);
-        mapInit();
+        public String getId() {
+            return id;
+        }
 
-        MapClickVerify mapClickVerify = new MapClickVerify(view, 2);
-        mapClickVerify.isContinueAnimated(1, false);
-        mapClickVerify.isMarkerPositionEqualTo(1, MAP_POSITION_1);
+        public double getLatitude() {
+            return busStop.getLatitude();
+        }
+
+        public double getLongitude() {
+            return busStop.getLongitude();
+        }
     }
 
     private static class MapClickVerify {
@@ -220,12 +314,12 @@ public class ResolveLocationMapPresenterTest extends BaseTest {
         ArgumentCaptor<MapPosition> mapPositionCaptor = ArgumentCaptor.forClass(MapPosition.class);
 
         public MapClickVerify(ResolveLocationMapView view, int timesExpected) {
-            Mockito.verify(view, times(timesExpected)).showContinueButton(animationCaptor.capture());
-            Mockito.verify(view, times(timesExpected)).addMarker(mapPositionCaptor.capture());
+            verify(view, times(timesExpected)).showContinueButton(animationCaptor.capture());
+            verify(view, times(timesExpected)).addMarker(mapPositionCaptor.capture());
         }
 
         public void isContinueAnimated(int index, boolean expectedValue) {
-            Assert.assertEquals(animationCaptor.getAllValues().get(index), expectedValue);
+            assertEquals(animationCaptor.getAllValues().get(index), expectedValue);
         }
 
         public void isMarkerPositionEqualTo(int index, MapPosition mapPosition) {
@@ -234,8 +328,8 @@ public class ResolveLocationMapPresenterTest extends BaseTest {
 
         public void isMarkerPositionEqualTo(int index, double latitude, double longitude) {
             MapPosition mapPosition = mapPositionCaptor.getAllValues().get(index);
-            Assert.assertEquals(mapPosition.latitude, latitude, 0);
-            Assert.assertEquals(mapPosition.longitude, longitude, 0);
+            assertEquals(mapPosition.latitude, latitude, 0);
+            assertEquals(mapPosition.longitude, longitude, 0);
         }
     }
 

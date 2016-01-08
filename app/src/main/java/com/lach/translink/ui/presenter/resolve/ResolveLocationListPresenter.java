@@ -1,12 +1,11 @@
 package com.lach.translink.ui.presenter.resolve;
 
-import com.lach.common.async.AsyncTaskUi;
 import com.lach.common.data.map.MapPosition;
 import com.lach.translink.data.location.PlaceType;
-import com.lach.translink.ui.presenter.BasePresenter;
+import com.lach.translink.ui.presenter.TaskPresenter;
 import com.lach.translink.ui.view.resolve.ResolveLocationListView;
 
-public interface ResolveLocationListPresenter extends BasePresenter<ResolveLocationListView>, AsyncTaskUi {
+public interface ResolveLocationListPresenter extends TaskPresenter<ResolveLocationListView> {
     void setPlaceType(PlaceType placeType);
 
     void updateSearch(SearchType searchType);

@@ -13,18 +13,15 @@ import com.lach.translink.data.place.bus.BusStopDao;
 import com.lachlanm.xwalkfallback.CookieManagerFacade;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import java.io.IOException;
 import java.util.Date;
 
-@PrepareForTest(value = {Response.class, ResponseBody.class})
 public class TaskJourneySearchTest extends BaseHttpTest {
 
     @Test

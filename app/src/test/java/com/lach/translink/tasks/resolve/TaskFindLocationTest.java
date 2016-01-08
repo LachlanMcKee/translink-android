@@ -4,17 +4,13 @@ import com.lach.common.async.AsyncResult;
 import com.lach.common.data.TaskGenericErrorType;
 import com.lach.translink.BaseHttpTest;
 import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-@PrepareForTest(value = {Response.class, ResponseBody.class})
 public class TaskFindLocationTest extends BaseHttpTest {
 
     @Test

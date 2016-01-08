@@ -49,36 +49,44 @@ public class BundleViewState implements ViewState {
 
     @Override
     public double getDouble(String key, double defaultValue) {
+        if (bundle == null) return defaultValue;
         return bundle.getDouble(key);
     }
 
     @Override
     public String getString(String key) {
+        if (bundle == null) return null;
         return bundle.getString(key);
     }
 
     @Override
     public ArrayList<String> getStringArrayList(String key) {
+        if (bundle == null) return null;
         return bundle.getStringArrayList(key);
     }
 
     @Override
     public <T extends Parcelable> T getParcelable(String key) {
+        if (bundle == null) return null;
         return bundle.getParcelable(key);
     }
 
     @Override
     public <T extends Parcelable> ArrayList<T> getParcelableArrayList(String key) {
+        if (bundle == null) return null;
         return bundle.getParcelableArrayList(key);
     }
 
     @Override
     public Serializable getSerializable(String key) {
+        if (bundle == null) return null;
         return bundle.getDouble(key);
     }
 
     @Override
     public void remove(String key) {
-        bundle.remove(key);
+        if (bundle != null) {
+            bundle.remove(key);
+        }
     }
 }

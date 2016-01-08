@@ -50,7 +50,7 @@ public class BundleViewState implements ViewState {
     @Override
     public double getDouble(String key, double defaultValue) {
         if (bundle == null) return defaultValue;
-        return bundle.getDouble(key);
+        return bundle.getDouble(key, defaultValue);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class BundleViewState implements ViewState {
     @Override
     public Serializable getSerializable(String key) {
         if (bundle == null) return null;
-        return bundle.getDouble(key);
+        return bundle.getSerializable(key);
     }
 
     @Override

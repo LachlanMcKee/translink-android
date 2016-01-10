@@ -33,7 +33,7 @@ public class ResolveLocationErrorHandlingTest extends BaseResolveLocationTestCas
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 countingIdlingResource.decrement();
-                return new AsyncResult(TaskGenericErrorType.NETWORK_FAILURE);
+                return new AsyncResult(TaskGenericErrorType.IO_FAILURE);
             }
         }).when(taskFindLocation).execute(Mockito.anyVararg());
 

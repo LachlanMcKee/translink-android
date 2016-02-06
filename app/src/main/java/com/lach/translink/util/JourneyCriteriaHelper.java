@@ -7,6 +7,7 @@ import com.lach.translink.data.journey.JourneyTransport;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class JourneyCriteriaHelper {
     public static String createJourneyDescription(JourneyCriteria search) {
@@ -26,12 +27,21 @@ public class JourneyCriteriaHelper {
             }
         }
 
-        JourneyTransport transport = search.getJourneyTransport();
-        if (transport != null) {
+        List<JourneyTransport> transportList = search.getJourneyTransport();
+        if (transportList != null) {
             if (journeyDescription.length() > 0) {
-                journeyDescription += " via";
+                journeyDescription += " via ";
             }
-            journeyDescription += " " + transport.toString();
+
+            for (int i = 0; i < transportList.size(); i++) {
+                JourneyTransport transport = transportList.get(i);
+                if (i > 0) {
+                    journeyDescription += ", ";
+                }
+                journeyDescription += transport.toString();
+            }
+
+            journeyDescription += transportList.toString();
         }
 
         return journeyDescription;

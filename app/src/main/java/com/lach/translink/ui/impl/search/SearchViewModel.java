@@ -37,6 +37,7 @@ import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -70,7 +71,7 @@ public class SearchViewModel extends PrimaryViewModel {
 
     private Date date;
 
-    private JourneyTransport transportType;
+    private ArrayList<JourneyTransport> transportType;
     private JourneyTimeCriteria timeCriteria;
 
     private final Debouncer debouncer;
@@ -89,7 +90,7 @@ public class SearchViewModel extends PrimaryViewModel {
         toPlace = addChildViewModel(new SearchPlaceViewModel(this, PlaceType.TO));
 
         if (savedInstanceState != null) {
-            transportType = (JourneyTransport) savedInstanceState.getSerializable(TRANSPORT_TYPE_SAVE);
+            transportType = (ArrayList<JourneyTransport>) savedInstanceState.getSerializable(TRANSPORT_TYPE_SAVE);
             timeCriteria = (JourneyTimeCriteria) savedInstanceState.getSerializable(ARRIVE_TYPE_SAVE);
 
             Date date = (Date) savedInstanceState.getSerializable(DATE_SAVE);
@@ -109,7 +110,9 @@ public class SearchViewModel extends PrimaryViewModel {
             }
 
         } else {
-            transportType = JourneyTransport.All;
+            transportType = new ArrayList<>();
+            transportType.add(JourneyTransport.All);
+
             timeCriteria = JourneyTimeCriteria.LeaveAfter;
 
             setCurrentTime();
@@ -219,7 +222,7 @@ public class SearchViewModel extends PrimaryViewModel {
 
     @Bindable
     public int getTransportTypeIndex() {
-        return transportType.ordinal();
+        return transportType.get(0).ordinal();
     }
 
     public AdapterView.OnItemSelectedListener getLeaveTypeSelectedListener() {
@@ -240,7 +243,8 @@ public class SearchViewModel extends PrimaryViewModel {
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                transportType = JourneyTransport.values()[position];
+                transportType.clear();
+                transportType.add(JourneyTransport.values()[position]);
             }
 
             @Override
@@ -306,7 +310,8 @@ public class SearchViewModel extends PrimaryViewModel {
                 toPlace.clearLocation();
 
                 timeCriteria = JourneyTimeCriteria.LeaveAfter;
-                transportType = JourneyTransport.All;
+                transportType = new ArrayList<>();
+                transportType.add(JourneyTransport.All);
 
                 notifyPropertyChanged(BR.leaveTypeIndex);
                 notifyPropertyChanged(BR.transportTypeIndex);
@@ -472,7 +477,7 @@ public class SearchViewModel extends PrimaryViewModel {
             }
 
             if (journey.getJourneyTransport() != null) {
-                transportType = journey.getJourneyTransport();
+                transportType = new ArrayList<>(journey.getJourneyTransport());
                 notifyPropertyChanged(BR.transportTypeIndex);
             }
         }

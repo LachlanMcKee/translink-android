@@ -28,6 +28,7 @@ import java.net.CookiePolicy;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
@@ -148,18 +149,22 @@ public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse
         formData.add("SearchMinute", "" + calendar.get(Calendar.MINUTE));
         formData.add("TimeMeridiem", ((calendar.get(Calendar.AM_PM) == Calendar.AM) ? "AM" : "PM"));
 
-        JourneyTransport transType = journeyCriteria.getJourneyTransport();
-        if ((transType == JourneyTransport.All) || (transType == JourneyTransport.Bus)) {
-            formData.add("TransportModes", "Bus");
-        }
-        if ((transType == JourneyTransport.All) || (transType == JourneyTransport.Train)) {
-            formData.add("TransportModes", "Train");
-        }
-        if ((transType == JourneyTransport.All) || (transType == JourneyTransport.Ferry)) {
-            formData.add("TransportModes", "Ferry");
-        }
-        if ((transType == JourneyTransport.All) || (transType == JourneyTransport.Tram)) {
-            formData.add("TransportModes", "Tram");
+        // Add all the appropriate transport values.
+        List<JourneyTransport> transType = journeyCriteria.getJourneyTransport();
+        if (transType != null) {
+            boolean allTransport = transType.contains(JourneyTransport.All);
+            if (allTransport || (transType.contains(JourneyTransport.Bus))) {
+                formData.add("TransportModes", "Bus");
+            }
+            if (allTransport || (transType.contains(JourneyTransport.Train))) {
+                formData.add("TransportModes", "Train");
+            }
+            if (allTransport || (transType.contains(JourneyTransport.Ferry))) {
+                formData.add("TransportModes", "Ferry");
+            }
+            if (allTransport || (transType.contains(JourneyTransport.Tram))) {
+                formData.add("TransportModes", "Tram");
+            }
         }
 
         String serviceTypes = JourneyPreference.SERVICE_TYPES.get(preferences);

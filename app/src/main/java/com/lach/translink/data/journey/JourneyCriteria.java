@@ -4,7 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * The journey searching criteria specified by a user.
@@ -13,7 +15,7 @@ public class JourneyCriteria implements Parcelable {
 
     private String fromAddress;
     private String toAddress;
-    private JourneyTransport journeyTransport;
+    private List<JourneyTransport> journeyTransport;
     private JourneyTimeCriteria journeyTimeCriteria;
     private Date time;
 
@@ -36,11 +38,11 @@ public class JourneyCriteria implements Parcelable {
     }
 
     @Nullable
-    public JourneyTransport getJourneyTransport() {
+    public List<JourneyTransport> getJourneyTransport() {
         return journeyTransport;
     }
 
-    public void setJourneyTransport(@Nullable JourneyTransport journeyTransport) {
+    public void setJourneyTransport(@Nullable List<JourneyTransport> journeyTransport) {
         this.journeyTransport = journeyTransport;
     }
 
@@ -71,7 +73,16 @@ public class JourneyCriteria implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.fromAddress);
         dest.writeString(this.toAddress);
-        dest.writeInt(this.journeyTransport == null ? -1 : this.journeyTransport.ordinal());
+
+        if (this.journeyTransport != null) {
+            dest.writeInt(this.journeyTransport.size());
+            for (JourneyTransport jt : this.journeyTransport) {
+                dest.writeInt(jt.ordinal());
+            }
+        } else {
+            dest.writeInt(-1);
+        }
+
         dest.writeInt(this.journeyTimeCriteria == null ? -1 : this.journeyTimeCriteria.ordinal());
         dest.writeLong(time != null ? time.getTime() : -1);
     }
@@ -82,8 +93,16 @@ public class JourneyCriteria implements Parcelable {
     private JourneyCriteria(Parcel in) {
         this.fromAddress = in.readString();
         this.toAddress = in.readString();
-        int tmpJourneyTransport = in.readInt();
-        this.journeyTransport = tmpJourneyTransport == -1 ? null : JourneyTransport.values()[tmpJourneyTransport];
+
+        int journeyTransportArrayLength = in.readInt();
+        if (journeyTransportArrayLength > 0) {
+            this.journeyTransport = new ArrayList<>();
+
+            for (int i = 0; i < journeyTransportArrayLength; i++) {
+                this.journeyTransport.add(JourneyTransport.values()[in.readInt()]);
+            }
+        }
+
         int tmpJourneyTimeCriteria = in.readInt();
         this.journeyTimeCriteria = tmpJourneyTimeCriteria == -1 ? null : JourneyTimeCriteria.values()[tmpJourneyTimeCriteria];
         long tmpTime = in.readLong();

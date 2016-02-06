@@ -18,6 +18,7 @@ import com.lach.translink.data.location.favourite.LocationFavouriteDao;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.Calendar;
+import java.util.Collections;
 
 import javax.inject.Inject;
 
@@ -97,7 +98,7 @@ public class DataResource {
                     transport = JourneyTransport.Ferry;
                     break;
             }
-            criteria.setJourneyTransport(transport);
+            criteria.setJourneyTransport(Collections.singletonList(transport));
         }
 
         // Map the old enum to the new one.

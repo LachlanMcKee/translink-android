@@ -10,7 +10,9 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Table(databaseName = TranslinkDatabase.NAME, tableName = "JourneyCriteriaHistory")
 public class JourneyCriteriaHistoryModel extends BaseModel implements JourneyCriteriaHistory {
@@ -26,7 +28,7 @@ public class JourneyCriteriaHistoryModel extends BaseModel implements JourneyCri
     public String toAddress;
 
     @Column
-    public JourneyTransport journeyTransport;
+    public String journeyTransport;
 
     @Column
     public JourneyTimeCriteria journeyTimeCriteria;
@@ -59,7 +61,21 @@ public class JourneyCriteriaHistoryModel extends BaseModel implements JourneyCri
         criteria.setFromAddress(fromAddress);
         criteria.setToAddress(toAddress);
 
-        criteria.setJourneyTransport(journeyTransport);
+        List<JourneyTransport> transportList = null;
+
+        if (journeyTransport != null) {
+            String[] typeList = journeyTransport.split(",");
+            if (typeList.length > 0) {
+                transportList = new ArrayList<>();
+
+                for (String type : typeList) {
+                    transportList.add(JourneyTransport.valueOf(type));
+                }
+
+            }
+        }
+
+        criteria.setJourneyTransport(transportList);
         criteria.setJourneyTimeCriteria(journeyTimeCriteria);
         criteria.setTime(time);
         return criteria;
@@ -70,7 +86,20 @@ public class JourneyCriteriaHistoryModel extends BaseModel implements JourneyCri
         fromAddress = criteria.getFromAddress();
         toAddress = criteria.getToAddress();
 
-        journeyTransport = criteria.getJourneyTransport();
+        String transport = null;
+        List<JourneyTransport> transportList = criteria.getJourneyTransport();
+        if (transportList != null) {
+            if (transportList.size() > 0) {
+                StringBuilder transportBuilder = new StringBuilder();
+
+                for (JourneyTransport jt : transportList) {
+                    transportBuilder.append(jt.toString());
+                }
+                transport = transportBuilder.toString();
+            }
+
+        }
+        this.journeyTransport = transport;
         journeyTimeCriteria = criteria.getJourneyTimeCriteria();
         time = criteria.getTime();
     }

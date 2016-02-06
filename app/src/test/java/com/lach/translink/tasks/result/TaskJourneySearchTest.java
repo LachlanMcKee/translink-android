@@ -175,7 +175,7 @@ public class TaskJourneySearchTest extends BaseHttpTest {
         journeyCriteria.setToAddress("South Bank");
         journeyCriteria.setTime(time);
         journeyCriteria.setJourneyTimeCriteria(JourneyTimeCriteria.LeaveAfter);
-        journeyCriteria.setJourneyTransport(JourneyTransport.All);
+        //journeyCriteria.setJourneyTransport(JourneyTransport.All);
 
         OkHttpClient client = mockHttpClient(responseHandler);
 

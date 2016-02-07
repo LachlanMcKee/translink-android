@@ -1,4 +1,4 @@
-package com.lach.translink.network;
+package com.lach.translink.network.gocard;
 
 import java.io.IOException;
 

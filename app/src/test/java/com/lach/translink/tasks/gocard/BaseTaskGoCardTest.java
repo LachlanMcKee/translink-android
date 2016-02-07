@@ -1,7 +1,7 @@
 package com.lach.translink.tasks.gocard;
 
 import com.lach.translink.BaseTest;
-import com.lach.translink.network.GoCardHttpClient;
+import com.lach.translink.network.gocard.GoCardHttpClient;
 
 import java.io.IOException;
 

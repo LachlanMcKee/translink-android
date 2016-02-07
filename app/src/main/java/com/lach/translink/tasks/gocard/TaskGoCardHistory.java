@@ -9,7 +9,7 @@ import com.lach.translink.data.gocard.GoCardTransaction;
 import com.lach.translink.data.gocard.GoCardTransactionGroup;
 import com.lach.translink.data.gocard.GoCardTransactionJourney;
 import com.lach.translink.data.gocard.GoCardTransactionTopUp;
-import com.lach.translink.network.GoCardHttpClient;
+import com.lach.translink.network.gocard.GoCardHttpClient;
 
 import java.io.IOException;
 import java.text.ParseException;

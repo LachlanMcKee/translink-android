@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.lach.common.ui.dialog.ButterCustomDialogFragment;
 import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
-import com.lach.translink.network.GoCardCredentials;
+import com.lach.translink.network.gocard.GoCardCredentials;
 
 import javax.inject.Inject;
 

@@ -1,4 +1,4 @@
-package com.lach.translink.network;
+package com.lach.translink.network.gocard;
 
 import com.lach.common.data.preference.Preferences;
 import com.lach.common.data.preference.PreferencesProvider;

@@ -1,7 +1,9 @@
-package com.lach.translink.network;
+package com.lach.translink.network.gocard;
 
 import com.lach.common.data.CoreModule;
 import com.lach.common.data.preference.PreferencesProvider;
+import com.lach.translink.network.NetworkModule;
+import com.lach.translink.network.UserAgentInterceptor;
 import com.lach.translink.tasks.gocard.TaskGoCardDetails;
 import com.lach.translink.tasks.gocard.TaskGoCardHistory;
 import com.squareup.okhttp.OkHttpClient;

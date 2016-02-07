@@ -8,7 +8,7 @@ import com.lach.common.log.InstrumentationLogLevel;
 import com.lach.common.log.Log;
 import com.lach.common.util.RegexUtil;
 import com.lach.translink.data.gocard.GoCardDetails;
-import com.lach.translink.network.GoCardHttpClient;
+import com.lach.translink.network.gocard.GoCardHttpClient;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package com.lach.translink.network;
+package com.lach.translink.network.gocard;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;

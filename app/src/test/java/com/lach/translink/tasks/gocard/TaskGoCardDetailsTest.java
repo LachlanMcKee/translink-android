@@ -2,7 +2,7 @@ package com.lach.translink.tasks.gocard;
 
 import com.lach.common.async.AsyncResult;
 import com.lach.translink.data.gocard.GoCardDetails;
-import com.lach.translink.network.GoCardHttpClient;
+import com.lach.translink.network.gocard.GoCardHttpClient;
 
 import org.junit.Assert;
 import org.junit.Test;

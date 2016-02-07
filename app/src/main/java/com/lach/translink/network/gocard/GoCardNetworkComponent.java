@@ -1,4 +1,4 @@
-package com.lach.translink.network;
+package com.lach.translink.network.gocard;
 
 import com.lach.translink.ui.impl.gocard.GoCardDetailsDialog;
 import com.lach.translink.ui.impl.gocard.GoCardInfoFragment;

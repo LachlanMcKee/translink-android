@@ -28,10 +28,10 @@ import com.lach.translink.TranslinkApplication;
 import com.lach.translink.activities.R;
 import com.lach.translink.data.gocard.GoCardDetails;
 import com.lach.translink.data.gocard.GoCardTransaction;
-import com.lach.translink.network.GoCardCredentials;
+import com.lach.translink.network.gocard.GoCardCredentials;
 import com.lach.translink.tasks.gocard.TaskGoCardDetails;
 import com.lach.translink.tasks.gocard.TaskGoCardHistory;
-import com.lach.translink.network.GoCardNetworkComponent;
+import com.lach.translink.network.gocard.GoCardNetworkComponent;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

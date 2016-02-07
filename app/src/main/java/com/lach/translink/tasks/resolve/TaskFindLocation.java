@@ -11,15 +11,16 @@ import com.lach.common.async.Task;
 import com.lach.common.data.TaskGenericErrorType;
 import com.lach.common.log.Log;
 import com.lach.common.network.UnexpectedResponseException;
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class TaskFindLocation implements Task<ArrayList<String>> {
     private static final String TAG = "TaskFindLocation";
@@ -31,11 +32,11 @@ public class TaskFindLocation implements Task<ArrayList<String>> {
         return params;
     }
 
-    private OkHttpClient okHttpClient;
+    private OkHttpClient httpClient;
 
     @Inject
-    public TaskFindLocation(OkHttpClient okHttpClient) {
-        this.okHttpClient = okHttpClient;
+    public TaskFindLocation(OkHttpClient httpClient) {
+        this.httpClient = httpClient;
     }
 
     public AsyncResult<ArrayList<String>> execute(Object... params) {
@@ -85,7 +86,7 @@ public class TaskFindLocation implements Task<ArrayList<String>> {
     }
 
     private String getLocationResponse(String location) throws IOException, UnexpectedResponseException {
-        FormEncodingBuilder formData = new FormEncodingBuilder();
+        FormBody.Builder formData = new FormBody.Builder();
         formData.add("location", location);
 
         // Send data
@@ -94,7 +95,7 @@ public class TaskFindLocation implements Task<ArrayList<String>> {
                 .post(formData.build())
                 .build();
 
-        Response response = okHttpClient.newCall(request).execute();
+        Response response = httpClient.newCall(request).execute();
         if (response != null && response.code() == 200) {
             return response.body().string();
         }

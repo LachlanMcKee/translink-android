@@ -1,10 +1,5 @@
 package com.lach.translink;
 
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
-
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -13,8 +8,25 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import java.io.IOException;
 
-@PrepareForTest(value = {Response.class, ResponseBody.class})
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+
+@PrepareForTest(value = {Response.class, ResponseBody.class, OkHttpClient.Builder.class})
 public abstract class BaseHttpTest extends BaseTest {
+
+    public OkHttpClient.Builder mockHttpClientBuilder(final HttpResponseHandler responseHandler) throws IOException {
+        OkHttpClient.Builder builder = PowerMockito.mock(OkHttpClient.Builder.class);
+        PowerMockito.when(builder.build()).thenAnswer(new Answer<Call.Factory>() {
+            @Override
+            public OkHttpClient answer(InvocationOnMock invocation) throws Throwable {
+                return mockHttpClient(responseHandler);
+            }
+        });
+        return builder;
+    }
 
     public OkHttpClient mockHttpClient(final HttpResponseHandler responseHandler) throws IOException {
         OkHttpClient client = Mockito.mock(OkHttpClient.class, Mockito.RETURNS_DEEP_STUBS);

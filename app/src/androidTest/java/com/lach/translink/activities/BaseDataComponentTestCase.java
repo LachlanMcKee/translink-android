@@ -21,9 +21,10 @@ import com.lach.translink.data.place.PlaceParser;
 import com.lach.translink.data.place.bus.BusStopDao;
 import com.lach.translink.tasks.resolve.TaskFindLocation;
 import com.lach.translink.ui.presenter.PresenterModule;
-import com.squareup.okhttp.OkHttpClient;
 
 import org.mockito.Mockito;
+
+import okhttp3.OkHttpClient;
 
 public abstract class BaseDataComponentTestCase<T extends Activity> extends BaseTestCase<T> {
     // ProviderHelperModule

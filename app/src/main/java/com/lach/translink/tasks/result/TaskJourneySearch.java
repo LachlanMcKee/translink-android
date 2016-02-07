@@ -9,6 +9,7 @@ import com.lach.common.data.TaskGenericErrorType;
 import com.lach.common.data.preference.Preferences;
 import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.common.log.Log;
+import com.lach.common.network.OkHttpCookieJar;
 import com.lach.common.util.RegexUtil;
 import com.lach.translink.data.journey.JourneyCriteria;
 import com.lach.translink.data.journey.JourneyPreference;
@@ -17,21 +18,26 @@ import com.lach.translink.data.journey.JourneyTransport;
 import com.lach.translink.data.place.PlaceParser;
 import com.lach.translink.network.UserAgentInterceptor;
 import com.lachlanm.xwalkfallback.CookieManagerFacade;
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
 import java.net.CookiePolicy;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
+
+import okhttp3.Cookie;
+import okhttp3.FormBody;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse> {
     private static final String TAG = "TaskJourneySearch";
@@ -47,16 +53,18 @@ public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse
     private static final Pattern PATTERN_INVALID_DATE = Pattern.compile("date is invalid", Pattern.CASE_INSENSITIVE);
 
     private final Context context;
-    private final OkHttpClient client;
+    private final OkHttpClient.Builder clientBuilder;
     private final PreferencesProvider preferencesProvider;
     private final PlaceParser placeParser;
     private final CookieManagerFacade cookieManager;
 
+    private OkHttpClient httpClient;
+
     @Inject
-    public TaskJourneySearch(@ApplicationContext Context context, OkHttpClient okHttpClient, PreferencesProvider preferencesProvider,
+    public TaskJourneySearch(@ApplicationContext Context context, OkHttpClient.Builder clientBuilder, PreferencesProvider preferencesProvider,
                              PlaceParser placeParser, CookieManagerFacade cookieManager) {
         this.context = context;
-        this.client = okHttpClient;
+        this.clientBuilder = clientBuilder;
         this.preferencesProvider = preferencesProvider;
         this.placeParser = placeParser;
         this.cookieManager = cookieManager;
@@ -88,12 +96,14 @@ public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse
 
         cookieManager.init(context);
         cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ORIGINAL_SERVER);
-        client.setCookieHandler(cookieManager);
+        clientBuilder.cookieJar(new JourneySearchCookieJar(cookieManager));
 
-        client.networkInterceptors().add(new UserAgentInterceptor(userAgent));
+        clientBuilder.addInterceptor(new UserAgentInterceptor(userAgent));
 
         // Prevent redirects, we will handle this manually.
-        client.setFollowRedirects(false);
+        clientBuilder.followRedirects(false);
+
+        httpClient = clientBuilder.build();
 
         return executeSearch(journeyCriteria, date, userAgent, null);
     }
@@ -101,7 +111,7 @@ public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse
     private AsyncResult<JourneyResponse> executeSearch(JourneyCriteria journeyCriteria, Date date, String userAgent,
                                                        RecoverableSearchErrors previousRecoverableErrors) throws Exception {
 
-        FormEncodingBuilder formData = new FormEncodingBuilder();
+        FormBody.Builder formData = new FormBody.Builder();
 
         Preferences preferences = preferencesProvider.getPreferences();
         String walkMax = JourneyPreference.MAX_WALKING_DISTANCE.get(preferences);
@@ -189,12 +199,12 @@ public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse
                 .post(formData.build())
                 .build();
 
-        Response response = client.newCall(request).execute();
+        Response response = httpClient.newCall(request).execute();
         String location = response.networkResponse().header("location");
 
         if (location != null) {
             if (location.contains("your-travel-options")) {
-                return handleTravelOptions(client, location, response, journeyCriteria);
+                return handleTravelOptions(httpClient, location, response, journeyCriteria);
 
             } else if (location.contains("confirm-location")) {
                 // TODO: This is only a temporary work around until a better mechanism is built.
@@ -228,7 +238,7 @@ public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse
         return new AsyncResult<>(ERROR_INVALID_CONTENT);
     }
 
-    private AsyncResult<JourneyResponse> handleTravelOptions(OkHttpClient client, String location, Response response, JourneyCriteria journeyCriteria) throws IOException {
+    private AsyncResult<JourneyResponse> handleTravelOptions(OkHttpClient httpClient, String location, Response response, JourneyCriteria journeyCriteria) throws IOException {
         // Redirect until we have finished, or cannot find a location to navigate to.
         Request request;
         while (response.isRedirect()) {
@@ -241,7 +251,7 @@ public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse
             request = new Request.Builder()
                     .url(JOURNEY_SEARCH_DOMAIN + location)
                     .build();
-            response = client.newCall(request).execute();
+            response = httpClient.newCall(request).execute();
         }
 
         String body = getBody(response);
@@ -334,6 +344,31 @@ public class TaskJourneySearch implements Task<TaskJourneySearch.JourneyResponse
             this.url = url;
             this.criteria = criteria;
             this.content = content;
+        }
+    }
+
+    private static class JourneySearchCookieJar extends OkHttpCookieJar {
+        private final CookieManagerFacade cookieManager;
+
+        public JourneySearchCookieJar(CookieManagerFacade cookieManager) {
+            this.cookieManager = cookieManager;
+        }
+
+        @Override
+        public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+            super.saveFromResponse(url, cookies);
+
+            // We must put these in the web view cookie manager.
+            List<String> responseHeaders = new ArrayList<>();
+            for (Cookie cookie : cookies) {
+                responseHeaders.add(cookie.toString());
+            }
+
+            try {
+                cookieManager.put(url.uri(), Collections.singletonMap("Set-Cookie", responseHeaders));
+            } catch (IOException ex) {
+                Log.error(TAG, "Error storing webview cookie", ex);
+            }
         }
     }
 }

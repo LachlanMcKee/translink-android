@@ -1,23 +1,23 @@
 package com.lach.translink.network.gocard;
 
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import javax.inject.Inject;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+
 public class GoCardHttpClientImpl implements GoCardHttpClient {
-    private final OkHttpClient okHttpClient;
+    private final OkHttpClient httpClient;
     private final GoCardCredentials goCardCredentials;
 
     private boolean hasInitialised = false;
 
     @Inject
-    public GoCardHttpClientImpl(OkHttpClient okHttpClient, GoCardCredentials goCardCredentials) {
-        this.okHttpClient = okHttpClient;
+    public GoCardHttpClientImpl(OkHttpClient httpClient, GoCardCredentials goCardCredentials) {
+        this.httpClient = httpClient;
         this.goCardCredentials = goCardCredentials;
     }
 
@@ -38,10 +38,10 @@ public class GoCardHttpClientImpl implements GoCardHttpClient {
                 .url(url)
                 .build();
 
-        com.squareup.okhttp.Response response;
+        okhttp3.Response response;
         String responseBody;
         try {
-            response = okHttpClient.newCall(request).execute();
+            response = httpClient.newCall(request).execute();
             responseBody = response.body().string();
         } catch (Exception ignored) {
             return false;
@@ -64,7 +64,7 @@ public class GoCardHttpClientImpl implements GoCardHttpClient {
                 .url(url)
                 .build();
 
-        com.squareup.okhttp.Response response = okHttpClient.newCall(request).execute();
+        okhttp3.Response response = httpClient.newCall(request).execute();
 
         String content = null;
         boolean isSuccessful = response.isSuccessful();

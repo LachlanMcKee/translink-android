@@ -9,10 +9,10 @@ import com.lach.translink.data.location.favourite.LocationFavouriteDao;
 import com.lach.translink.data.location.history.LocationHistoryDao;
 import com.lach.translink.network.NetworkModule;
 import com.lach.translink.tasks.resolve.TaskFindLocation;
-import com.squareup.okhttp.OkHttpClient;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
 
 @Module(includes = {NetworkModule.class, CoreModule.class})
 public class LocationDataModule {

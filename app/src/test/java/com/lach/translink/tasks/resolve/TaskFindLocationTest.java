@@ -3,13 +3,14 @@ package com.lach.translink.tasks.resolve;
 import com.lach.common.async.AsyncResult;
 import com.lach.common.data.TaskGenericErrorType;
 import com.lach.translink.BaseHttpTest;
-import com.squareup.okhttp.OkHttpClient;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import okhttp3.OkHttpClient;
 
 public class TaskFindLocationTest extends BaseHttpTest {
 

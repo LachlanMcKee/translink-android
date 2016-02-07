@@ -19,8 +19,6 @@ import com.lach.translink.network.gocard.GoCardNetworkModule;
 import com.lach.translink.tasks.gocard.TaskGoCardDetails;
 import com.lach.translink.tasks.gocard.TaskGoCardHistory;
 import com.lach.translink.ui.impl.gocard.GoCardInfoActivity;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Provider;
+
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -157,7 +158,7 @@ public class GoCardInfoTestCase extends BaseTestCase<GoCardInfoActivity> {
                     }
 
                     @Override
-                    public GoCardHttpClient providesGoCardOkHttpClient(OkHttpClient okHttpClient, GoCardCredentials goCardCredentials) {
+                    public GoCardHttpClient providesGoCardHttpClient(OkHttpClient.Builder httpClientBuilder, GoCardCredentials goCardCredentials) {
                         return new GoCardHttpClient() {
                             @Override
                             public Response getResponseForUrl(String url) throws IOException {

@@ -2,19 +2,17 @@ package com.lach.translink.network.gocard;
 
 import com.lach.common.data.CoreModule;
 import com.lach.common.data.preference.PreferencesProvider;
+import com.lach.common.network.OkHttpCookieJar;
 import com.lach.translink.network.NetworkModule;
 import com.lach.translink.network.UserAgentInterceptor;
 import com.lach.translink.tasks.gocard.TaskGoCardDetails;
 import com.lach.translink.tasks.gocard.TaskGoCardHistory;
-import com.squareup.okhttp.OkHttpClient;
-
-import java.net.CookieManager;
-import java.net.CookiePolicy;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
 
 @Module(includes = {NetworkModule.class, CoreModule.class})
 public class GoCardNetworkModule {
@@ -26,15 +24,11 @@ public class GoCardNetworkModule {
 
     @Provides
     @Singleton
-    public GoCardHttpClient providesGoCardOkHttpClient(OkHttpClient okHttpClient, GoCardCredentials goCardCredentials) {
-        GoCardHttpClientImpl client = new GoCardHttpClientImpl(okHttpClient, goCardCredentials);
+    public GoCardHttpClient providesGoCardHttpClient(OkHttpClient.Builder httpClientBuilder, GoCardCredentials goCardCredentials) {
+        httpClientBuilder.cookieJar(new OkHttpCookieJar());
+        httpClientBuilder.addInterceptor(new UserAgentInterceptor("Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36"));
 
-        CookieManager cookieManager = new CookieManager();
-        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ORIGINAL_SERVER);
-        okHttpClient.setCookieHandler(cookieManager);
-
-        okHttpClient.networkInterceptors().add(new UserAgentInterceptor("Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36"));
-        return client;
+        return new GoCardHttpClientImpl(httpClientBuilder.build(), goCardCredentials);
     }
 
     @Provides

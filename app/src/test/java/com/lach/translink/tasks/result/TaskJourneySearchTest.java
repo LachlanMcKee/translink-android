@@ -7,12 +7,10 @@ import com.lach.common.data.preference.PreferencesProvider;
 import com.lach.translink.BaseHttpTest;
 import com.lach.translink.data.journey.JourneyCriteria;
 import com.lach.translink.data.journey.JourneyTimeCriteria;
-import com.lach.translink.data.journey.JourneyTransport;
 import com.lach.translink.data.place.PlaceParser;
 import com.lach.translink.data.place.bus.BusStopDao;
+
 import com.lachlanm.xwalkfallback.CookieManagerFacade;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Response;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,6 +19,9 @@ import org.powermock.api.mockito.PowerMockito;
 
 import java.io.IOException;
 import java.util.Date;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Response;
 
 public class TaskJourneySearchTest extends BaseHttpTest {
 
@@ -177,9 +178,9 @@ public class TaskJourneySearchTest extends BaseHttpTest {
         journeyCriteria.setJourneyTimeCriteria(JourneyTimeCriteria.LeaveAfter);
         //journeyCriteria.setJourneyTransport(JourneyTransport.All);
 
-        OkHttpClient client = mockHttpClient(responseHandler);
+        OkHttpClient.Builder clientBuilder = mockHttpClientBuilder(responseHandler);
 
-        TaskJourneySearch journeySearch = new TaskJourneySearch(null, client, preferencesProvider, placeParser, cookieManager);
+        TaskJourneySearch journeySearch = new TaskJourneySearch(null, clientBuilder, preferencesProvider, placeParser, cookieManager);
         return journeySearch.execute(TaskJourneySearch.createParams(journeyCriteria, time, null));
     }
 
